@@ -15,5 +15,6 @@ if __name__ == '__main__':
 
     print("Braden")
     print("Rayan")
+    print("Diana")
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
