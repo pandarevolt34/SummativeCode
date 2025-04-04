@@ -19,3 +19,5 @@ while game_running: #start the loop - keep going while the game is on
             game_running = False #if player click close button,  the loop stops
 pygame.quit
 
+#to be continued
+
