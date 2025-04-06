@@ -19,3 +19,29 @@ class FenwickTree:  # the stack of cards template
     def remove_top_card_from_tree(self, card):
         # to be continued
         return
+
+# ID: 5676233
+''' Card class description:
+initializing class; parameters:
+    card_name: 
+    card_type:
+    card_description:
+    index:
+    '''
+class Card:
+    def __init__(self, card_name, card_type, card_description, index = -1):
+        self.card_name = card_name
+        self.card_type = card_type
+        self.card_description = card_description
+        self.index = index
+
+''' Player class description:
+initializing class; parameters:
+    player_name:
+    
+    '''
+class Player:
+    def __init__(self, player_name):
+        self.player_name = player_name
+        self.player_cards = []
+# ID: 5676233
