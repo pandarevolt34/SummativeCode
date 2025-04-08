@@ -5,6 +5,7 @@ class FenwickTree:  # the stack of cards template
     def __init__(self):  # initializing class
         self.tree = []  # will store the stack so that we can operate adding and removing cards in log(n) time
         self.powers_of_2 = [0]*7301
+        self.number_of_cards = 72
 
     def initiate_powers_of_2(self):  # store powers of 2 in a list
         for i in range(26):
@@ -16,7 +17,8 @@ class FenwickTree:  # the stack of cards template
             self.tree[index] += 1 # add presence of the number
             index += index & (-index) # set largest OFF binary bit to ON
 
-    def remove_top_card_from_tree(self, card):
+    def remove_top_card_from_tree(self):
+        index =
         # to be continued
         return
 
@@ -29,11 +31,12 @@ initializing class; parameters:
     index:
     '''
 class Card:
-    def __init__(self, card_name, card_type, card_description, index = -1):
+    def __init__(self, card_name, card_type, card_description, index = -1, tree_index):
         self.card_name = card_name
         self.card_type = card_type
         self.card_description = card_description
         self.index = index
+        self.index = tree_index
 
 ''' Player class description:
 initializing class; parameters:
