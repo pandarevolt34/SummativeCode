@@ -29,15 +29,13 @@ initializing class; parameters:
     card_type:
     card_description:
     index:
-    tree_index:
     '''
 class Card:
-    def __init__(self, card_name, card_type, card_description, index = -1, tree_index = -1):
+    def __init__(self, card_name, card_type, card_description, index = -1):
         self.card_name = card_name
         self.card_type = card_type
         self.card_description = card_description
         self.index = index
-        self.tree_index = tree_index
 
 ''' Player class description:
 initializing class; parameters:
@@ -49,3 +47,12 @@ class Player:
         self.player_name = player_name
         self.player_cards = []
 # ID: 5676233
+
+# ID: 5674312
+class RedBlackNode:
+    def __init__(self, card):
+        self.red = False
+        self.parent = None
+        self.card = card
+        self.left = None
+        self.right = None
