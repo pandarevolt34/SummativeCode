@@ -1,3 +1,6 @@
+
+Student ID: 5676187
+
 import pygame #import pygame system
 
 pygame.init() #start all pygame tools like graphics
