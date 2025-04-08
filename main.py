@@ -74,3 +74,21 @@ class RedBlackTree:
         red_black_node.left = self.nil
         red_black_node.right = self.nil
         red_black_node.red = True
+
+        current_node = self.root # start binary search: to be compared with new node
+        parent_node = None
+        while current_node != self.nil:
+            parent_node = current_node # when while loop ends, we will have the parent of the new node
+            # compare the index of new node with index of current node
+            if red_black_node.card.index < current_node.card.index: # go down left subtree
+                current_node = current_node.left
+            elif red_black_node.card.index > current_node.card.index: # go down right subtree
+                current_node = current_node.right
+
+        current_node.parent = parent_node
+        if parent_node is None:
+            self.root = current_node
+        elif current_node.card.index < parent_node.card.index: # set node as left subtree of parent
+            parent_node.left = current_node
+        elif current_node.card.index > parent_node.card.index: # set node as right subtree of parent
+            parent_node.right = current_node
