@@ -18,7 +18,6 @@ class FenwickTree:  # the stack of cards template
             index += index & (-index) # set largest OFF binary bit to ON
 
     def remove_top_card_from_tree(self):
-        index =
         # to be continued
         return
 
@@ -56,3 +55,15 @@ class RedBlackNode:
         self.card = card
         self.left = None
         self.right = None
+
+
+# red black tree will represent the stack of cards
+# using the red black tree data structure, we can remove the top card in O(log(n))
+# using the red black tree data structure, we can insert a card into any position in the stack in O(log(n))
+class RedBlackTree:
+    def __init__(self):
+        self.nil = RedBlackNode(Card("null","null","null"))
+        self.nil.red = False
+        self.nil.left = None
+        self.nil.right = None
+        self.root = self.nil
