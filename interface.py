@@ -1,3 +1,5 @@
+#The code below is the backbone of interface function:
+
 import pygame #import pygame system
 
 pygame.init() #start all pygame tools like graphics
@@ -5,16 +7,14 @@ pygame.init() #start all pygame tools like graphics
 #setting the size of game window
 window = pygame.display.set_mode((900, 700))
 pygame.display.set_caption("YOU'RE in trouble") #sets the title at the top of the window
+clock = pygame.time.Clock()
 
-#Defining screen:
-#setting the starting position of the player
-x = 200 
-y = 200 
-width = 40
-height = 60
-vel = 5 
+action_cards = 
+shield_cards = [{"name": "shield", "colour":(128,128,128)}]
+trap_cards = [{"name": "You're in Trouble", "colour" : (255, 0, 0)}]
+character_cards = [{"name" :"character 1", "colour" : (0, 255, 255)}, {"name": "character 2", "colour" : (0, 0, 128)}, {"name": "character 3", "colour" : (0, 0, 255)}]
 
-#Main Game Loop
+#Main Game Loopp)
 game_running = True 
 while game_running: #start the loop - keep going while the game is on
     pygame.time.delay(100)
@@ -22,25 +22,7 @@ while game_running: #start the loop - keep going while the game is on
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game_running = False #if player click close button,  the loop stops
-    
-    #move character by the velocity based on the their direction
-    keys = pygame.key.get_pressed()
-
-    if keys[pygame.K_LEFT]:
-        x -= vel
-    if keys[pygame.K_RIGHT]:
-        x += vel
-    if keys [pygame.K_UP]:
-        y -= vel
-    if keys[pygame.K_DOWN]:
-        y += vel
-    
-    window.fill((0,0,0)) #fill screen before image
-#rectangle
-    pygame.draw.rect(window, (255, 255, 255), (x, y ,width, height))
-    pygame.display.update()
 
 
 pygame.quit()
-
 #to be continued......
