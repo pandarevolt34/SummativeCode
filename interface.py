@@ -1,38 +1,45 @@
-#Student ID: 5676187
-
-#The code below is the backbone of interface function:
-
 import pygame #import pygame system
 
 pygame.init() #start all pygame tools like graphics
 
 #setting the size of game window
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = int(SCREEN_WIDTH * 0.8)
-
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+window = pygame.display.set_mode((900, 700))
 pygame.display.set_caption("YOU'RE in trouble") #sets the title at the top of the window
 
 #Defining screen:
 #setting the starting position of the player
-x = 200 #200 pixels from the left of the screen
-y = 200 #200 pixels from the top of the screen
-img = pygame.image.load('img/player/Idle/0.png') 
-rectangle = img.get_rect() #used for control position for everything
-rectangle.center = (x,y) #moves the rectangle (and image) to coordinates (200,200) ---> player's position
+x = 200 
+y = 200 
+width = 40
+height = 60
+vel = 5 
 
-
-#to keep the game constantly running (controlling the main game loop)
+#Min Game Loopp)
 game_running = True 
 while game_running: #start the loop - keep going while the game is on
-    
-    screen.fill((255,255,255)) #this clears the screen to white at the start of every frame
-    screen.blit(img, rectangle)
-    pygame.display.update()
+    pygame.time.delay(100)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game_running = False #if player click close button,  the loop stops
+    
+    #move character by the velocity based on the their direction
+    keys = pygame.key.get_pressed()
+
+    if keys[pygame.K_LEFT]:
+        x -= vel
+    if keys[pygame.K_RIGHT]:
+        x += vel
+    if keys [pygame.K_UP]:
+        y -= vel
+    if keys[pygame.K_DOWN]:
+        y += vel
+    
+    window.fill((0,0,0)) #fill screen before image
+#rectangle
+    pygame.draw.rect(window, (255, 255, 255), (x, y ,width, height))
+    pygame.display.update()
+
 
 pygame.quit()
 
