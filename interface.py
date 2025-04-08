@@ -14,7 +14,7 @@ width = 40
 height = 60
 vel = 5 
 
-#Min Game Loopp)
+#Main Game Loop
 game_running = True 
 while game_running: #start the loop - keep going while the game is on
     pygame.time.delay(100)
