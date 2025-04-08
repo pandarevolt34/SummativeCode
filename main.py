@@ -62,8 +62,15 @@ class RedBlackNode:
 # using the red black tree data structure, we can insert a card into any position in the stack in O(log(n))
 class RedBlackTree:
     def __init__(self):
-        self.nil = RedBlackNode(Card("null","null","null"))
-        self.nil.red = False
-        self.nil.left = None
-        self.nil.right = None
-        self.root = self.nil
+        self.nil = RedBlackNode(Card("null","null","null")) #initialize first node
+        self.nil.red = False # set root nil node as black
+        self.nil.left = None # set empty left subtree
+        self.nil.right = None # set empty right subtree
+        self.root = self.nil # set starting nil root
+
+    def insert_card(self, card):
+        red_black_node = RedBlackNode(card) # create new node
+        red_black_node.parent = None
+        red_black_node.left = self.nil
+        red_black_node.right = self.nil
+        red_black_node.red = True
