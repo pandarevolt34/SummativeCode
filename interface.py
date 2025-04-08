@@ -32,10 +32,10 @@ while game_running: #start the loop - keep going while the game is on
     window.fill((255,255,255))
 
 #show image using pygame blit
-    window.blit(shield_image, (100,150)) #function to draw card
-    window.blit(trouble_image, (220,150)) #function to draw card
-    window.blit(char1_image, (340,150)) #function to draw card
-    window.blit(char2_image, (460,150)) #function to draw card
+    window.blit(shield_image, (100,150))
+    window.blit(trouble_image, (220,150)) 
+    window.blit(char1_image, (340,150)) 
+    window.blit(char2_image, (460,150))
 
     pygame.display.update()
 
