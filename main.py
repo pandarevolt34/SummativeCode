@@ -164,3 +164,19 @@ class RedBlackTree:
                     new_node.parent.parent.red = True
                     self.rotate_right(new_node.parent.parent)
         self.root.red = False
+
+    def rotate_left(self, node):
+        u = node
+        v = u.right # right child of u, will be shifted closer to root while u will be shifted further away from root
+        u.right = v.left # assign left child of v to right child of u
+        if v.left != self.nil:
+            v.left.parent = u # set parent of previous left child of v to u, since it is now the right child of u
+        v.parent = u.parent # bringing v closer to the root by assigning its parent as u's parent
+        if u.parent is None: # no parent means u is the root
+            self.root = v # set v as root as u is shifted below the root
+        elif u.parent.left == u: # u was a left child
+            u.parent.left = v # set v as the left child of u's previous parent
+        else: # u was right child
+            u.parent.right = v # set v as the right child of u's previous parent
+        v.left = u
+        u.parent = v
