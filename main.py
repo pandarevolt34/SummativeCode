@@ -149,3 +149,18 @@ class RedBlackTree:
                     new_node.parent.red = False
                     new_node.parent.parent.red = True
                     self.rotate_left(new_node.parent.parent) # re-balancing the tree to keep colors in order
+            else:
+                u = new_node.parent.parent.right # parent of new node is to the left, 'u' will take the right node of the parent-parent
+                if u.red is True: # if u.red is True then it has a value, if not, it is nil
+                    u.red = False
+                    new_node.parent.red = False
+                    new_node.parent.parent.red = True # set parent of parent as red
+                    new_node = new_node.parent.parent
+                else:
+                    if new_node == new_node.parent.right:
+                        new_node = new_node.parent
+                        self.rotate_left(new_node)
+                    new_node.parent.red = False
+                    new_node.parent.parent.red = True
+                    self.rotate_right(new_node.parent.parent)
+        self.root.red = False
