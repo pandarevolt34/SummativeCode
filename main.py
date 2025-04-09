@@ -72,7 +72,6 @@ class CharacterCard(Card):
 ''' Player class description:
 initializing class; parameters:
     player_name:
-    
     '''
 
 class Player:
