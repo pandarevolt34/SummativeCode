@@ -29,6 +29,7 @@ initializing class; parameters:
     card_description:
     index:
     '''
+
 class Card:
     def __init__(self, card_name, card_type, card_description, index = -1):
         self.card_name = card_name
@@ -36,11 +37,39 @@ class Card:
         self.card_description = card_description
         self.index = index
 
+''' CharacterCard Class description:
+initializing class by inheriting from class Card; parameters:
+    
+    '''
+
+class CharacterCard(Card):
+    def __init__(self,character_number, index = -1):
+        names = {
+            1: "A",
+            2: "B",
+            3: "C",
+            4: "D",
+            5: "E"
+        }
+        descriptions = {
+            1: "Collect 2: Take a random card from another player",
+            2: "Collect 3: Name a specific card to take from another player",
+            3: "Collect 5: Take any card from the stack of played cards",
+            4: "Special abilities when collected in combinations",
+            5: "Complete set gives powerful effect"
+        }
+        super().__init__(
+            card_name = names[character_number],
+            card_type = "character",
+            card_description = descriptions[character_number],
+            index = index)
+
 ''' Player class description:
 initializing class; parameters:
     player_name:
     
     '''
+
 class Player:
     def __init__(self, player_name):
         self.player_name = player_name
