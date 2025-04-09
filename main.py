@@ -118,13 +118,13 @@ class RedBlackTree:
             elif red_black_node.card.index > current_node.card.index: # go down right subtree
                 current_node = current_node.right
 
-        current_node.parent = parent_node
+        red_black_node.parent = parent_node
         if parent_node is None: # first card in tree
-            self.root = current_node # set as current root
-        elif current_node.card.index < parent_node.card.index: # set node as left subtree of parent
-            parent_node.left = current_node
-        elif current_node.card.index > parent_node.card.index: # set node as right subtree of parent
-            parent_node.right = current_node
+            self.root = red_black_node # set as current root
+        elif red_black_node.card.index < parent_node.card.index: # set node as left subtree of parent
+            parent_node.left = red_black_node
+        elif red_black_node.card.index > parent_node.card.index: # set node as right subtree of parent
+            parent_node.right = red_black_node
 
         self.fix_tree_insert(red_black_node)
 
@@ -194,3 +194,23 @@ class RedBlackTree:
             u.parent.right = v # set v as the right child of u's previous parent
         v.right = u
         u.parent = v
+
+    def testing_func_for_traversing_tree(self):
+        node = self.root
+        print("Output path from root to left farthest node")
+        while node != self.nil:
+            print(node.card.index)
+            if node.red is True:
+                print("RED")
+            else:
+                print("BLACK")
+            node = node.left
+        node = self.root
+        print("Output path from root to right farthest node")
+        while node!= self.nil:
+            print(node.card.index)
+            if node.red is True:
+                print("RED")
+            else:
+                print("BLACK")
+            node = node.right
