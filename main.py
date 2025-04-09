@@ -96,7 +96,7 @@ class RedBlackNode:
 class RedBlackTree:
     def __init__(self):
         self.nil = RedBlackNode(Card("null","null","null")) #initialize first node
-        self.nil.red = False # set root nil node as black
+        self.nil.red = False # set nil node as black
         self.nil.left = None # set empty left subtree
         self.nil.right = None # set empty right subtree
         self.root = self.nil # set starting nil root
@@ -119,9 +119,33 @@ class RedBlackTree:
                 current_node = current_node.right
 
         current_node.parent = parent_node
-        if parent_node is None:
-            self.root = current_node
+        if parent_node is None: # first card in tree
+            self.root = current_node # set as current root
         elif current_node.card.index < parent_node.card.index: # set node as left subtree of parent
             parent_node.left = current_node
         elif current_node.card.index > parent_node.card.index: # set node as right subtree of parent
             parent_node.right = current_node
+
+        self.fix_tree_insert(red_black_node)
+
+    def fix_tree_insert(self, new_node):
+        # if the new node's parent is black then we don't need to fix and re root the subtree
+        # if it is red, we need to fix since the new node will be taking the color red
+        # if the parent is red, then it also has a parent since the root is black
+        while new_node != self.root and new_node.parent.red is True:
+            if new_node.parent == new_node.parent.parent.right: # check if new node's parent is to the right of new node's parent-parent
+                u = new_node.parent.parent.left # parent is to the right and u is to the left of the subtree of the parent-parent
+                if u.red is True: # if u.red is True then it has a value, if not, it is nil
+                    # set parent of new node and it's sibling (u) as black
+                    u.red = False
+                    new_node.parent.red = False
+                    new_node.parent.parent.red = True # set parent of parent as red
+                    new_node = new_node.parent.parent # jump to parent-parent for next iteration where rotation will happen
+
+                else:
+                    if new_node == new_node.parent.left:
+                        new_node = new_node.parent
+                        self.rotate_right(new_node)
+                    new_node.parent.red = False
+                    new_node.parent.parent.red = True
+                    self.rotate_left(new_node.parent.parent) # re-balancing the tree to keep colors in order
