@@ -1,5 +1,6 @@
 #CS Python Project
 
+import random
 # ID: 5674312
 class FenwickTree:  # the stack of cards template
     def __init__(self):  # initializing class
@@ -22,12 +23,12 @@ class FenwickTree:  # the stack of cards template
         return
 
 # ID: 5676233
-''' Card class description:
-initializing class; parameters:
-    card_name: 
-    card_type:
-    card_description:
-    index:
+''' Class for Cards:
+initializing class; variable instances:
+    card_name: stores the name of each card (e.g. "Shield", "You're in trouble")
+    card_type: stores the type of the card (e.g. action card, or character card)
+    card_description: stores a brief description of each card to guide the user
+    index: stores the position of each card in the deck 
     '''
 
 class Card:
@@ -37,13 +38,17 @@ class Card:
         self.card_description = card_description
         self.index = index
 
-''' CharacterCard Class description:
-initializing class by inheriting from class Card; parameters:
+''' Class for CharacterCard:
+initializing class by inheriting from class Card; variable instances:
+    character_number: assigns numbers to each character card
+    index: stores the position of each card
     
+    names: assigns character card names to numbers
+    description: a brief description of each card to be displayed on the cards
     '''
 
 class CharacterCard(Card):
-    def __init__(self,character_number, index = -1):
+    def __init__(self, character_number, index = -1):
         names = {
             1: "A",
             2: "B",
