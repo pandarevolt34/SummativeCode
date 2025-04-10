@@ -2,6 +2,8 @@
 
 import random
 
+from queue import Queue
+
 # ID: 5676233
 ''' Class for Cards:
 initializing class; variable instances:
@@ -76,9 +78,6 @@ class RedBlackNode:
 class RedBlackTree:
     def __init__(self):
         self.nil = RedBlackNode(Card("null","null","null")) #initialize first node
-        self.nil.red = False # set nil node as black
-        self.nil.left = None # set empty left subtree
-        self.nil.right = None # set empty right subtree
         self.root = self.nil # set starting nil root
 
     def insert_card(self, card):
@@ -121,7 +120,6 @@ class RedBlackTree:
                     new_node.parent.red = False
                     new_node.parent.parent.red = True # set parent of parent as red
                     new_node = new_node.parent.parent # jump to parent-parent for next iteration where rotation will happen
-
                 else:
                     if new_node == new_node.parent.left:
                         new_node = new_node.parent
@@ -168,10 +166,10 @@ class RedBlackTree:
         v.parent = u.parent # bringing v closer to the root by assigning its parent as u's parent
         if u.parent is None:
             self.root = v # set v as root
-        elif u.parent.left == u: # u was a left child
-            u.parent.left = v # set v as the left child of u's previous parent
+        elif u.parent.right == u: # u was a left child
+            u.parent.right = v # set v as the left child of u's previous parent
         else:
-            u.parent.right = v # set v as the right child of u's previous parent
+            u.parent.left = v # set v as the right child of u's previous parent
         v.right = u
         u.parent = v
 
