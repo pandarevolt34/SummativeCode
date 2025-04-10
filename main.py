@@ -63,6 +63,14 @@ class Player:
 # ID: 5676233
 
 # ID: 5674312
+''' Class for RedBlackNode:
+initializing class; variable instances:
+    red: is False when node is black, and True when node is red
+    parent: stores the parent node of the instance
+    card: stores the card data and the index in the stack
+    left: stores the left child node
+    right: stores the right child node 
+    '''
 class RedBlackNode:
     def __init__(self, card):
         self.red = False
@@ -75,6 +83,11 @@ class RedBlackNode:
 # red black tree will represent the stack of cards
 # using the red black tree data structure, we can remove the top card in O(log(n))
 # using the red black tree data structure, we can insert a card into any position in the stack in O(log(n))
+''' Class for RedBlackTree:
+initializing class; variable instances:
+    nil: empty node (also used as leaf nodes for the tree)
+    root: root node
+    '''
 class RedBlackTree:
     def __init__(self):
         self.nil = RedBlackNode(Card("null","null","null")) #initialize first node
@@ -89,7 +102,7 @@ class RedBlackTree:
         red_black_node.right = self.nil
         red_black_node.red = True
 
-        current_node = self.root # start binary search: to be compared with new node
+        current_node = self.root # binary search: to be compared with new node
         parent_node = None
         while current_node != self.nil:
             parent_node = current_node # when while loop ends, we will have the parent of the new node
