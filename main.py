@@ -191,7 +191,20 @@ class RedBlackTree:
             current_node = current_node.left
         return minimum_node
 
-    def delete(self, node_to_be_deleted):
+    def search(self, index):
+        node = self.root
+        # search for node
+        while node != self.nil:
+            if node.card.index == index:
+                return node
+            elif node.card.index < index:
+                node = node.right
+            else:
+                node = node.left
+        return None
+
+    def delete(self, index):
+        node_to_be_deleted = self.search(index)
         y = node_to_be_deleted
         y_original_color = node_to_be_deleted.red # store color of node
         if node_to_be_deleted.left == self.nil: # if left child is nil, shift right child in place of node
