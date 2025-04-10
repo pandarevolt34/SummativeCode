@@ -191,10 +191,9 @@ class RedBlackTree:
                 cnt *= 2
                 cnt2 = 0
                 print()
-            if node == self.nil:
-                continue
-            q.put(node.left)
-            q.put(node.right)
+            if node != self.nil:
+                q.put(node.left)
+                q.put(node.right)
         '''
         print("Output path from root to left farthest node")
         while node != self.nil:
