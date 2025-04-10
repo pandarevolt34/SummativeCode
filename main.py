@@ -175,6 +175,27 @@ class RedBlackTree:
 
     def testing_func_for_traversing_tree(self):
         node = self.root
+        q = Queue()
+        q.put(node)
+        cnt = 1
+        cnt2 = 0
+        while not q.empty():
+            node = q.get()
+            print(node.card.index, end=" ")
+            if node.red:
+                print("RED", end= " - ")
+            else:
+                print("BLACK", end= " - ")
+            cnt2 += 1
+            if cnt2 == cnt:
+                cnt *= 2
+                cnt2 = 0
+                print()
+            if node == self.nil:
+                continue
+            q.put(node.left)
+            q.put(node.right)
+        '''
         print("Output path from root to left farthest node")
         while node != self.nil:
             print(node.card.index)
@@ -192,5 +213,6 @@ class RedBlackTree:
             else:
                 print("BLACK")
             node = node.right
+            '''
 # to be continued
 # ID 5674312
