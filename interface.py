@@ -17,7 +17,7 @@ pygame.display.set_caption("YOU'RE in trouble") #sets the title at the top of th
 background_img = pygame.transform.scale(pygame.image.load("Python image/Background.jpg"), (900, 700))
 
 class TheButton:
-    def __init__(self, text, x, y, activated, rect):
+    def __init__(self, text, x, y, activated):
         self.text = text
         self.x = x #position x
         self.y = y #position y
@@ -79,4 +79,4 @@ while game_running: #start the loop - keep going while the game is on
 
 pygame.quit()
 
-
+#to be continued.......
