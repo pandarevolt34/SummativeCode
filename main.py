@@ -80,6 +80,8 @@ class RedBlackTree:
         self.nil = RedBlackNode(Card("null","null","null")) #initialize first node
         self.root = self.nil # set starting nil root
 
+    #insert
+
     def insert_card(self, card):
         red_black_node = RedBlackNode(card) # create new node
         red_black_node.parent = None
@@ -108,9 +110,6 @@ class RedBlackTree:
         self.fix_tree_insert(red_black_node)
 
     def fix_tree_insert(self, new_node):
-        # if the new node's parent is black then we don't need to fix and re root the subtree
-        # if it is red, we need to fix since the new node will be taking the color red
-        # if the parent is red, then it also has a parent since the root is black
         while new_node != self.root and new_node.parent.red is True:
             if new_node.parent == new_node.parent.parent.right: # check if new node's parent is to the right of new node's parent-parent
                 u = new_node.parent.parent.left # parent is to the right and u is to the left of the subtree of the parent-parent
@@ -172,6 +171,107 @@ class RedBlackTree:
             u.parent.left = v # set v as the right child of u's previous parent
         v.right = u
         u.parent = v
+
+    # delete
+
+    def shift_nodes(self, old, new):
+        if old.parent is None: # if old node was root, set new node as root
+            self.root = new
+        elif old.parent.left == old: # if old node was left child, set new node as left child instead
+            old.parent.left = new
+        else: # if old parent as right child, set new node as right child instead
+            old.parent.right = new
+        new.parent = old.parent # set new node's parent as old node's parent
+
+    def minimum(self, node): # find minimum index within subtree with node as its root
+        current_node = node
+        minimum_node = node
+        while current_node != self.nil: # continue down the left path of the subtree
+            minimum_node = current_node
+            current_node = current_node.left
+        return minimum_node
+
+    def delete(self, node_to_be_deleted):
+        y = node_to_be_deleted
+        y_original_color = node_to_be_deleted.red # store color of node
+        if node_to_be_deleted.left == self.nil: # if left child is nil, shift right child in place of node
+            x = node_to_be_deleted.right
+            self.shift_nodes(node_to_be_deleted, node_to_be_deleted.right)
+        elif node_to_be_deleted.right == self.nil: # if right child is nil, shift left child in place of node
+            x = node_to_be_deleted.left
+            self.shift_nodes(node_to_be_deleted, node_to_be_deleted.left)
+        else:
+            y = self.minimum(node_to_be_deleted.right) # y is the minimum node from right subtree of node_to_be_deleted
+            y_original_color = y.red # keep track of y's color
+            x = y.right
+            if y.parent == node_to_be_deleted:
+                x.parent = y
+            else:
+                self.shift_nodes(y, y.right) # replace minimum node with nil
+                y.right = node_to_be_deleted.right # set y's right child as the right child of node_to_be_deleted
+                y.right.parent = y # set parent of right child of node_to_be_deleted to y
+            self.shift_nodes(node_to_be_deleted, y) # replacing deleted node with y
+            y.left = node_to_be_deleted.left
+            y.left.parent = y
+            y.red = node_to_be_deleted.red
+
+        if y_original_color is False: # bring balance back to tree
+            self.delete_fixup(x)
+
+    def delete_fixup(self, x):
+        while x!= self.root and x.red is False: # while x is black and not the root of the tree
+            if x == x.parent.left: # when x is a left child
+                w = x.parent.right # w is x's sibling, AKA the right child of x's parent
+                # case 1, when w is red:
+                if w.red is True:
+                    w.red = False # set w as black
+                    x.parent.red = True # set parent of x and w to red
+                    self.rotate_left(x.parent)
+                    w = x.parent.right # set w to x's new sibling
+                # case 2, when w, and its children are black
+                if w.left.red is False and w.right.red is False:
+                    w.red = True
+                    x = x.parent # preparation for next iteration
+                else:
+                    # case 3, when w is black, w left child is red, and w right child is black
+                    if w.right.red is False:
+                        w.left.red = False # now both children are black
+                        w.red = True # set w as red
+                        self.rotate_right(w)
+                        w = x.parent.right # set w to x's new sibling
+                    #case 4 will automatically be done after case 3
+                    # case 4, when w is black, w left child is black, and w right child is red
+                    w.red = x.parent.red
+                    x.parent.red = False
+                    w.right.red = False
+                    self.rotate_left(x.parent)
+                    x = self.root
+            else: # when x is a right child
+                w = x.parent.left # w is x's sibling, AKA the left child of x's parent
+                #case 1
+                if w.red is True:
+                    w.red = False
+                    x.parent.red = True
+                    self.rotate_right(x.parent)
+                    w = x.parent.left # set w to x's new sibling
+                #case 2
+                if w.left.red is False and w.right.red is False:
+                    w.red = True
+                    x = x.parent
+                else:
+                    #case 3
+                    if w.left.red is False:
+                        w.right.red = False
+                        w.red = True
+                        self.rotate_left(w)
+                        w = x.parent.left
+                    #case 4
+                    w.red = x.parent.red
+                    x.parent.red = False
+                    w.left.red = False
+                    self.rotate_right(x.parent)
+                    x = self.root
+        x.red = False
 
     def testing_func_for_traversing_tree(self):
         node = self.root
