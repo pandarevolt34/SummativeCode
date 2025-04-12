@@ -73,6 +73,7 @@ class SickLeave(ActionCard):
 
     def perform_action(self, game, current_player):
         print(f"{current_player.name} used Sick Leave")
+        return True
 
 class UTurn(ActionCard):
     def __init__(self, index = -1):
@@ -81,9 +82,85 @@ class UTurn(ActionCard):
     def perform_action(self, game, current_player):
         game.turn_direction *= -1
         print(f"{current_player.name} used U Turn - Direction reversed.")
+        return True
+
+class Hacker(ActionCard):
+    def __init__(self, index = -1):
+        super().__init__("Hacker", "Action", "Pick a card from any position in the deck", index)
+
+    def perform_action(self, game, current_player):
+        if game.deck:
+            card = random.choice(game.deck)
+            game.deck.remove(card)
+            current_player.player_cards.append(card)
+        return True
+
+class TheSpell(ActionCard):
+    def __init__(self, index = -1):
+        super().__init__("The Spell", "Action", "Peek at the top 3 cards in the deck", index)
+
+    def perform_action(self, game, current_player):
+        print(f"Top three cards: {[c.card_name for c in game.deck[:3]]}")
+        return False
+
+class Shuffle(ActionCard):
+    def __init__(self, index = -1):
+        super().__init__("Shuffle", "Action", "Shuffle the deck", index)
+
+    def perform_action(self, game, current_player):
+        random.shuffle(game.deck)    ### NOTE TO GROUP: IMPLEMENT A SHUFFLING ALGORITHM (AS WELL AS IN THE MAIN LOOP)
+        print("The deck is shuffled")
+        return False
+
+class Reveal(ActionCard):
+    def __init__(self, index = -1):
+        super().__init__("Reveal", "Action", "Reveal the top 3 cards to all players", index)
+        ### NOTE: THIS SHOULD APPEAR TO ALL PLAYERS; NOT LIKE THE SPELL
+
+    def perform_action(self, game, current_player):
+        print(f"Cards revealed: {[c.card_name for c in game.deck[:3]]}")
+        return False
+
+class BeatIt(ActionCard):
+    def __init__(self, index = -1):
+        super().__init__("Beat It", "Action", "Avoid drawing a card, and force the next player to play two consecutive turns", index)
+
+    def perform_action(self, game, current_player):
+        target_player = game.players[(game.current_player_index + game.turn_direction) % len(game.players)]
+        game.special_effects.append(("double_turn", target_player))
+        print(f"{target_player.name} should play twice")
+        return True
+
+class BegYou(ActionCard):
+    def __init__(self, index = -1):
+        super().__init__("Beg You", "Action", "Ask a any player to give you a card of their choice", index)
+
+    def perform_action(self, game, current_player):
+        target_player = random.choice([p for p in game.players if p != current_player])
+        if target_player.player_cards:
+            card = random.choice(target_player.player_cards)
+            target_player.player_cards.remove(card)
+            current_player.player_cards.append(card)
+        return True
+
+class NoChance(ActionCard):
+    def __init__(self, index = -1):
+        super().__init__("No Chance", "Action", "Block action or character cards from other players", index)
+
+    def perform_action(self, game, current_player):
+        print(f"{current_player.name} played No Chance")
+        return False
+
+class Mirror(ActionCard):
+    def __init__(self, index = -1):
+        super().__init__("No Chance", "Action", "Copy the last played action card", index)
+
+    def perform_action(self, game, current_player):
+        if game.last_played_action_card and game.last_played_action_card.card_name not in ["Mirror", "You're in Trouble"]:
+            print(f"Mirroring {game.last_played_action_card.card_name}")
+            ### NOTE TO GROUP: COPYING FUNCTION WILL BE IMPLEMENTED WITH THE MAIN LOOP
+        return False
 # ID: 5676233
-
-
 
 ''' Player class description:
 initializing class; parameters:
