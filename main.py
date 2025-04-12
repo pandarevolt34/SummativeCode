@@ -1,7 +1,6 @@
 #CS Python Project
 
 import random
-
 from queue import Queue
 
 # ID: 5676233
@@ -49,7 +48,42 @@ class CharacterCard(Card):
             card_name = names[character_number],
             card_type = "character",
             card_description = descriptions[character_number],
-            index = index)
+            index = index
+        )
+        self.character_number = character_number
+
+# ID: 5676233
+''' Class for ActionCard
+initializing class by inheriting from class Card, then creating subclasses for each action card
+by inheriting from ActionCard class...
+    10 Action Cards; each contributes to prevent from picking the "You're in trouble" losing card:
+SickLeave, UTurn, Hacker, TheSpell, Shuffle, Reveal, BeatIt, BegYou, NoChance, and Mirror
+'''
+class ActionCard(Card):
+    def __init__(self, card_name, card_type, card_description, index = -1):
+        super().__init__(card_name, card_type, card_description, index)
+        self.used = False
+
+    def perform_action(self, game, current_player):
+        raise NotImplementedError   # implenentation will be added
+
+class SickLeave(ActionCard):
+    def __init__(self, index = -1):
+        super().__init__("Sick Leave", "Action", "End your turn without drawing a card", index)
+
+    def perform_action(self, game, current_player):
+        print(f"{current_player.name} used Sick Leave")
+
+class UTurn(ActionCard):
+    def __init__(self, index = -1):
+        super().__init__("U Turn", "Action", "Reverse the direction of the game", index)
+
+    def perform_action(self, game, current_player):
+        game.turn_direction *= -1
+        print(f"{current_player.name} used U Turn - Direction reversed.")
+# ID: 5676233
+
+
 
 ''' Player class description:
 initializing class; parameters:
