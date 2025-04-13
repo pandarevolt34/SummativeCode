@@ -1,6 +1,8 @@
 Student ID: 5676187
 
+
 import pygame 
+
 
 pygame.init() 
 
@@ -14,7 +16,7 @@ pygame.display.set_caption("YOU'RE in trouble") #sets the title at the top of th
 
 
 #Background Image
-background_img = pygame.transform.scale(pygame.image.load("Python image/Background.jpg"), (900, 700))
+background_img = pygame.transform.scale(pygame.image.load("Python image/Background Image.png"), (900, 700))
 
 class TheButton:
     def __init__(self, text, x, y, activated):
@@ -37,15 +39,32 @@ class TheButton:
         if self.rect.collidepoint(mouse_position): #check if mouse inside rect area
             if pygame.mouse.get_pressed()[0]: #check if left mouse button is pressed
                 print("Click")
+                
 
-
-#load and scale images
+#LOAD AND SCALE IMAGES OF:
+#1. Main Cards
 shield_image = pygame.transform.scale(pygame.image.load("Python image/shield.png").convert_alpha(), (100, 150))
 trouble_image = pygame.transform.scale(pygame.image.load("Python image/trouble.png").convert_alpha(), (100, 150))
-char1_image = pygame.transform.scale(pygame.image.load("Python image/char1.png").convert_alpha(), (100, 150))
-char2_image = pygame.transform.scale(pygame.image.load("Python image/char2.png").convert_alpha(), (100, 150))
-char3_image = pygame.transform.scale(pygame.image.load("Python image/char3.png").convert_alpha(), (100, 150))
-char4_image = pygame.transform.scale(pygame.image.load("Python image/char4.png").convert_alpha(), (100, 150))
+
+#2. Action Cards
+sick_leave = pygame.transform.scale(pygame.image.load("Python image/sickleave.png").convert_alpha(), (100, 150))
+U_turn = pygame.transform.scale(pygame.image.load("Python image/uturn.png").convert_alpha(), (100, 150))
+Hacker = pygame.transform.scale(pygame.image.load("Python image/hacker.png").convert_alpha(), (100, 150))
+TheSpell = pygame.transform.scale(pygame.image.load("Python image/spell.png").convert_alpha(), (100, 150))
+Shuffle = pygame.transform.scale(pygame.image.load("Python image/shuffle.png").convert_alpha(), (100, 150))
+Reveal = pygame.transform.scale(pygame.image.load("Python image/reveal.png").convert_alpha(), (100, 150))
+BeatIt = pygame.transform.scale(pygame.image.load("Python image/beat.png").convert_alpha(), (100, 150))
+BegYou = pygame.transform.scale(pygame.image.load("Python image/beg you.png").convert_alpha(), (100, 150))
+no_chance = pygame.transform.scale(pygame.image.load("Python image/no chance.png").convert_alpha(), (100, 150))
+mirror = pygame.transform.scale(pygame.image.load("Python image/mirror.png").convert_alpha(), (100, 150))
+
+#3. Character Cards
+bernard_image = pygame.transform.scale(pygame.image.load("Python image/Bernard.png").convert_alpha(), (100, 150))
+mufloo_image = pygame.transform.scale(pygame.image.load("Python image/Mufloo.png").convert_alpha(), (100, 150))
+blubbert_image = pygame.transform.scale(pygame.image.load("Python image/blubbert.png").convert_alpha(), (100, 150))
+shroomie_image = pygame.transform.scale(pygame.image.load("Python image/Shroomie.png").convert_alpha(), (100, 150))
+zapcat_image = pygame.transform.scale(pygame.image.load("Python image/Zapcat.png").convert_alpha(), (100, 150))
+wobby_image = pygame.transform.scale(pygame.image.load("Python image/Wobby.png").convert_alpha(), (100, 150))
 
 button = TheButton("Push!", 800,  600, True)
 
@@ -60,15 +79,35 @@ while game_running: #start the loop - keep going while the game is on
     
     window.fill((255,0,0))
     
-#show image using pygame blit
+#DISPLAY IMAGE ON SCREEN USING PYGAME BLIT:
+
+#Background images(must come first so that it wont cover the card images)
     window.blit(background_img, (0,0))
+
+#1. Main Cards
     window.blit(shield_image, (100,400))
     window.blit(trouble_image, (220,400)) 
-    window.blit(char1_image, (340,400)) 
-    window.blit(char2_image, (460,400))
-    window.blit(char3_image, (580,400))
-    window.blit(char4_image, (700,400))
+
+#2. Action Cards    
+    window.blit(sick_leave, (340,400)) 
+    window.blit(U_turn, (460,400))
+    window.blit(Hacker, (580,400))
+    window.blit(TheSpell, (700,400))
+    window.blit(Shuffle, (820,400))
+    window.blit(Reveal, (940,400))
+    window.blit(BeatIt, (460,400))
+    window.blit(BegYou, (580,400))
+    window.blit(no_chance, (700,400))
+    window.blit(mirror, (820,400))
     
+#3. Character Cards
+    window.blit(bernard_image, (340,400)) 
+    window.blit(mufloo_image, (460,400))
+    window.blit(blubbert_image, (580,400))
+    window.blit(shroomie_image, (700,400))
+    window.blit(zapcat_image, (820,400))
+    window.blit(wobby_image, (940,400))
+
     button.draw()
 
     if button.gets_clicked():
@@ -79,4 +118,3 @@ while game_running: #start the loop - keep going while the game is on
 
 pygame.quit()
 
-#to be continued.......
