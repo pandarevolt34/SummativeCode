@@ -159,7 +159,7 @@ class Mirror(ActionCard):
     def perform_action(self, game, current_player):
         if game.last_played_action_card and game.last_played_action_card.card_name not in ["Mirror", "You're in Trouble"]:
             print(f"Mirroring {game.last_played_action_card.card_name}")
-            ### NOTE TO GROUP: COPYING FUNCTION WILL BE IMPLEMENTED WITH THE MAIN LOOP
+            ### NOTE TO GROUP: COPYING FUNCTION WILL BE ADDED HERE DURING IMPLEMENTATION IN THE MAIN LOOP
         return False
 # ID: 5676233
 
@@ -460,3 +460,13 @@ class RedBlackTree:
             '''
 # to be continued
 # ID 5674312
+
+# ID: 5676233
+'''Class for Game:
+this class manages the game state. Variable instances:
+    player_names: 
+    '''
+class Game:
+    def __init__(self, player_names):
+        self.players = [Player(name) for name in player_names]
+        # to be continued...
