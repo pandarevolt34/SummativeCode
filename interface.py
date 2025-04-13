@@ -1,8 +1,6 @@
 Student ID: 5676187
 
-
 import pygame 
-
 
 pygame.init() 
 
@@ -16,7 +14,7 @@ pygame.display.set_caption("YOU'RE in trouble") #sets the title at the top of th
 
 
 #Background Image
-background_img = pygame.transform.scale(pygame.image.load("Python image/Background Image.png"), (900, 700))
+background_img = pygame.transform.scale(pygame.image.load("Python image/BackG.png"), (900, 700))
 
 class TheButton:
     def __init__(self, text, x, y, activated):
@@ -44,7 +42,7 @@ class TheButton:
 #LOAD AND SCALE IMAGES OF:
 #1. Main Cards
 shield_image = pygame.transform.scale(pygame.image.load("Python image/shield.png").convert_alpha(), (100, 150))
-trouble_image = pygame.transform.scale(pygame.image.load("Python image/trouble.png").convert_alpha(), (100, 150))
+trouble_image = pygame.transform.scale(pygame.image.load("Python image/trouble (2).png").convert_alpha(), (100, 150))
 
 #2. Action Cards
 sick_leave = pygame.transform.scale(pygame.image.load("Python image/sickleave.png").convert_alpha(), (100, 150))
@@ -59,12 +57,12 @@ no_chance = pygame.transform.scale(pygame.image.load("Python image/no chance.png
 mirror = pygame.transform.scale(pygame.image.load("Python image/mirror.png").convert_alpha(), (100, 150))
 
 #3. Character Cards
-bernard_image = pygame.transform.scale(pygame.image.load("Python image/Bernard.png").convert_alpha(), (100, 150))
-mufloo_image = pygame.transform.scale(pygame.image.load("Python image/Mufloo.png").convert_alpha(), (100, 150))
-blubbert_image = pygame.transform.scale(pygame.image.load("Python image/blubbert.png").convert_alpha(), (100, 150))
-shroomie_image = pygame.transform.scale(pygame.image.load("Python image/Shroomie.png").convert_alpha(), (100, 150))
-zapcat_image = pygame.transform.scale(pygame.image.load("Python image/Zapcat.png").convert_alpha(), (100, 150))
-wobby_image = pygame.transform.scale(pygame.image.load("Python image/Wobby.png").convert_alpha(), (100, 150))
+char1_image = pygame.transform.scale(pygame.image.load("Python image/char1.png").convert_alpha(), (100, 150))
+char2_image = pygame.transform.scale(pygame.image.load("Python image/char2.png").convert_alpha(), (100, 150))
+char3_image = pygame.transform.scale(pygame.image.load("Python image/char3.png").convert_alpha(), (100, 150))
+char4_image = pygame.transform.scale(pygame.image.load("Python image/char4.png").convert_alpha(), (100, 150))
+char5_image = pygame.transform.scale(pygame.image.load("Python image/char5.png").convert_alpha(), (100, 150))
+char6_image = pygame.transform.scale(pygame.image.load("Python image/char6.png").convert_alpha(), (100, 150))
 
 button = TheButton("Push!", 800,  600, True)
 
@@ -101,12 +99,12 @@ while game_running: #start the loop - keep going while the game is on
     window.blit(mirror, (820,400))
     
 #3. Character Cards
-    window.blit(bernard_image, (340,400)) 
-    window.blit(mufloo_image, (460,400))
-    window.blit(blubbert_image, (580,400))
-    window.blit(shroomie_image, (700,400))
-    window.blit(zapcat_image, (820,400))
-    window.blit(wobby_image, (940,400))
+    window.blit(char1_image, (340,400)) 
+    window.blit(char2_image, (460,400))
+    window.blit(char3_image, (580,400))
+    window.blit(char4_image, (700,400))
+    window.blit(char5_image, (820,400))
+    window.blit(char6_image, (940,400))
 
     button.draw()
 
