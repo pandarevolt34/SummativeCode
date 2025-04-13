@@ -168,7 +168,7 @@ class Mirror(ActionCard):
 initializing class; parameters:
     player_name: stores the name of players
     
-    player_cards: a list to store the cards in players' hand
+    player_cards: a list whuch store the cards in players' hand
     has_shield: initializes a flag to track if player has shield for protection or not (also useful in implementing bots)
     character_counts: keeps track of the amount of character cards with each player for usage of special combinations (see in class CharacterCard)
     '''
