@@ -464,6 +464,14 @@ class CardDeck:
         # the stack of cards
         self.red_black_tree = RedBlackTree()
 
+    def fisher_yates_shuffle(self, arr):
+        # loop from starting from len(arr)-1 down to 0
+        for i in range(len(arr)-1, 0, -1):
+            # select a random index from 0 to i
+            index = random.randint(0, i)
+            # swap card stored at index with card stored at i
+            arr[index], arr[i] = arr[i], arr[index]
+
 # ID 5674312
 
 # ID: 5676233
