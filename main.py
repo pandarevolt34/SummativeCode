@@ -458,7 +458,12 @@ class RedBlackTree:
                 print("BLACK")
             node = node.right
             '''
-# to be continued
+
+class CardDeck:
+    def __init__(self):
+        # the stack of cards
+        self.red_black_tree = RedBlackTree()
+
 # ID 5674312
 
 # ID: 5676233
