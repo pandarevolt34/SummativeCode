@@ -474,11 +474,22 @@ class CardDeck:
 
     def initialize_cards(self):
         # dummy function
-        array_of_sorted_cards = []
-        for i in range(1, 13):
-            array_of_sorted_cards.append(Card("null", "null", "null", i))
-        self.fisher_yates_shuffle(array_of_sorted_cards)
-        return array_of_sorted_cards
+        array_of_cards_indexes = []
+        array_of_cards = []
+        for i in range(13):
+            array_of_cards_indexes.append(i)
+        self.fisher_yates_shuffle(array_of_cards_indexes)
+        for i in range(13):
+            array_of_cards.append(Card("null", "null", "null", array_of_cards_indexes[i]))
+        return array_of_cards
+
+    def initialize_deck(self):
+        # randomized_cards is a list of card objects in a randomized order
+        randomized_cards = self.initialize_cards()
+        for i in range(len(randomized_cards)):
+            # insert
+            self.red_black_tree.insert_card(randomized_cards[i])
+
 
 # ID 5674312
 

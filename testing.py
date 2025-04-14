@@ -1,18 +1,13 @@
 from main import RedBlackTree
 from main import Card
+from main import CardDeck
 '''Test:
 Purpose: 
 Method used:
 '''
-red_black_tree = RedBlackTree()
-for i in range(1, 13):
-    card = Card("null","null","null", i)
-    red_black_tree.insert_card(card)
-red_black_tree.testing_func_for_traversing_tree()
-print()
-for i in range(6, 13):
-    red_black_tree.delete(i)
-red_black_tree.testing_func_for_traversing_tree()
+card_deck = CardDeck()
+card_deck.initialize_deck()
+card_deck.red_black_tree.testing_func_for_traversing_tree()
 
 '''Testing result and action taken:
     Results: 
