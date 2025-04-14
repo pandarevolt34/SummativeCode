@@ -1,4 +1,4 @@
-Student ID: 5676187
+#Student ID: 5676187
 
 import pygame 
 import random 
@@ -54,19 +54,19 @@ player = pygame.transform.scale(pygame.image.load("Python image/Player.jpg").con
 #1. Main Cards
 main_cards = {
     "shield_image" : (pygame.transform.scale(pygame.image.load("Python image/shield.png").convert_alpha(), (100, 150)), (50, 190)), 
-    "trouble_image" : (pygame.transform.scale(pygame.image.load("Python image/trouble (2).png").convert_alpha(), (100, 150)), (170, 190)),
+    "trouble_image" : (pygame.transform.scale(pygame.image.load("Python image/Trouble.png").convert_alpha(), (100, 150)), (170, 190)),
     }
 
 #2. Action Cards
 action_cards = {
     "sick_leave" : (pygame.transform.scale(pygame.image.load("Python image/sickleave.png").convert_alpha(), (100, 150)), (340, 190)),
-    "U_turn" : (pygame.transform.scale(pygame.image.load("Python image/uturn.png").convert_alpha(), (100, 150)), (460, 190)),
-    "Hacker" : (pygame.transform.scale(pygame.image.load("Python image/hacker.png").convert_alpha(), (100, 150)), (580, 190)),
+    "U_turn" : (pygame.transform.scale(pygame.image.load("Python image/Uturn (2).png").convert_alpha(), (100, 150)), (460, 190)),
+    "Hacker" : (pygame.transform.scale(pygame.image.load("Python image/hacker (2).png").convert_alpha(), (100, 150)), (580, 190)),
     "TheSpell" : (pygame.transform.scale(pygame.image.load("Python image/spell.png").convert_alpha(), (100, 150)), (700, 190)),
     "Shuffle" : (pygame.transform.scale(pygame.image.load("Python image/shuffle.png").convert_alpha(), (100, 150)), (820, 350)),
     "Reveal" : (pygame.transform.scale(pygame.image.load("Python image/reveal.png").convert_alpha(), (100, 150)), (940, 350)),
     "BeatIt" : (pygame.transform.scale(pygame.image.load("Python image/beat.png").convert_alpha(), (100, 150)), (460, 350)),
-    "BegYou" : (pygame.transform.scale(pygame.image.load("Python image/beg you.png").convert_alpha(), (100, 150)), (580, 350)),
+    "BegYou" : (pygame.transform.scale(pygame.image.load("Python image/beg.png").convert_alpha(), (100, 150)), (580, 350)),
     "no_chance" : (pygame.transform.scale(pygame.image.load("Python image/no chance.png").convert_alpha(), (100, 150)), (700, 350)),
     "mirror" : (pygame.transform.scale(pygame.image.load("Python image/mirror.png").convert_alpha(), (100, 150)), (820, 350)),
 }
@@ -126,8 +126,4 @@ while game_running: #start the loop - keep going while the game is on
 
 pygame.quit()
 
-
-
-
-pygame.quit()
 
