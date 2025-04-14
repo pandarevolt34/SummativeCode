@@ -472,6 +472,14 @@ class CardDeck:
             # swap card stored at index with card stored at i
             arr[index], arr[i] = arr[i], arr[index]
 
+    def initialize_cards(self):
+        # dummy function
+        array_of_sorted_cards = []
+        for i in range(1, 13):
+            array_of_sorted_cards.append(Card("null", "null", "null", i))
+        self.fisher_yates_shuffle(array_of_sorted_cards)
+        return array_of_sorted_cards
+
 # ID 5674312
 
 # ID: 5676233
