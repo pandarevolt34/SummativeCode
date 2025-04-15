@@ -13,8 +13,13 @@ font = pygame.font.SysFont(None, 30)
 window = pygame.display.set_mode((900, 700))
 pygame.display.set_caption("YOU'RE in trouble") #sets the title at the top of the window
 
-#Background Image
+#Background Images
 background_img = pygame.transform.scale(pygame.image.load("Python image/BackG.png"), (900, 700))
+menu_img = pygame.transform.scale(pygame.image.load("Python image/menu image.png"), (900, 700))
+paused_img = pygame.transform.scale(pygame.image.load("Python image/paused image.jpg"), (900, 700))
+
+#player image   
+player = pygame.transform.scale(pygame.image.load("Python image/Player.jpg").convert_alpha(), (250,200)) #width and height both 200
 
 #Cards
 class Cards:
@@ -25,7 +30,7 @@ class Cards:
     def draw(self,window):
         window.blit(self.image, self.card_positions)
         
-#Button
+#Button Class
 class TheButton:
     def __init__(self, text, x, y, activated):
         self.text = text
@@ -36,9 +41,9 @@ class TheButton:
 
     #draw button 
     def draw(self):
-        button_text = font.render(self.text, True, (255, 255, 255))
-        button_rect = pygame.Rect((self.x, self.y),(80, 37))
-        pygame.draw.rect(window, (0,0,0), button_rect)
+        button_text = font.render(self.text, True, (255, 255, 255)) #(255, 255, 255) ---> text colour
+        button_rect = pygame.Rect((self.x, self.y),(126, 37)) #length and width of rectangle
+        pygame.draw.rect(window, (29,45,10), button_rect, border_radius = 10) #colour and rounded border of rectangle
         window.blit(button_text, (self.x +10, self.y +10))
     
     #mouse click detection
@@ -47,29 +52,31 @@ class TheButton:
         if self.rect.collidepoint(mouse_position): #check if mouse inside rect area
             if pygame.mouse.get_pressed()[0]: #check if left mouse button is pressed
                 print("Click")
-player = pygame.transform.scale(pygame.image.load("Python image/Player.jpg").convert_alpha(), (250,200)) #width and height both 200
-              
+                return True
+            
+
+
 #LOAD IMAGES + IMAGE SIZES AND POSITIONS:
 #e.g. image size (100, 150)
 #1. Main Cards
 main_cards = {
     "shield_image" : (pygame.transform.scale(pygame.image.load("Python image/shield.png").convert_alpha(), (100, 150)), (50, 190)), 
-    "trouble_image" : (pygame.transform.scale(pygame.image.load("Python image/Trouble.png").convert_alpha(), (100, 150)), (170, 190)),
+    "trouble_image" : (pygame.transform.scale(pygame.image.load("Python image/trouble.png").convert_alpha(), (100, 150)), (170, 190)),
     }
 
-#2. Action Cards
+#2. Action Cards 1. shuffle
 action_cards = {
     "sick_leave" : (pygame.transform.scale(pygame.image.load("Python image/sickleave.png").convert_alpha(), (100, 150)), (340, 190)),
-    "U_turn" : (pygame.transform.scale(pygame.image.load("Python image/Uturn (2).png").convert_alpha(), (100, 150)), (460, 190)),
-    "Hacker" : (pygame.transform.scale(pygame.image.load("Python image/hacker (2).png").convert_alpha(), (100, 150)), (580, 190)),
+    "U_turn" : (pygame.transform.scale(pygame.image.load("Python image/uturn.png").convert_alpha(), (100, 150)), (460, 190)),
+    "Hacker" : (pygame.transform.scale(pygame.image.load("Python image/hacker.png").convert_alpha(), (100, 150)), (580, 190)),
     "TheSpell" : (pygame.transform.scale(pygame.image.load("Python image/spell.png").convert_alpha(), (100, 150)), (700, 190)),
     "Shuffle" : (pygame.transform.scale(pygame.image.load("Python image/shuffle.png").convert_alpha(), (100, 150)), (820, 350)),
-    "Reveal" : (pygame.transform.scale(pygame.image.load("Python image/reveal.png").convert_alpha(), (100, 150)), (940, 350)),
-    "BeatIt" : (pygame.transform.scale(pygame.image.load("Python image/beat.png").convert_alpha(), (100, 150)), (460, 350)),
-    "BegYou" : (pygame.transform.scale(pygame.image.load("Python image/beg.png").convert_alpha(), (100, 150)), (580, 350)),
-    "no_chance" : (pygame.transform.scale(pygame.image.load("Python image/no chance.png").convert_alpha(), (100, 150)), (700, 350)),
-    "mirror" : (pygame.transform.scale(pygame.image.load("Python image/mirror.png").convert_alpha(), (100, 150)), (820, 350)),
-}
+    "Reveal" : (pygame.transform.scale(pygame.image.load("Python image/Reveal.png").convert_alpha(), (100, 150)), (940, 350)),
+    "BeatIt" : (pygame.transform.scale(pygame.image.load("Python image/Beat.png").convert_alpha(), (100, 150)), (460, 350)),
+    "BegYou" : (pygame.transform.scale(pygame.image.load("Python image/Beg.png").convert_alpha(), (100, 150)), (580, 350)),
+    "no_chance" : (pygame.transform.scale(pygame.image.load("Python image/nochance.png").convert_alpha(), (100, 150)), (700, 350)),
+    "mirror" : (pygame.transform.scale(pygame.image.load("Python image/Mirror.png").convert_alpha(), (100, 150)), (820, 350)),
+    }
 
 #3. Character Cards
 character_cards = {
@@ -78,12 +85,20 @@ character_cards = {
     "char3_image" : (pygame.transform.scale(pygame.image.load("Python image/char3.png").convert_alpha(), (100, 150)), (340, 350)),
     "char4_image" : (pygame.transform.scale(pygame.image.load("Python image/char4.png").convert_alpha(), (100, 150)), (460, 350)),
     "char5_image" : (pygame.transform.scale(pygame.image.load("Python image/char5.png").convert_alpha(), (100, 150)), (580, 350)),
-    "char6_image" : (pygame.transform.scale(pygame.image.load("Python image/char6.png").convert_alpha(), (100, 150)), (700, 350)),
-}
+    "char6_image" : (pygame.transform.scale(pygame.image.load("Python image/char6.png").convert_alpha(), (100, 150)), (700, 350))
+    }
 
-button = TheButton("Shuffle", 800,  600, True)
-full_deck = list(main_cards.values()) + list(action_cards.values()) + list(character_cards.values())
+all_cards = [main_cards, action_cards, character_cards]
 
+#Game Buttons
+button = TheButton("PUSH!", 800,  600, True)
+other_buttons = {"Start": TheButton("Start Game", 375, 300, True), 
+                 "resume": TheButton("Resume", 375, 300, True), 
+                 "Menu": TheButton("Main Menu", 375, 360, True) }
+
+
+#current game mode
+game_status = "menu"
 
 
 #MAIN GAME LOOP
@@ -91,39 +106,53 @@ game_running = True
 while game_running: #start the loop - keep going while the game is on
     #event handler
     for event in pygame.event.get():
-        #quit game
+        #quit game   
         if event.type == pygame.QUIT:
-            game_running = False #if player click close button, the loop stops
-    
-    window.fill((255,0,0)) #fill background colour
-    
+            game_running = False #if player click close button, the loop stops   if event.type == pygame.KEYDOWN:
+        
+        elif event.type == pygame.KEYDOWN:  #KEYDOWN = whenever keyboard is pressed
+            if game_status == "playing" and event.key == pygame.K_SPACE:
+                game_status = "paused"
+            elif game_status == "paused" and event.key == pygame.K_SPACE:
+                game_status = "playing"
+                
+        #Buttons and pictures on Display based on current games status
+        #menu interface
+        if game_status == "menu":
+            window.blit(menu_img,(0,0)) #add background image for menu
+            other_buttons["Start"].draw()
+            if other_buttons["Start"].gets_clicked():
+                game_status = "playing"
+        
+        #game running interface
+        elif game_status == "playing":
+            window.blit(background_img, (0,0)) #add background image for playing game
+            window.blit(player, (340, 505))
 
-#Background images(must come first so that it wont cover the card images)
-    window.blit(background_img, (0,0))
-
-#Player image (position)
-    window.blit(player, (340, 505))
-
-    #grouped all cards 
-    all_cards = {}
-    all_cards.update(main_cards)
-    all_cards.update(action_cards)
-    all_cards.update(character_cards)
-
-    # Draw all cards at once
-    for name, (image, position) in all_cards.items(): #items(), lopping dict
-        window.blit(image, position)
-
-    button.draw()
-
-    if button.gets_clicked():
-        print("Deck Shuffled!")
-    random.shuffle(full_deck)
+           #grouped all cards 
+            all_cards = {}
+            all_cards.update(main_cards)
+            all_cards.update(action_cards)
+            all_cards.update(character_cards)
+            
+            #Display each card on the screen
+            for name, (image, position) in all_cards.items(): #items(), lopping dict
+                window.blit(image, position)
+        
+        #paused interface
+        elif game_status == "paused":
+            window.blit(paused_img, (0,0)) #add background image when pausing
+            other_buttons["resume"].draw()
+            other_buttons["Menu"].draw()
+            if other_buttons["resume"].gets_clicked():
+                game_status = "playing"
+            elif other_buttons["Menu"].gets_clicked():
+                game_status = "menu"
 
 
     pygame.display.update()
 
 
-pygame.quit()
 
+pygame.quit()
 
