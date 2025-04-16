@@ -1,5 +1,4 @@
 #Student ID: 5676187
-
 import pygame 
 import random 
 
@@ -38,12 +37,19 @@ class TheButton:
         self.y = y #position y
         self.activated = activated #to see whether button is enabled
         self.rect = pygame.Rect((self.x, self.y), (80, 37)) #pygame.Rect object that shows the clicklable area of the button
+        self.hover_rect = pygame.Rect((self.x, self.y), (80, 37))
 
     #draw button 
     def draw(self):
+        #hover effect
+        mouse_pos = pygame.mouse.get_pos()
+        button_hover = self.rect.collidepoint(mouse_pos) #detects mouse click 
+
+        #the buttons
         button_text = font.render(self.text, True, (255, 255, 255)) #(255, 255, 255) ---> text colour
-        button_rect = pygame.Rect((self.x, self.y),(126, 37)) #length and width of rectangle
-        pygame.draw.rect(window, (29,45,10), button_rect, border_radius = 10) #colour and rounded border of rectangle
+        button_rect = pygame.Rect((self.x, self.y),(127, 37)) #length and width of rectangle
+        pygame.draw.rect(window, (144, 238, 144) if button_hover else (29,45,10), button_rect, border_radius = 10)
+        #colour and rounded border of rectangle
         window.blit(button_text, (self.x +10, self.y +10))
     
     #mouse click detection
@@ -53,42 +59,44 @@ class TheButton:
             if pygame.mouse.get_pressed()[0]: #check if left mouse button is pressed
                 print("Click")
                 return True
-            
+
 
 
 #LOAD IMAGES + IMAGE SIZES AND POSITIONS:
 #e.g. image size (100, 150)
+
+
 #1. Main Cards
 main_cards = {
-    "shield_image" : (pygame.transform.scale(pygame.image.load("Python image/shield.png").convert_alpha(), (100, 150)), (50, 190)), 
-    "trouble_image" : (pygame.transform.scale(pygame.image.load("Python image/trouble.png").convert_alpha(), (100, 150)), (170, 190)),
+    "shield_image" : pygame.transform.scale(pygame.image.load("Python image/shield.png").convert_alpha(), (100, 150)),
+    "trouble_image" : pygame.transform.scale(pygame.image.load("Python image/trouble.png").convert_alpha(), (100, 150)),
     }
 
 #2. Action Cards 1. shuffle
 action_cards = {
-    "sick_leave" : (pygame.transform.scale(pygame.image.load("Python image/sickleave.png").convert_alpha(), (100, 150)), (340, 190)),
-    "U_turn" : (pygame.transform.scale(pygame.image.load("Python image/uturn.png").convert_alpha(), (100, 150)), (460, 190)),
-    "Hacker" : (pygame.transform.scale(pygame.image.load("Python image/hacker.png").convert_alpha(), (100, 150)), (580, 190)),
-    "TheSpell" : (pygame.transform.scale(pygame.image.load("Python image/spell.png").convert_alpha(), (100, 150)), (700, 190)),
-    "Shuffle" : (pygame.transform.scale(pygame.image.load("Python image/shuffle.png").convert_alpha(), (100, 150)), (820, 350)),
-    "Reveal" : (pygame.transform.scale(pygame.image.load("Python image/Reveal.png").convert_alpha(), (100, 150)), (940, 350)),
-    "BeatIt" : (pygame.transform.scale(pygame.image.load("Python image/Beat.png").convert_alpha(), (100, 150)), (460, 350)),
-    "BegYou" : (pygame.transform.scale(pygame.image.load("Python image/Beg.png").convert_alpha(), (100, 150)), (580, 350)),
-    "no_chance" : (pygame.transform.scale(pygame.image.load("Python image/nochance.png").convert_alpha(), (100, 150)), (700, 350)),
-    "mirror" : (pygame.transform.scale(pygame.image.load("Python image/Mirror.png").convert_alpha(), (100, 150)), (820, 350)),
+    "sick_leave" : pygame.transform.scale(pygame.image.load("Python image/sickleave.png").convert_alpha(), (100, 150)),
+    "U_turn" :pygame.transform.scale(pygame.image.load("Python image/uturn.png").convert_alpha(), (100, 150)), 
+    "Hacker" : pygame.transform.scale(pygame.image.load("Python image/hacker.png").convert_alpha(), (100, 150)), 
+    "TheSpell" : pygame.transform.scale(pygame.image.load("Python image/spell.png").convert_alpha(), (100, 150)), 
+    "Shuffle" : pygame.transform.scale(pygame.image.load("Python image/shuffle.png").convert_alpha(), (100, 150)), 
+    "Reveal" : pygame.transform.scale(pygame.image.load("Python image/Reveal.png").convert_alpha(), (100, 150)), 
+    "BeatIt" : pygame.transform.scale(pygame.image.load("Python image/Beat.png").convert_alpha(), (100, 150)), 
+    "BegYou" : pygame.transform.scale(pygame.image.load("Python image/Beg.png").convert_alpha(), (100, 150)), 
+    "no_chance" : pygame.transform.scale(pygame.image.load("Python image/nochance.png").convert_alpha(), (100, 150)),
+    "mirror" : pygame.transform.scale(pygame.image.load("Python image/Mirror.png").convert_alpha(), (100, 150))
     }
 
 #3. Character Cards
 character_cards = {
-    "char1_image" : (pygame.transform.scale(pygame.image.load("Python image/char1.png").convert_alpha(), (100, 150)), (100, 350)),
-    "char2_image" : (pygame.transform.scale(pygame.image.load("Python image/char2.png").convert_alpha(), (100, 150)), (220, 350)),
-    "char3_image" : (pygame.transform.scale(pygame.image.load("Python image/char3.png").convert_alpha(), (100, 150)), (340, 350)),
-    "char4_image" : (pygame.transform.scale(pygame.image.load("Python image/char4.png").convert_alpha(), (100, 150)), (460, 350)),
-    "char5_image" : (pygame.transform.scale(pygame.image.load("Python image/char5.png").convert_alpha(), (100, 150)), (580, 350)),
-    "char6_image" : (pygame.transform.scale(pygame.image.load("Python image/char6.png").convert_alpha(), (100, 150)), (700, 350))
+    "char1_image" : pygame.transform.scale(pygame.image.load("Python image/char1.png").convert_alpha(), (100, 150)), 
+    "char2_image" : pygame.transform.scale(pygame.image.load("Python image/char2.png").convert_alpha(), (100, 150)),
+    "char3_image" : pygame.transform.scale(pygame.image.load("Python image/char3.png").convert_alpha(), (100, 150)), 
+    "char4_image" : pygame.transform.scale(pygame.image.load("Python image/char4.png").convert_alpha(), (100, 150)), 
+    "char5_image" : pygame.transform.scale(pygame.image.load("Python image/char5.png").convert_alpha(), (100, 150)), 
+    "char6_image" : pygame.transform.scale(pygame.image.load("Python image/char6.png").convert_alpha(), (100, 150)), 
     }
 
-all_cards = [main_cards, action_cards, character_cards]
+
 
 #Game Buttons
 button = TheButton("PUSH!", 800,  600, True)
@@ -128,16 +136,17 @@ while game_running: #start the loop - keep going while the game is on
         elif game_status == "playing":
             window.blit(background_img, (0,0)) #add background image for playing game
             window.blit(player, (340, 505))
-
-           #grouped all cards 
-            all_cards = {}
-            all_cards.update(main_cards)
-            all_cards.update(action_cards)
-            all_cards.update(character_cards)
+            button.draw()
             
+            #grouped all cards 
+            all_cards = {**main_cards, **action_cards, **character_cards} #Merge all cards dictionaries together
+
             #Display each card on the screen
-            for name, (image, position) in all_cards.items(): #items(), lopping dict
-                window.blit(image, position)
+            current_position = [400, 200] 
+            for name, image in all_cards.items(): #items(), lopping dict
+                window.blit(image, current_position)
+                current_position = [current_position[0] + 2, current_position[1]] #position of the deck of cards, +2 means the gap
+        
         
         #paused interface
         elif game_status == "paused":
@@ -151,6 +160,7 @@ while game_running: #start the loop - keep going while the game is on
 
 
     pygame.display.update()
+
 
 
 
