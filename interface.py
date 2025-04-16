@@ -18,6 +18,9 @@ background_img = pygame.transform.scale(pygame.image.load("Python image/BackG.pn
 menu_img = pygame.transform.scale(pygame.image.load("Python image/menu image.png"), (900, 700))
 paused_img = pygame.transform.scale(pygame.image.load("Python image/paused image.jpg"), (900, 700))
 
+#Sound effects 
+button_sf = pygame.mixer.Sound("Python image/button click.mp3")
+
 #player image   
 player = pygame.transform.scale(pygame.image.load("Python image/Player.jpg").convert_alpha(), (250,200)) #width and height both 200
 
@@ -130,6 +133,7 @@ while game_running: #start the loop - keep going while the game is on
             other_buttons["Start"].draw()
             if other_buttons["Start"].gets_clicked():
                 game_status = "playing"
+                button_sf.play()
         
         #game running interface
         elif game_status == "playing":
@@ -137,14 +141,15 @@ while game_running: #start the loop - keep going while the game is on
             window.blit(player, (340, 505))
             button.draw()
             
+            
             #grouped all cards 
-            all_cards = {**main_cards, **action_cards, **character_cards} #Merge all cards dictionaries together
+            all_cards = {**main_cards, **action_cards, **character_cards} #Merge all card dictionaries together **
 
             #Display each card on the screen
             current_position = [375, 145] #fixed position for all cards
             for name, image in all_cards.items(): #items(), lopping dict
                 window.blit(image, current_position)
-                current_position = [current_position[0] + 1, current_position[1]] #position of the deck of cards, +2 means the gap between cards
+                current_position = [current_position[0] + 2, current_position[1]] #position of the deck of cards, +2 means the gap between cards
         
         
         #paused interface
@@ -154,9 +159,10 @@ while game_running: #start the loop - keep going while the game is on
             other_buttons["Menu"].draw()
             if other_buttons["resume"].gets_clicked():
                 game_status = "playing"
+                button_sf.play()
             elif other_buttons["Menu"].gets_clicked():
                 game_status = "menu"
-
+                button_sf.play()
 
     pygame.display.update()
 
