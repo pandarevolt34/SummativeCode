@@ -3,6 +3,8 @@
 import random
 from queue import Queue
 
+from interface import all_cards
+
 # ID: 5676233
 ''' Class for Cards:
 initializing class; variable instances:
@@ -66,7 +68,7 @@ class ActionCard(Card):
         self.used = False
 
     def perform_action(self, game, current_player):
-        raise NotImplementedError   # implenentation will be added
+        raise NotImplementedError   # implementation will be added
 
 class SickLeave(ActionCard):
     def __init__(self, index = -1):
@@ -168,7 +170,7 @@ class Mirror(ActionCard):
 initializing class; parameters:
     player_name: stores the name of players
     
-    player_cards: a list whuch store the cards in players' hand
+    player_cards: a list which stores the cards in players' hand
     has_shield: initializes a flag to track if player has shield for protection or not (also useful in implementing bots)
     character_counts: keeps track of the amount of character cards with each player for usage of special combinations (see in class CharacterCard)
     '''
@@ -492,6 +494,12 @@ class CardDeck:
 
 
 # ID 5674312
+# ID: 5676233
+    def draw_a_card(self):
+        if self.red_black_tree.root == self.red_black_tree.nil: # represents an empty deck
+            return None
+
+        ### NOTE TO GROUP: Implementation of drawing a card from red_black_tree structure...
 
 # ID: 5676233
 '''Class for Game:
@@ -514,6 +522,39 @@ class Game:
         self.game_over = False
         self.last_played_action_card = None
         self.discard_card_pile = []
+        self.initialize_game()
+
+    def initialize_game(self):
+        for player in self.players:
+
+            for i in range(5):
+                card = self.deck.draw_a_card()
+
+                if card:
+                    player.player_cards.append(card)
+
+    def draw_card(self, player):
+        card = self.deck.draw_a_card()
+        if card:
+            player.player_cards.append(card)
+
+            if card.card_name == "You're in Trouble":
+                self.manage_trouble_card(player)
+            return card
+        return None
+
+    def manage_trouble_card(self, player):
+        if player.has_shield:
+            print(f"{player.player_name} You're in Trouble and therefore out of the game!")
+            self.players.remove(player)
+
+            if len(self.players) == 1:
+                self.game_over = True
+                print(f"{self.players[0].player_name} is the winner!")
+
+        else:
+            print(f"{player.player_name} has The Shield. You are safe!")
+            player.has_shield = False  # Note: implement a check for multiple shields
 
     def player_plays_card(self, player, card_index):
         if 0 <= card_index < len(player.player_cards):
@@ -521,11 +562,13 @@ class Game:
 
             if card.card_type == "Action":
                 proceed = card.perform_action(self, player)
+
                 if proceed:
                     self.last_played_action_card = card
                     player.player_cards.pop(card_index)
                     self.discard_card_pile.append(card)
                 return proceed
+
             elif card.card_type == "Character":
                 self.manage_character_cards(player, card)
                 player.player_cards.pop(card_index)
@@ -535,4 +578,6 @@ class Game:
 
     def manage_character_cards(self, player, card):
         pass # to be continued
+
+# ID: 5676233
 
