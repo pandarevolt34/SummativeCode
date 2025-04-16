@@ -495,10 +495,44 @@ class CardDeck:
 
 # ID: 5676233
 '''Class for Game:
-this class manages the game state. Variable instances:
-    player_names: 
+this class manages the game state and includes the main loop. Variable instances:
+    player_names: stores player names 
+    
+    current_player: stores current player index
+    self.deck = CardDeck() ; uses the CardDeck implementation 
+    turn_direction: stores the current direction; 1 for clockwise and -1 for anticlockwise
+    game_over: stores the game status 
+    last_played_action_card: stores the last played card index
+    discard_card_pile: a list to store the played cards
     '''
 class Game:
     def __init__(self, player_names):
         self.players = [Player(name) for name in player_names]
-        # to be continued...
+        self.current_player = 0
+        self.deck = CardDeck()
+        self.turn_direction = 1
+        self.game_over = False
+        self.last_played_action_card = None
+        self.discard_card_pile = []
+
+    def player_plays_card(self, player, card_index):
+        if 0 <= card_index < len(player.player_cards):
+            card = player.player_cards[card_index]
+
+            if card.card_type == "Action":
+                proceed = card.perform_action(self, player)
+                if proceed:
+                    self.last_played_action_card = card
+                    player.player_cards.pop(card_index)
+                    self.discard_card_pile.append(card)
+                return proceed
+            elif card.card_type == "Character":
+                self.manage_character_cards(player, card)
+                player.player_cards.pop(card_index)
+                self.discard_card_pile.append(card)
+                return True
+        return False
+
+    def manage_character_cards(self, player, card):
+        pass # to be continued
+
