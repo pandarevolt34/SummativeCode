@@ -326,13 +326,14 @@ class RedBlackTree:
         return minimum_node
 
     def find_largest_node(self):
-        # re-check later
+        # we only delete a node when we remove the top card from the deck, so we search for the card with the largest index
         node = self.root
-        answer_node = self.root
+        largest_node = self.root
         while node != self.nil:
-            answer_node = node
+            largest_node = node
+            # keep going down the path on the right
             node = node.right
-        return answer_node
+        return largest_node
 
     def delete(self, node_to_be_deleted):
         y = node_to_be_deleted
@@ -492,10 +493,13 @@ class CardDeck:
 # ID 5674312
 # ID: 5676233
     def draw_a_card(self):
+        # find card at the top of the deck
         node = self.red_black_tree.find_largest_node()
         if node is self.red_black_tree.nil:
             return None
+        # take card data
         card = node.card
+        # delete node
         self.red_black_tree.delete(node)
         return card
         ### NOTE TO GROUP: Implementation of drawing a card from red_black_tree structure...
