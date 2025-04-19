@@ -421,42 +421,18 @@ class RedBlackTree:
         node = self.root
         q = Queue()
         q.put(node)
-        cnt = 1
-        cnt2 = 0
         while not q.empty():
             node = q.get()
+            if node == self.nil:
+                continue
             print(node.card.index, end=" ")
             if node.red:
                 print("RED", end= " - ")
             else:
                 print("BLACK", end= " - ")
-            cnt2 += 1
-            if cnt2 == cnt:
-                cnt *= 2
-                cnt2 = 0
-                print()
-            if node != self.nil:
-                q.put(node.left)
-                q.put(node.right)
-        '''
-        print("Output path from root to left farthest node")
-        while node != self.nil:
-            print(node.card.index)
-            if node.red is True:
-                print("RED")
-            else:
-                print("BLACK")
-            node = node.left
-        node = self.root
-        print("Output path from root to right farthest node")
-        while node!= self.nil:
-            print(node.card.index)
-            if node.red is True:
-                print("RED")
-            else:
-                print("BLACK")
-            node = node.right
-            '''
+            print("children: ", node.left.card.index, " ", node.right.card.index)
+            q.put(node.left)
+            q.put(node.right)
 
 class CardDeck:
     def __init__(self):
@@ -544,8 +520,6 @@ class CardDeck:
             self.red_black_tree.insert_card(randomized_cards[i])
 
 
-# ID 5674312
-# ID: 5676233
     def draw_a_card(self):
         # find card at the top of the deck
         node = self.red_black_tree.find_largest_node()
@@ -556,7 +530,7 @@ class CardDeck:
         # delete node
         self.red_black_tree.delete(node)
         return card
-        ### NOTE TO GROUP: Implementation of drawing a card from red_black_tree structure...
+# ID 5674312
 
 # ID: 5676233
 '''Class for Game:
