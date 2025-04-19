@@ -462,6 +462,7 @@ class CardDeck:
     def __init__(self):
         # the stack of cards
         self.red_black_tree = RedBlackTree()
+        self.counter = 0
 
     def fisher_yates_shuffle(self, arr):
         # loop from starting from len(arr)-1 down to 0
@@ -472,14 +473,67 @@ class CardDeck:
             arr[index], arr[i] = arr[i], arr[index]
 
     def initialize_cards(self):
-        # dummy function
+        # will store an array of random indexes
         array_of_cards_indexes = []
+        # will store the cards in a randomized order
         array_of_cards = []
-        for i in range(13):
-            array_of_cards_indexes.append(i)
+        num_of_inserted_cards = 0
+        for i in range(42):
+            # multiply by 100 so that we can insert more cards in the tree later depending on query
+            array_of_cards_indexes.append(i*100)
+        # randomize indexes
         self.fisher_yates_shuffle(array_of_cards_indexes)
-        for i in range(13):
-            array_of_cards.append(Card("null", "null", "null", array_of_cards_indexes[i]))
+        for i in range(4):
+            card = SickLeave()
+            # link card with a random index
+            card.index = array_of_cards_indexes[num_of_inserted_cards]
+            num_of_inserted_cards += 1
+            array_of_cards.append(card)
+        for i in range(4):
+            card = UTurn()
+            card.index = array_of_cards_indexes[num_of_inserted_cards]
+            num_of_inserted_cards += 1
+            array_of_cards.append(card)
+        for i in range(4):
+            card = Hacker()
+            card.index = array_of_cards_indexes[num_of_inserted_cards]
+            num_of_inserted_cards += 1
+            array_of_cards.append(card)
+        for i in range(5):
+            card = TheSpell()
+            card.index = array_of_cards_indexes[num_of_inserted_cards]
+            num_of_inserted_cards += 1
+            array_of_cards.append(card)
+        for i in range(4):
+            card = Shuffle()
+            card.index = array_of_cards_indexes[num_of_inserted_cards]
+            num_of_inserted_cards += 1
+            array_of_cards.append(card)
+        for i in range(4):
+            card = Reveal()
+            card.index = array_of_cards_indexes[num_of_inserted_cards]
+            num_of_inserted_cards += 1
+            array_of_cards.append(card)
+        for i in range(4):
+            card = BeatIt()
+            card.index = array_of_cards_indexes[num_of_inserted_cards]
+            num_of_inserted_cards += 1
+            array_of_cards.append(card)
+        for i in range(4):
+            card = BegYou()
+            card.index = array_of_cards_indexes[num_of_inserted_cards]
+            num_of_inserted_cards += 1
+            array_of_cards.append(card)
+        for i in range(5):
+            card = NoChance()
+            card.index = array_of_cards_indexes[num_of_inserted_cards]
+            num_of_inserted_cards += 1
+            array_of_cards.append(card)
+        for i in range(4):
+            card = Mirror()
+            card.index = array_of_cards_indexes[num_of_inserted_cards]
+            num_of_inserted_cards += 1
+            array_of_cards.append(card)
         return array_of_cards
 
     def initialize_deck(self):
