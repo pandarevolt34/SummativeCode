@@ -1,6 +1,5 @@
 #Student ID: 5676187
-import pygame 
-import random 
+import pygame
 
 pygame.init() 
 
@@ -14,9 +13,13 @@ pygame.display.set_caption("YOU'RE in trouble") #sets the title at the top of th
 
 #Background Images
 background_img = pygame.transform.scale(pygame.image.load("Python image/BackG.png"), (900, 700))
-instruction_img = pygame.transform.scale(pygame.image.load("Python image/Instruction.png"), (900, 700))
+instruction1_img = pygame.transform.scale(pygame.image.load("Python image/Instruction 1.png"), (900, 700))
+instruction2_img = pygame.transform.scale(pygame.image.load("Python image/Instruction 2.png"), (900, 700))
+ready2play_img = pygame.transform.scale(pygame.image.load("Python image/press to start.png"), (900, 700))
 menu_img = pygame.transform.scale(pygame.image.load("Python image/menu image.png"), (900, 700))
 paused_img = pygame.transform.scale(pygame.image.load("Python image/paused image.jpg"), (900, 700))
+result_img = pygame.transform.scale(pygame.image.load("Python image/paused image.jpg"), (900, 700))
+
 
 #Sound effects 
 button_sf = pygame.mixer.Sound("Python image/button click.mp3")
@@ -24,46 +27,14 @@ button_sf = pygame.mixer.Sound("Python image/button click.mp3")
 #player image   
 player = pygame.transform.scale(pygame.image.load("Python image/Player.jpg").convert_alpha(), (250,200)) #width and height both 200
 
-#Cards
-class Cards:
-    def __init__(self, name, image, card_positions):
-        self.name = name
-        self.image = image
-        self.card_positions = card_positions
-    def draw(self,window):
-        window.blit(self.image, self.card_positions)
-        
-#Button Class
-class TheButton:
-    def __init__(self, text, x, y, activated):
-        self.text = text
-        self.x = x #position x
-        self.y = y #position y
-        self.activated = activated #to see whether button is enabled
-        self.rect = pygame.Rect((self.x, self.y), (80, 37)) #pygame.Rect object that shows the clicklable area of the button
-        self.hover_rect = pygame.Rect((self.x, self.y), (80, 37))
-
-    #draw button 
-    def draw(self):
-        #hover effect
-        mouse_pos = pygame.mouse.get_pos()
-        button_hover = self.rect.collidepoint(mouse_pos) #detects mouse click 
-
-        #the buttons
-        button_text = font.render(self.text, True, (255, 255, 255)) #(255, 255, 255) ---> text colour
-        button_rect = pygame.Rect((self.x, self.y),(127, 37)) #length and width of rectangle
-        pygame.draw.rect(window, (144, 238, 144) if button_hover else (29,45,10), button_rect, border_radius = 10)
-        #colour and rounded border of rectangle
-        window.blit(button_text, (self.x +10, self.y +10))
-    
-    #mouse click detection
-    def gets_clicked(self): #make button clickable
-        mouse_position = pygame.mouse.get_pos() #gets current position of the mouse
-        if self.rect.collidepoint(mouse_position): #check if mouse inside rect area
-            if pygame.mouse.get_pressed()[0]: #check if left mouse button is pressed
-                print("Click")
-                return True
-
+#Define colours for drawing purpose
+Dark_Green	= (0, 100, 0)
+Light_Green = (144, 238, 144)
+Black = (0, 0, 0)
+White = (255, 255, 255)
+Dark_Blue = (0, 0, 139)
+Light_Blue = (173, 216, 230)
+Orange = (255, 165, 0)
 
 
 #LOAD IMAGES + IMAGE SIZES AND POSITIONS:
@@ -100,26 +71,67 @@ character_cards = {
 
 
 
+#Cards
+class Cards:
+    def __init__(self, name, image, card_positions):
+        self.name = name
+        self.image = image
+        self.card_positions = card_positions
+    def draw(self,window):
+        window.blit(self.image, self.card_positions)
+        
+#Button Class
+class TheButton:
+    def __init__(self, text, x, y, activated):
+        self.text = text
+        self.x = x #position x
+        self.y = y #position y
+        self.activated = activated #to see whether button is enabled
+        self.rect = pygame.Rect((self.x, self.y), (80, 37)) #pygame.Rect object that shows the clicklable area of the button
+        self.hover_rect = pygame.Rect((self.x, self.y), (80, 37))
+
+    #draw button 
+    def draw(self):
+        #hover effect
+        mouse_pos = pygame.mouse.get_pos()
+        button_hover = self.rect.collidepoint(mouse_pos) #detects mouse click 
+
+        #the buttons
+        button_text = font.render(self.text, True, (255, 255, 255)) #(255, 255, 255) ---> text colour
+        button_rect = pygame.Rect((self.x, self.y),(127, 37)) #length and width of rectangle
+        pygame.draw.rect(window, (144, 238, 144) if button_hover else (29,45,10), button_rect, border_radius = 10)
+
+        #colour and rounded border of rectangle
+        window.blit(button_text, (self.x +10, self.y +10))
+
+        
+    #mouse click detection
+    def gets_clicked(self): #make button clickable
+        mouse_position = pygame.mouse.get_pos() #gets current position of the mouse
+        if self.rect.collidepoint(mouse_position): #check if mouse inside rect area
+            if pygame.mouse.get_pressed()[0]: #check if left mouse button is pressed
+                print("Click")
+                return True
+
 #Game Buttons
 button1 = TheButton("PUSH!", 800,  600, True)
-button2 = TheButton("NEXT", 800, 600, True)
+Next_button = TheButton("NEXT", 800, 600, True)
+ready_button = TheButton("Play Game", 380, 400, True)
 other_buttons = {"Start": TheButton("Start Game", 375, 300, True), 
                  "resume": TheButton("Resume", 375, 300, True), 
                  "Menu": TheButton("Main Menu", 375, 360, True) }
 
-
-
-#current game mode
+#current game mode (initial)
 game_status = "menu"
-
+instruction_page = 1
+fade_counter = 0
 
 #MAIN GAME LOOP
 game_running = True
 while game_running: #start the loop - keep going while the game is on
-    #event handler
-    for event in pygame.event.get():
-        #quit game   
-        if event.type == pygame.QUIT:
+    for event in pygame.event.get():#event handler 
+        
+        if event.type == pygame.QUIT:#quit game 
             game_running = False #if player click close button, the loop stops   if event.type == pygame.KEYDOWN:
         
         elif event.type == pygame.KEYDOWN:  #KEYDOWN = whenever keyboard is pressed
@@ -135,19 +147,42 @@ while game_running: #start the loop - keep going while the game is on
             other_buttons["Start"].draw()
             if other_buttons["Start"].gets_clicked():
                 button_sf.play()
+                pygame.time.delay(300)
                 game_status = "instruction"
-                
+
     #================ INSTRUCTION SCREEN =================
+       
         elif game_status == "instruction":
-            window.blit(instruction_img, (0,0))
-            button2.draw()
-            if button2.gets_clicked:  
-                game_status = "instruction"
-                if button2.gets_clicked():  
-                    game_status = "playing"
+            #instruction page 1
+            if instruction_page == 1:
+                window.blit(instruction1_img, (0,0))
+                Next_button.draw()
+                if Next_button.gets_clicked():  
                     button_sf.play()
+                    pygame.time.delay(300) #delay a very small amount of time when pressing button
+                    instruction_page = 2
+            
+            #instruction page 2
+            elif instruction_page == 2:
+                window.blit(instruction2_img, (0,0))
+                Next_button.draw()
+                if Next_button.gets_clicked():
+                    button_sf.play()
+                    pygame.time.delay(300)
+                    instruction_page = 3
+            
+            #ready to play (pahe before actual gameplay)
+            elif instruction_page == 3:
+                window.blit(ready2play_img, (0,0))
+                ready_button.draw()
+                if ready_button.gets_clicked():
+                    button_sf.play()
+                    pygame.time.delay(300)
+                    game_status = "playing"
+                
+                    
         
-    #=============== MAIN PLAYING SCREEN =================
+    #=============== MAIN GAMEPLAY SCREEN =================
         elif game_status == "playing":
             window.blit(background_img, (0,0)) #add background image 
             window.blit(player, (340, 505)) #add player's image
@@ -170,10 +205,16 @@ while game_running: #start the loop - keep going while the game is on
             if other_buttons["resume"].gets_clicked():
                 game_status = "playing"
                 button_sf.play()
+                pygame.time.delay(300)
             elif other_buttons["Menu"].gets_clicked():
                 game_status = "menu"
                 button_sf.play()
+                pygame.time.delay(300)
     #=============== WINNER INTERFACE ====================
-        elif game_status == "game finished":
-            window.blit
+        elif game_status == "result":
+            window
     pygame.display.update()
+
+
+
+pygame.quit()
