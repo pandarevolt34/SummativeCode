@@ -1,5 +1,4 @@
 #Student ID: 5676187
-
 import pygame 
 import random 
 
@@ -15,6 +14,7 @@ pygame.display.set_caption("YOU'RE in trouble") #sets the title at the top of th
 
 #Background Images
 background_img = pygame.transform.scale(pygame.image.load("Python image/BackG.png"), (900, 700))
+instruction_img = pygame.transform.scale(pygame.image.load("Python image/Instruction.png"), (900, 700))
 menu_img = pygame.transform.scale(pygame.image.load("Python image/menu image.png"), (900, 700))
 paused_img = pygame.transform.scale(pygame.image.load("Python image/paused image.jpg"), (900, 700))
 
@@ -101,10 +101,12 @@ character_cards = {
 
 
 #Game Buttons
-button = TheButton("PUSH!", 800,  600, True)
+button1 = TheButton("PUSH!", 800,  600, True)
+button2 = TheButton("NEXT", 800, 600, True)
 other_buttons = {"Start": TheButton("Start Game", 375, 300, True), 
                  "resume": TheButton("Resume", 375, 300, True), 
                  "Menu": TheButton("Main Menu", 375, 360, True) }
+
 
 
 #current game mode
@@ -127,20 +129,29 @@ while game_running: #start the loop - keep going while the game is on
                 game_status = "playing"
                 
         #Buttons and pictures on Display based on current games status
-        #menu interface
+    #=============== MENU SCREEN =================
         if game_status == "menu":
             window.blit(menu_img,(0,0)) #add background image for menu
             other_buttons["Start"].draw()
             if other_buttons["Start"].gets_clicked():
-                game_status = "playing"
                 button_sf.play()
+                game_status = "instruction"
+                
+    #================ INSTRUCTION SCREEN =================
+        elif game_status == "instruction":
+            window.blit(instruction_img, (0,0))
+            button2.draw()
+            if button2.gets_clicked:  
+                game_status = "instruction"
+                if button2.gets_clicked():  
+                    game_status = "playing"
+                    button_sf.play()
         
-        #game running interface
+    #=============== MAIN PLAYING SCREEN =================
         elif game_status == "playing":
-            window.blit(background_img, (0,0)) #add background image for playing game
-            window.blit(player, (340, 505))
-            button.draw()
-            
+            window.blit(background_img, (0,0)) #add background image 
+            window.blit(player, (340, 505)) #add player's image
+            button1.draw() 
             
             #grouped all cards 
             all_cards = {**main_cards, **action_cards, **character_cards} #Merge all card dictionaries together **
@@ -151,8 +162,7 @@ while game_running: #start the loop - keep going while the game is on
                 window.blit(image, current_position)
                 current_position = [current_position[0] + 2, current_position[1]] #position of the deck of cards, +2 means the gap between cards
         
-        
-        #paused interface
+    #================ PAUSING INTERFACE ==================
         elif game_status == "paused":
             window.blit(paused_img, (0,0)) #add background image when pausing
             other_buttons["resume"].draw()
@@ -163,11 +173,7 @@ while game_running: #start the loop - keep going while the game is on
             elif other_buttons["Menu"].gets_clicked():
                 game_status = "menu"
                 button_sf.play()
-
+    #=============== WINNER INTERFACE ====================
+        elif game_status == "game finished":
+            window.blit
     pygame.display.update()
-
-
-
-
-pygame.quit()
-
