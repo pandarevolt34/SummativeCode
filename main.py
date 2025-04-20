@@ -3,7 +3,7 @@
 import random
 from queue import Queue
 
-from interface import all_cards
+from interface import all_cards     # main: line 490 - interface: line 146 (variable name )
 
 # ID: 5676233
 ''' Class for Cards:
@@ -610,6 +610,12 @@ class Game:
 
     def manage_character_cards(self, player, card):
         pass # to be continued
+
+    def check_character_combinations(self, player):
+        pass # to be continued
+
+    def next_player_turn(self):
+        pass # to be continued (this should be called in the "End Turn function")
 
 # ID: 5676233
 
