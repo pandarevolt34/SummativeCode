@@ -97,60 +97,6 @@ def fade_transition(width, height,colour, next_screen):
 
 
 
-#The function below basically groups all the drawings in one place 
-#makes code more organised, better for reuse purpose, and avoid repetition
-#This function will be reused in the main game loop
-
-def draw_window():
-    #=============== MENU SCREEN =================
-    if game_status == "menu":
-        window.blit(menu_img,(0,0)) #add background image for menu
-        other_buttons["Start"].draw()
-
-    #================ INSTRUCTION SCREEN =================
-    elif game_status == "instruction":
-
-        #Instruction page 1
-        if instruction_page == 1:
-            window.blit(instruction1_img, (0,0))
-            Next_button.draw()
-        
-        #Instruction page 2
-        elif instruction_page == 2:
-                window.blit(instruction2_img, (0,0))
-                Next_button.draw()
-          
-        #ready to play (screen before main gameplay)
-        elif instruction_page == 3:
-                window.blit(ready2play_img, (0,0))
-                ready_button.draw()
-  
-    #=============== MAIN GAMEPLAY SCREEN =================
-    elif game_status == "playing":
-        window.blit(background_img, (0,0)) #add background image 
-        window.blit(player, (340, 505)) #add player's image
-        button1.draw() 
-            
-        #grouped all cards 
-        all_cards = {**main_cards, **action_cards, **character_cards} #Merge all card dictionaries together **
-
-        #Display each card on the screen
-        current_position = [375, 145] #fixed position for all cards
-        for name, image in all_cards.items(): #items(), lopping dict
-            window.blit(image, current_position)
-            current_position = [current_position[0] + 2, current_position[1]] #position of the deck of cards, +2 means the gap between cards
-        
-    #PAUSING INTERFACE 
-    elif game_status == "paused":
-            window.blit(paused_img, (0,0)) #add background image when pausing
-            other_buttons["resume"].draw()
-            other_buttons["Menu"].draw()
-
-    #WINNER INTERFACE
-    elif game_status == "result":
-            window.blit(result_img, (0,0))
-
-
 #Cards
 class Cards:
     def __init__(self, name, image, card_positions):
@@ -194,8 +140,9 @@ class TheButton:
                 return True
 
 #Game Buttons
-button1 = TheButton("PUSH!", 800,  600, True)
-Next_button = TheButton("NEXT", 800, 600, True)
+gameplay_button = TheButton("PUSH!", 800,  600, True)
+Next_button = TheButton("NEXT", 815, 600, True)
+previous_button = TheButton("Previous", -5, 600, True )
 ready_button = TheButton("Play Game", 380, 400, True)
 other_buttons = {"Start": TheButton("Start Game", 375, 300, True), 
                  "resume": TheButton("Resume", 375, 300, True), 
@@ -204,6 +151,63 @@ other_buttons = {"Start": TheButton("Start Game", 375, 300, True),
 #current game mode (initial)
 game_status = "menu"
 instruction_page = 1
+
+
+
+#The function below basically groups all the drawings in one place 
+#makes code more organised, better for reuse purpose, and avoid repetition
+#This function will be reused in the main game loop
+
+def draw_window():
+    #=============== MENU SCREEN =================
+    if game_status == "menu":
+        window.blit(menu_img,(0,0)) #add background image for menu
+        other_buttons["Start"].draw()
+
+    #================ INSTRUCTION SCREEN =================
+    elif game_status == "instruction":
+
+        #Instruction page 1
+        if instruction_page == 1:
+            window.blit(instruction1_img, (0,0))
+            Next_button.draw()
+        
+        #Instruction page 2
+        elif instruction_page == 2:
+                window.blit(instruction2_img, (0,0))
+                Next_button.draw()
+                previous_button.draw()
+          
+        #ready to play (screen before main gameplay)
+        elif instruction_page == 3:
+                window.blit(ready2play_img, (0,0))
+                ready_button.draw()
+  
+    #=============== MAIN GAMEPLAY SCREEN =================
+    elif game_status == "playing":
+        window.blit(background_img, (0,0)) #add background image 
+        window.blit(player, (340, 505)) #add player's image
+        gameplay_button.draw() 
+            
+        #grouped all cards 
+        all_cards = {**main_cards, **action_cards, **character_cards} #Merge all card dictionaries together **
+
+        #Display each card on the screen
+        current_position = [375, 145] #fixed position for all cards
+        for name, image in all_cards.items(): #items(), lopping dict
+            window.blit(image, current_position)
+            current_position = [current_position[0] + 2, current_position[1]] #position of the deck of cards, +2 means the gap between cards
+        
+    #PAUSING INTERFACE 
+    elif game_status == "paused":
+            window.blit(paused_img, (0,0)) #add background image when pausing
+            other_buttons["resume"].draw()
+            other_buttons["Menu"].draw()
+
+    #WINNER INTERFACE
+    elif game_status == "result":
+            window.blit(result_img, (0,0))
+
 
 
 #MAIN GAME LOOP
@@ -223,9 +227,9 @@ while game_running: #start the loop - keep going while the game is on
         #Buttons and pictures on Display based on current games status
     #=============== MENU SCREEN =================
         if game_status == "menu" and other_buttons["Start"].gets_clicked():
-                button_sf.play()
-                pygame.time.delay(300)
-                game_status = "instruction"
+            button_sf.play()
+            pygame.time.delay(300)
+            game_status = "instruction"
 
     #================ INSTRUCTION SCREEN =================
        
@@ -237,17 +241,22 @@ while game_running: #start the loop - keep going while the game is on
                 instruction_page = 2
             
             #instruction page 2
-            elif instruction_page == 2 and Next_button.gets_clicked():
-                button_sf.play()
-                pygame.time.delay(300)
-                instruction_page = 3
+            elif instruction_page == 2: 
+                if Next_button.gets_clicked():
+                    button_sf.play()
+                    pygame.time.delay(300)
+                    instruction_page = 3
+                elif previous_button.gets_clicked():
+                    button_sf.play
+                    pygame.time.delay(300)
+                    instruction_page = 1
             
             #ready to play (pahe before actual gameplay)
             elif instruction_page == 3 and ready_button.gets_clicked():
-                    button_sf.play()
-                    pygame.time.delay(300)
-                    fade_transition(900, 700, White, "playing")
-                    game_status = "playing"
+                button_sf.play()
+                pygame.time.delay(300)
+                fade_transition(900, 700, White, "playing")
+                game_status = "playing"
                 
                     
         
@@ -284,6 +293,3 @@ while game_running: #start the loop - keep going while the game is on
 
 
 pygame.quit()
-
-
-
