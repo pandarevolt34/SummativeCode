@@ -142,7 +142,7 @@ class TheButton:
 #Game Buttons
 gameplay_button = TheButton("PUSH!", 800,  600, True)
 Next_button = TheButton("NEXT", 815, 600, True)
-previous_button = TheButton("Previous", -5, 600, True )
+previous_button = TheButton("Previous <", -5, 600, True )
 ready_button = TheButton("Play Game", 380, 400, True)
 other_buttons = {"Start": TheButton("Start Game", 375, 300, True), 
                  "resume": TheButton("Resume", 375, 300, True), 
@@ -182,6 +182,7 @@ def draw_window():
         elif instruction_page == 3:
                 window.blit(ready2play_img, (0,0))
                 ready_button.draw()
+                previous_button.draw()
   
     #=============== MAIN GAMEPLAY SCREEN =================
     elif game_status == "playing":
@@ -247,17 +248,21 @@ while game_running: #start the loop - keep going while the game is on
                     pygame.time.delay(300)
                     instruction_page = 3
                 elif previous_button.gets_clicked():
-                    button_sf.play
+                    button_sf.play()
                     pygame.time.delay(300)
                     instruction_page = 1
             
-            #ready to play (pahe before actual gameplay)
-            elif instruction_page == 3 and ready_button.gets_clicked():
-                button_sf.play()
-                pygame.time.delay(300)
-                fade_transition(900, 700, White, "playing")
-                game_status = "playing"
-                
+            #ready to play (page before actual gameplay)
+            elif instruction_page == 3:
+                if previous_button.gets_clicked():
+                    button_sf.play()
+                    pygame.time.delay(300)
+                    instruction_page = 2
+                elif ready_button.gets_clicked():
+                    button_sf.play()
+                    pygame.time.delay(300)
+                    fade_transition(900, 700, White, "playing")
+                    game_status = "playing"
                     
         
     #=============== MAIN GAMEPLAY SCREEN =================
@@ -293,3 +298,6 @@ while game_running: #start the loop - keep going while the game is on
 
 
 pygame.quit()
+
+
+
