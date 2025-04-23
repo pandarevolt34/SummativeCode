@@ -37,19 +37,13 @@ class CharacterCard(Card):
             2: "B",
             3: "C",
             4: "D",
-            5: "E"
-        }
-        descriptions = {
-            1: "Collect 2: Take a random card from another player",
-            2: "Collect 3: Name a specific card to take from another player",
-            3: "Collect 5: Take any card from the stack of played cards",
-            4: "Special abilities when collected in combinations",
-            5: "Complete set gives powerful effect"
+            5: "E",
+            6: "F"
         }
         super().__init__(
             card_name = names[character_number],
             card_type = "character",
-            card_description = descriptions[character_number],
+            card_description = "", # no descriptions for character cards
             index = index
         )
         self.character_number = character_number
@@ -192,7 +186,7 @@ class Player:
         self.player_name = player_name
         self.player_cards = []
         self.has_shield = False
-        self.character_counts = {1:0, 2:0, 3:0, 4:0, 5:0}
+        self.character_counts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0}
 # ID: 5676233
 
 # ID: 5674312
@@ -623,13 +617,70 @@ class Game:
         return False
 
     def manage_character_cards(self, player, card):
-        pass # to be continued
+        # update character counter when a character card is played
+        player.character_counts[card.character_number] += 1
+        self.check_character_combinations(player)
 
     def check_character_combinations(self, player):
-        pass # to be continued
+        for char_num, count in player.character_counts.items():
+            if count == 2: # check for 2 of the same character card
+                self.activate_char_combo(player, char_num, 2)
+            elif count == 3: # check for 3 of the same character card
+                self.activate_char_combo(player, char_num, 3)
+
+        if all(count >= 1 for count in player.character_counts.values()): # check for a full set; 1 of each 6 character cards
+            self.activate_full_set_combo(player)
+
+    def activate_char_combo(self, player, char_num, combo_type):
+        target = next((p for p in self.players if p != player and p.player_cards), None) # NOTE: will change to letting the player chose the target (later in interface)
+        if not target:
+            return
+
+        if any(card.card_name == "No Chance" for card in target.player_cards): # check for cancelling effect with 'No Chance'
+            print(f"{target.player_name} blocked your character combination with 'No Chance!'")
+
+        if combo_type == 2: # 2 of the same character card
+            if target.player_cards:
+                given_card = random.choice(target.player_cards)   # NOTE: will change random choice to target player choice; target chooses a card to give (later in interface)
+                target.player_cards.remove(given_card) # removing card from target player's cards
+                player.player_cards.append(given_card) # adding card to player's cards
+                print(f"{target.player_name} gave {player.name} a card!")
+
+        elif combo_type == 3: # 3 of the same character card
+            if target.player_cards:
+                stolen_card = random.choice(target.player_cards) # takes a random card from target player
+                target.player_cards.remove(stolen_card) # removing card from target player's cards
+                player.player_cards.append(stolen_card) # adding card to player's cards
+                print(f"{player.name} took a random card from {target.player_name}!")
+
+    def activate_full_set_combo(self, player):
+        # find the target player; NOTE: will change to letting the player chose the target (later in interface)
+        target = next((p for p in self.players if p != player and p.player_cards), None)
+        if not target:
+            return
+
+        # check for cancelling effect with 'No Chance'
+        if any(card.card_name == "No Chance" for card in target.player_cards):
+            print(f"{target.player_name} blocked your character combination with 'No Chance!'")
+            return
+
+        # player names a card to request from target player
+        # NOTE: will change to let player chose (later in interface)
+        chosen_card_name = random.choice([c.card_name for c in target.player_cards]) if target.player_cards else None
+
+        for card in target.player_cards:
+            if card.card_name == chosen_card_name:
+                target.player_cards.remove(card)
+                player.player_cards.append(card)
+                print(f"{player.name} took {card.card_name} from {target.player_name}!")
+                break
+            else:
+                print(f"{target.player_name} does not have {chosen_card_name}!")
 
     def next_player_turn(self):
-        pass # to be continued (this should be called in the "End Turn function")
+        self.current_player = (self.current_player + self.turn_direction) % len(self.players) # move to next player
+        self.players[self.current_player].character_counts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0} # reset character counter at the start of turn
+        # NOTE: character counter tracker needs modification
 
 # ID: 5676233
 
