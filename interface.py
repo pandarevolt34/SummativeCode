@@ -12,20 +12,20 @@ window = pygame.display.set_mode((900, 700))
 pygame.display.set_caption("YOU'RE in trouble") #sets the title at the top of the window
 
 #Background Images
-background_img = pygame.transform.scale(pygame.image.load("Python image/BackG.png"), (900, 700))
-instruction1_img = pygame.transform.scale(pygame.image.load("Python image/Instruction 1.png"), (900, 700))
-instruction2_img = pygame.transform.scale(pygame.image.load("Python image/Instruction 2.png"), (900, 700))
-ready2play_img = pygame.transform.scale(pygame.image.load("Python image/press to start.png"), (900, 700))
-menu_img = pygame.transform.scale(pygame.image.load("Python image/menu image.png"), (900, 700))
-paused_img = pygame.transform.scale(pygame.image.load("Python image/paused image.jpg"), (900, 700))
-result_img = pygame.transform.scale(pygame.image.load("Python image/paused image.jpg"), (900, 700))
+background_img = pygame.transform.scale(pygame.image.load("BackG.png"), (900, 700))
+instruction1_img = pygame.transform.scale(pygame.image.load("Instruction 1.png"), (900, 700))
+instruction2_img = pygame.transform.scale(pygame.image.load("Instruction 2.png"), (900, 700))
+ready2play_img = pygame.transform.scale(pygame.image.load("press to start.png"), (900, 700))
+menu_img = pygame.transform.scale(pygame.image.load("menu image.png"), (900, 700))
+paused_img = pygame.transform.scale(pygame.image.load("paused image.jpg"), (900, 700))
+result_img = pygame.transform.scale(pygame.image.load("paused image.jpg"), (900, 700))
 
 
 #Sound effects 
-button_sf = pygame.mixer.Sound("Python image/button click.mp3")
+button_sf = pygame.mixer.Sound("button click.mp3")
 
 #player image   
-player = pygame.transform.scale(pygame.image.load("Python image/Player.jpg").convert_alpha(), (250,200)) #width and height both 200
+player = pygame.transform.scale(pygame.image.load("Player.jpg").convert_alpha(), (250,200)) #width and height both 200
 
 #Define colours for drawing purpose
 Dark_Green	= (0, 100, 0)
@@ -41,32 +41,32 @@ Orange = (255, 165, 0)
 #e.g. image size (150, 240)
 #1. Main Cards
 main_cards = {
-    "shield_image" : pygame.transform.scale(pygame.image.load("Python image/shield.png").convert_alpha(), (150, 240)),
-    "trouble_image" : pygame.transform.scale(pygame.image.load("Python image/trouble.png").convert_alpha(), (150, 240)),
+    "shield_image" : pygame.transform.scale(pygame.image.load("shield.png").convert_alpha(), (150, 240)),
+    "trouble_image" : pygame.transform.scale(pygame.image.load("trouble.png").convert_alpha(), (150, 240)),
     }
 
 #2. Action Cards 
 action_cards = {
-    "sick_leave" : pygame.transform.scale(pygame.image.load("Python image/sickleave.png").convert_alpha(), (150, 240)),
-    "U_turn" :pygame.transform.scale(pygame.image.load("Python image/uturn.png").convert_alpha(), (150, 240)), 
-    "Hacker" : pygame.transform.scale(pygame.image.load("Python image/hacker.png").convert_alpha(), (150, 240)), 
-    "TheSpell" : pygame.transform.scale(pygame.image.load("Python image/spell.png").convert_alpha(), (150, 240)), 
-    "Shuffle" : pygame.transform.scale(pygame.image.load("Python image/shuffle.png").convert_alpha(), (150, 240)), 
-    "Reveal" : pygame.transform.scale(pygame.image.load("Python image/Reveal.png").convert_alpha(), (150, 240)), 
-    "BeatIt" : pygame.transform.scale(pygame.image.load("Python image/Beat.png").convert_alpha(), (150, 240)), 
-    "BegYou" : pygame.transform.scale(pygame.image.load("Python image/Beg.png").convert_alpha(), (150, 240)), 
-    "no_chance" : pygame.transform.scale(pygame.image.load("Python image/nochance.png").convert_alpha(), (150, 240)),
-    "mirror" : pygame.transform.scale(pygame.image.load("Python image/Mirror.png").convert_alpha(), (150, 240))
+    "sick_leave" : pygame.transform.scale(pygame.image.load("sickleave.png").convert_alpha(), (150, 240)),
+    "u_turn" :pygame.transform.scale(pygame.image.load("uturn.png").convert_alpha(), (150, 240)),
+    "Hacker" : pygame.transform.scale(pygame.image.load("hacker.png").convert_alpha(), (150, 240)),
+    "TheSpell" : pygame.transform.scale(pygame.image.load("spell.png").convert_alpha(), (150, 240)),
+    "Shuffle" : pygame.transform.scale(pygame.image.load("shuffle.png").convert_alpha(), (150, 240)),
+    "Reveal" : pygame.transform.scale(pygame.image.load("Reveal.png").convert_alpha(), (150, 240)),
+    "BeatIt" : pygame.transform.scale(pygame.image.load("Beat.png").convert_alpha(), (150, 240)),
+    "BegYou" : pygame.transform.scale(pygame.image.load("Beg.png").convert_alpha(), (150, 240)),
+    "no_chance" : pygame.transform.scale(pygame.image.load("nochance.png").convert_alpha(), (150, 240)),
+    "mirror" : pygame.transform.scale(pygame.image.load("Mirror.png").convert_alpha(), (150, 240))
     }
 
 #3. Character Cards
 character_cards = {
-    "char1_image" : pygame.transform.scale(pygame.image.load("Python image/char1.png").convert_alpha(), (150, 240)), 
-    "char2_image" : pygame.transform.scale(pygame.image.load("Python image/char2.png").convert_alpha(), (150, 240)),
-    "char3_image" : pygame.transform.scale(pygame.image.load("Python image/char3.png").convert_alpha(), (150, 240)), 
-    "char4_image" : pygame.transform.scale(pygame.image.load("Python image/char4.png").convert_alpha(), (150, 240)), 
-    "char5_image" : pygame.transform.scale(pygame.image.load("Python image/char5.png").convert_alpha(), (150, 240)), 
-    "char6_image" : pygame.transform.scale(pygame.image.load("Python image/char6.png").convert_alpha(), (150, 240)), 
+    "char1_image" : pygame.transform.scale(pygame.image.load("char1.png").convert_alpha(), (150, 240)),
+    "char2_image" : pygame.transform.scale(pygame.image.load("char2.png").convert_alpha(), (150, 240)),
+    "char3_image" : pygame.transform.scale(pygame.image.load("char3.png").convert_alpha(), (150, 240)),
+    "char4_image" : pygame.transform.scale(pygame.image.load("char4.png").convert_alpha(), (150, 240)),
+    "char5_image" : pygame.transform.scale(pygame.image.load("char5.png").convert_alpha(), (150, 240)),
+    "char6_image" : pygame.transform.scale(pygame.image.load("char6.png").convert_alpha(), (150, 240)),
     }
 
 #Fade transition between screens
