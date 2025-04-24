@@ -8,24 +8,27 @@ pygame.init()
 font = pygame.font.SysFont(None, 30)
 
 #setting the size of game window
-window = pygame.display.set_mode((900, 700))
+window = pygame.display.set_mode((1000, 800))
 pygame.display.set_caption("YOU'RE in trouble") #sets the title at the top of the window
 
 #Background Images
-background_img = pygame.transform.scale(pygame.image.load("BackG.png"), (900, 700))
-instruction1_img = pygame.transform.scale(pygame.image.load("Instruction 1.png"), (900, 700))
-instruction2_img = pygame.transform.scale(pygame.image.load("Instruction 2.png"), (900, 700))
-ready2play_img = pygame.transform.scale(pygame.image.load("press to start.png"), (900, 700))
-menu_img = pygame.transform.scale(pygame.image.load("menu image.png"), (900, 700))
-paused_img = pygame.transform.scale(pygame.image.load("paused image.jpg"), (900, 700))
-result_img = pygame.transform.scale(pygame.image.load("paused image.jpg"), (900, 700))
+background_img = pygame.transform.scale(pygame.image.load("Gameplay Background.png"), (1000, 800))
+instruction1_img = pygame.transform.scale(pygame.image.load("Instruction 1.png"), (1000, 800))
+instruction2_img = pygame.transform.scale(pygame.image.load("Instruction 2.png"), (1000, 800))
+ready2play_img = pygame.transform.scale(pygame.image.load("press to start.png"), (1000, 800))
+menu_img = pygame.transform.scale(pygame.image.load("/menu image.png"), (1000, 800))
+paused_img = pygame.transform.scale(pygame.image.load("paused image.jpg"), (1000, 800))
+result_img = pygame.transform.scale(pygame.image.load("paused image.jpg"), (1000, 800))
 
 
 #Sound effects 
-button_sf = pygame.mixer.Sound("button click.mp3")
+button_sf = pygame.mixer.Sound("Python image/button click.mp3")
 
-#player image   
-player = pygame.transform.scale(pygame.image.load("Player.jpg").convert_alpha(), (250,200)) #width and height both 200
+#Main Gameplay image   
+player1 = pygame.transform.scale(pygame.image.load("Python image/player1.png").convert_alpha(), (250,200)) #width and height both 200
+player2 = pygame.transform.scale(pygame.image.load("Python image/player2.png").convert_alpha(), (250,200)) #width and height both 200
+player3 = pygame.transform.scale(pygame.image.load("Python image/player3.png").convert_alpha(), (250,200)) #width and height both 200
+
 
 #Define colours for drawing purpose
 Dark_Green	= (0, 100, 0)
@@ -45,29 +48,32 @@ main_cards = {
     "trouble_image" : pygame.transform.scale(pygame.image.load("trouble.png").convert_alpha(), (150, 240)),
     }
 
+
 #2. Action Cards 
 action_cards = {
     "sick_leave" : pygame.transform.scale(pygame.image.load("sickleave.png").convert_alpha(), (150, 240)),
-    "u_turn" :pygame.transform.scale(pygame.image.load("uturn.png").convert_alpha(), (150, 240)),
-    "Hacker" : pygame.transform.scale(pygame.image.load("hacker.png").convert_alpha(), (150, 240)),
-    "TheSpell" : pygame.transform.scale(pygame.image.load("spell.png").convert_alpha(), (150, 240)),
-    "Shuffle" : pygame.transform.scale(pygame.image.load("shuffle.png").convert_alpha(), (150, 240)),
-    "Reveal" : pygame.transform.scale(pygame.image.load("Reveal.png").convert_alpha(), (150, 240)),
-    "BeatIt" : pygame.transform.scale(pygame.image.load("Beat.png").convert_alpha(), (150, 240)),
-    "BegYou" : pygame.transform.scale(pygame.image.load("Beg.png").convert_alpha(), (150, 240)),
+    "U_turn" :pygame.transform.scale(pygame.image.load("uturn.png").convert_alpha(), (150, 240)), 
+    "Hacker" : pygame.transform.scale(pygame.image.load("hacker.png").convert_alpha(), (150, 240)), 
+    "TheSpell" : pygame.transform.scale(pygame.image.load("spell.png").convert_alpha(), (150, 240)), 
+    "Shuffle" : pygame.transform.scale(pygame.image.load("shuffle.png").convert_alpha(), (150, 240)), 
+    "Reveal" : pygame.transform.scale(pygame.image.load("Reveal.png").convert_alpha(), (150, 240)), 
+    "BeatIt" : pygame.transform.scale(pygame.image.load("Beat.png").convert_alpha(), (150, 240)), 
+    "BegYou" : pygame.transform.scale(pygame.image.load("Beg.png").convert_alpha(), (150, 240)), 
     "no_chance" : pygame.transform.scale(pygame.image.load("nochance.png").convert_alpha(), (150, 240)),
-    "mirror" : pygame.transform.scale(pygame.image.load("Mirror.png").convert_alpha(), (150, 240))
+    "mirror" : pygame.transform.scale(pygame.image.load("PMirror.png").convert_alpha(), (150, 240))
     }
 
 #3. Character Cards
 character_cards = {
-    "char1_image" : pygame.transform.scale(pygame.image.load("char1.png").convert_alpha(), (150, 240)),
+    "char1_image" : pygame.transform.scale(pygame.image.load("char1.png").convert_alpha(), (150, 240)), 
     "char2_image" : pygame.transform.scale(pygame.image.load("char2.png").convert_alpha(), (150, 240)),
-    "char3_image" : pygame.transform.scale(pygame.image.load("char3.png").convert_alpha(), (150, 240)),
-    "char4_image" : pygame.transform.scale(pygame.image.load("char4.png").convert_alpha(), (150, 240)),
-    "char5_image" : pygame.transform.scale(pygame.image.load("char5.png").convert_alpha(), (150, 240)),
-    "char6_image" : pygame.transform.scale(pygame.image.load("char6.png").convert_alpha(), (150, 240)),
+    "char3_image" : pygame.transform.scale(pygame.image.load("char3.png").convert_alpha(), (150, 240)), 
+    "char4_image" : pygame.transform.scale(pygame.image.load("char4.png").convert_alpha(), (150, 240)), 
+    "char5_image" : pygame.transform.scale(pygame.image.load("char5.png").convert_alpha(), (150, 240)), 
+    "char6_image" : pygame.transform.scale(pygame.image.load("char6.png").convert_alpha(), (150, 240)), 
     }
+
+
 
 #Fade transition between screens
 def fade_transition(width, height,colour, next_screen):
@@ -103,10 +109,10 @@ class Cards:
         self.name = name
         self.image = image
         self.card_positions = card_positions
+
     def draw(self,window):
         window.blit(self.image, self.card_positions)
         
-#Button Class
 class TheButton:
     def __init__(self, text, x, y, activated):
         self.text = text
@@ -134,24 +140,24 @@ class TheButton:
     #mouse click detection
     def gets_clicked(self): #make button clickable
         mouse_position = pygame.mouse.get_pos() #gets current position of the mouse
-        if self.rect.collidepoint(mouse_position): #check if mouse inside rect area
+        if self.rect.collidepoint(mouse_position): #check if mouse is over the button (rect area)
             if pygame.mouse.get_pressed()[0]: #check if left mouse button is pressed
                 print("Click")
                 return True
 
 #Game Buttons
-gameplay_button = TheButton("PUSH!", 800,  600, True)
-Next_button = TheButton("NEXT", 815, 600, True)
-previous_button = TheButton("Previous <", -5, 600, True )
-ready_button = TheButton("Play Game", 380, 400, True)
-other_buttons = {"Start": TheButton("Start Game", 375, 300, True), 
-                 "resume": TheButton("Resume", 375, 300, True), 
-                 "Menu": TheButton("Main Menu", 375, 360, True) }
+gameplay_button = TheButton("End turn", 900,  700, True)
+Next_button = TheButton("NEXT", 900, 700, True)
+previous_button = TheButton("Previous <", -5, 700, True )
+ready_button = TheButton("Play Game", 430, 450, True)
+other_buttons = {"Start": TheButton("Start Game", 430, 380, True), 
+                 "resume": TheButton("Resume", 430, 300, True), 
+                 "Menu": TheButton("Main Menu", 430, 360, True) }
+
 
 #current game mode (initial)
 game_status = "menu"
 instruction_page = 1
-
 
 
 #The function below basically groups all the drawings in one place 
@@ -174,40 +180,57 @@ def draw_window():
         
         #Instruction page 2
         elif instruction_page == 2:
-                window.blit(instruction2_img, (0,0))
-                Next_button.draw()
-                previous_button.draw()
+            window.blit(instruction2_img, (0,0))
+            Next_button.draw()
+            previous_button.draw()
           
         #ready to play (screen before main gameplay)
         elif instruction_page == 3:
-                window.blit(ready2play_img, (0,0))
-                ready_button.draw()
-                previous_button.draw()
+            window.blit(ready2play_img, (0,0))
+            ready_button.draw()
+            previous_button.draw()
   
     #=============== MAIN GAMEPLAY SCREEN =================
     elif game_status == "playing":
         window.blit(background_img, (0,0)) #add background image 
-        window.blit(player, (340, 505)) #add player's image
+        window.blit(player1, (-50, 260)) #add player's image
+        window.blit(player2, (400, -40))
+        window.blit(player3, (800, 260))
         gameplay_button.draw() 
-            
+
         #grouped all cards 
         all_cards = {**main_cards, **action_cards, **character_cards} #Merge all card dictionaries together **
 
         #Display each card on the screen
-        current_position = [375, 145] #fixed position for all cards
+        current_position = [430, 250] #fixed position for all cards
         for name, image in all_cards.items(): #items(), lopping dict
             window.blit(image, current_position)
             current_position = [current_position[0] + 2, current_position[1]] #position of the deck of cards, +2 means the gap between cards
-        
+    
+
     #PAUSING INTERFACE 
     elif game_status == "paused":
             window.blit(paused_img, (0,0)) #add background image when pausing
             other_buttons["resume"].draw()
             other_buttons["Menu"].draw()
 
+
     #WINNER INTERFACE
     elif game_status == "result":
             window.blit(result_img, (0,0))
+
+#DUMMY FUNCTIONS
+def draw_cards():
+    print("Drawing card")
+
+def end_turn():
+    print("Ending turn")
+
+def use_card():
+    print("Using ")
+
+def shuffle_deck():
+    print("Shuffling cards")
 
 
 
@@ -261,7 +284,7 @@ while game_running: #start the loop - keep going while the game is on
                 elif ready_button.gets_clicked():
                     button_sf.play()
                     pygame.time.delay(300)
-                    fade_transition(900, 700, White, "playing")
+                    fade_transition(1000, 800, White, "playing")
                     game_status = "playing"
                     
         
@@ -272,7 +295,7 @@ while game_running: #start the loop - keep going while the game is on
             all_cards = {**main_cards, **action_cards, **character_cards} #Merge all card dictionaries together **
 
             #Display each card on the screen
-            current_position = [375, 145] #fixed position for all cards
+            current_position = [700,700] #fixed position for all cards
             for name, image in all_cards.items(): #items(), lopping dict
                 window.blit(image, current_position)
                 current_position = [current_position[0] + 2, current_position[1]] #position of the deck of cards, +2 means the gap between cards
@@ -287,6 +310,7 @@ while game_running: #start the loop - keep going while the game is on
                 game_status = "menu"
                 button_sf.play()
                 pygame.time.delay(300)
+
     #=============== WINNER INTERFACE ====================
         elif game_status == "result":
             window.blit(result_img, (0,0))
@@ -298,6 +322,10 @@ while game_running: #start the loop - keep going while the game is on
 
 
 pygame.quit()
+
+
+
+
 
 
 
