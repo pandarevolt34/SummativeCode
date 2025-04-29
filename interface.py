@@ -16,18 +16,18 @@ background_img = pygame.transform.scale(pygame.image.load("Gameplay Background.p
 instruction1_img = pygame.transform.scale(pygame.image.load("Instruction 1.png"), (1000, 800))
 instruction2_img = pygame.transform.scale(pygame.image.load("Instruction 2.png"), (1000, 800))
 ready2play_img = pygame.transform.scale(pygame.image.load("press to start.png"), (1000, 800))
-menu_img = pygame.transform.scale(pygame.image.load("/menu image.png"), (1000, 800))
+menu_img = pygame.transform.scale(pygame.image.load("menu image.png"), (1000, 800))
 paused_img = pygame.transform.scale(pygame.image.load("paused image.jpg"), (1000, 800))
 result_img = pygame.transform.scale(pygame.image.load("paused image.jpg"), (1000, 800))
 
 
 #Sound effects 
-button_sf = pygame.mixer.Sound("Python image/button click.mp3")
+button_sf = pygame.mixer.Sound("button click.mp3")
 
 #Main Gameplay image   
-player1 = pygame.transform.scale(pygame.image.load("Python image/player1.png").convert_alpha(), (250,200)) #width and height both 200
-player2 = pygame.transform.scale(pygame.image.load("Python image/player2.png").convert_alpha(), (250,200)) #width and height both 200
-player3 = pygame.transform.scale(pygame.image.load("Python image/player3.png").convert_alpha(), (250,200)) #width and height both 200
+player1 = pygame.transform.scale(pygame.image.load("player1.png").convert_alpha(), (250,200)) #width and height both 200
+player2 = pygame.transform.scale(pygame.image.load("player2.png").convert_alpha(), (250,200)) #width and height both 200
+player3 = pygame.transform.scale(pygame.image.load("player3.png").convert_alpha(), (250,200)) #width and height both 200
 
 
 #Define colours for drawing purpose
@@ -60,7 +60,7 @@ action_cards = {
     "BeatIt" : pygame.transform.scale(pygame.image.load("Beat.png").convert_alpha(), (150, 240)), 
     "BegYou" : pygame.transform.scale(pygame.image.load("Beg.png").convert_alpha(), (150, 240)), 
     "no_chance" : pygame.transform.scale(pygame.image.load("nochance.png").convert_alpha(), (150, 240)),
-    "mirror" : pygame.transform.scale(pygame.image.load("PMirror.png").convert_alpha(), (150, 240))
+    "mirror" : pygame.transform.scale(pygame.image.load("Mirror.png").convert_alpha(), (150, 240))
     }
 
 #3. Character Cards
