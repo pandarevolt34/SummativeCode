@@ -559,7 +559,7 @@ class Hand:
         self.game_over = False
         self.deck = CardDeck()
 
-    def draw_card(self, player):
+    def end_turn(self, player): ### NOTE TO GROUP: changed draw_card to be 'End Turn' functionality
         "" "Draw a card from the deck"""
         card = self.deck.draw_a_card()
         if card:
@@ -568,7 +568,7 @@ class Hand:
             if card.card_name == "You're in Trouble":  # handles drawing a trouble card case from manage_trouble_card function
                 self.manage_trouble_card(player)
             return card
-        return None
+        self.current_player_index = (self.current_player_index + 1) % len(self.players) # move to next player
 
     def manage_trouble_card(self, player):
         if not player.has_shield:
@@ -686,16 +686,39 @@ this class manages the game state and includes the main loop. Variable instances
 class Game:
     def __init__(self, player_names):
         self.players = [Player(name) for name in player_names]
-        self.current_player = 0 # initializing the index of the current player
+        self.current_player_index = 0 # initializing the index of the current player
+        self.discard_card_pile = []  # initializing an empty list to store the played cards
         self.deck = CardDeck()
         self.turn_direction = 1 # sets the direction to 1 for clockwise and -1 for anticlockwise
         self.initialize_game()  # sets the game; card dealing, picking a player to start, card deck ready...
+        self.game_over = False
+
+    def players_setup(self):
+        while True:
+            try:
+                # asking the user for number of players
+                num_of_players = int(input("Enter the number of players between 2-4: "))
+                if 2 <= num_of_players <= 4:
+                    break
+                print("Invalid number of players! Enter a number between 2-4")
+            except ValueError:
+                print("Please enter a number!")
+
+        # getting player names
+        human_name = input("Enter your name: ")
+        bot_name = ["CPU1", "CPU2", "CPU3"]
+
+        # define players
+        self.players = [Player(human_name)]
+        for i in range(num_of_players - 1): # excluding the human player
+            self.players.append(Player(bot_name[i])) # adding bots based on user's choice
 
     def initialize_game(self):
         """Initialize the game with card deck and deal appropriate cards to players"""
         self.deck.initialize_deck()   ### NOTE: IMPLEMENT A FUNCTION THAT GETS THE INITIAL DECK WITHOUT TROUBLE AND SHIELD CARDS
+        # # dealing 5 cards to each player from initialized deck
         for player in self.players:
-            for i in range(5): # dealing 5 cards to each player
+            for i in range(5):
                 card = self.deck.draw_a_card()
                 if card:
                     player.player_cards.append(card)
@@ -717,13 +740,72 @@ class Game:
         self.shuffle_deck() # shuffles the deck after adding trouble cards back (last shuffle before game starts)
         ### NOTE TO GROUP: shuffle_deck and insert_card functions should be added to CardDeck class
 
+    def shuffle_deck(self):
+        pass # to be continued
+
+    def start_player_turn(self):
+        current_player = self.players[self.current_player_index]
+
+        if current_player.player_name.startswith("CPU"):
+            self.handle_bot_turn()
+        else:
+            self.waiting_for_player_action = True
+            self.current_player_actions = self.get_available_actions(current_player)
+
+    def get_available_actions(self, player):
+        actions = []
+
+        # add playable cards as actions
+        for i, card in enumerate(player.player_cards): # adding a counter to each card to track count
+            actions.append({
+                'type': 'play_card',
+                'card_index': i,
+                'card_name': card.card_name,
+                'card_type': card.card_type
+            })
+
+        ### NOTE: add an end turn action
+        return actions
+
+    def handle_player_action(self, action):
+        if action['type'] == 'play_card':
+            card_index = action['card_index']
+            current_player = self.players[self.current_player_index]
+
+            if 0 <= card_index < len(current_player.player_cards):
+                card = current_player.player_cards[card_index]
+
+                if card.card_type == "Action":
+                    card.perform_action(self, current_player)
+                elif card.card_type == "Character":
+                    self.manage_character_cards(current_player, card)
+
+                # remove the played card and add it to discard pile
+                current_player.player_cards.pop(card_index)
+                self.discard_card_pile.append(card)
+
+        elif action['type'] == 'end_turn':
+            self.end_turn()
+
+    def handle_bot_turn(self):
+        pass # to be continued after bot implementation...
+
     def next_player_turn(self):
-        self.current_player = (self.current_player + self.turn_direction) % len(self.players) # move to next player
-        self.players[self.current_player].character_counts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0} # reset character counter at the start of turn
+        self.current_player_index = (self.current_player_index + self.turn_direction) % len(self.players) # move to next player
+        if len(self.players) > 1: # check if the game is still ongoing; no winner yet
+            self.players[self.current_player_index].character_counts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0} # reset character counter at the start of turn
         # NOTE: character counter tracker needs modification
 
     def main_loop(self):
-        pass # to be continued...
+        self.game_over = False
+        current_player = self.players[self.current_player_index]
+
+        while not self.game_over:
+            # start the game
+            print(f"{current_player.player_name}'s turn!")
+
+
+
 
 # ID: 5676233
 
