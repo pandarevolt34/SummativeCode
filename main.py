@@ -20,6 +20,14 @@ class Card:
         self.card_description = card_description
         self.index = index
 
+class Trouble(Card):
+    def __init__(self, index = -1):
+        super().__init__("You're in Trouble", "Trouble", " ", index)
+
+class Shield(Card):
+    def __init__(self, index = -1):
+        super().__init__("The Shield", "Shield", " ", index)
+
 ''' Class for CharacterCard:
 initializing class by inheriting from class Card; variable instances:
     character_number: assigns numbers to each character card
@@ -544,9 +552,12 @@ this class manages cards in player's hand; playing cards from hand and storing c
 '''
 
 class Hand:
-    def __init__(self):
+    def __init__(self, player_names):
+        self.players = [Player(name) for name in player_names]
         self.last_played_action_card = None
         self.discard_card_pile = []  # initializing an empty list to store the played cards
+        self.game_over = False
+        self.deck = CardDeck()
 
     def draw_card(self, player):
         "" "Draw a card from the deck"""
@@ -678,19 +689,33 @@ class Game:
         self.current_player = 0 # initializing the index of the current player
         self.deck = CardDeck()
         self.turn_direction = 1 # sets the direction to 1 for clockwise and -1 for anticlockwise
-        self.game_over = False
         self.initialize_game()  # sets the game; card dealing, picking a player to start, card deck ready...
 
     def initialize_game(self):
         """Initialize the game with card deck and deal appropriate cards to players"""
         self.deck.initialize_deck()   ### NOTE: IMPLEMENT A FUNCTION THAT GETS THE INITIAL DECK WITHOUT TROUBLE AND SHIELD CARDS
         for player in self.players:
-
             for i in range(5): # dealing 5 cards to each player
                 card = self.deck.draw_a_card()
-
                 if card:
                     player.player_cards.append(card)
+
+        # give each player 1 shield card
+        for player in self.players:
+            shield_card = Shield()
+            player.player_cards.append(shield_card)
+            player.has_shield = True
+
+        # figure out how many trouble cards to add back to the deck after shuffling
+        num_trouble_cards = len(self.players) - 1
+
+        # add the appropriate number of trouble cards back to the deck
+        for i in range(num_trouble_cards):
+            trouble_card = Trouble()
+            self.deck.insert_card(trouble_card)
+
+        self.shuffle_deck() # shuffles the deck after adding trouble cards back (last shuffle before game starts)
+        ### NOTE TO GROUP: shuffle_deck and insert_card functions should be added to CardDeck class
 
     def next_player_turn(self):
         self.current_player = (self.current_player + self.turn_direction) % len(self.players) # move to next player
