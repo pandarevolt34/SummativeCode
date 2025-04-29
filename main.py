@@ -703,5 +703,5 @@ class Game:
 # ID: 5676233
 
 
-##### NOTE: Add docstrings + fix docstring format
+##### NOTE TO GROUP: Add docstrings + fix docstring format
 
