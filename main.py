@@ -3,7 +3,6 @@
 import random
 from queue import Queue
 
-from interface import all_cards     # main: line 490 - interface: line 146 (variable name )
 
 # ID: 5676233
 ''' Class for Cards:
@@ -539,44 +538,23 @@ class CardDeck:
 # ID 5674312
 
 # ID: 5676233
-'''Class for Game:
-this class manages the game state and includes the main loop. Variable instances:
-    player_names: stores player names 
-    
-    current_player: stores current player index
-    self.deck = CardDeck() ; uses the CardDeck implementation 
-    turn_direction: stores the current direction; 1 for clockwise and -1 for anticlockwise
-    game_over: stores the game status 
-    last_played_action_card: stores the last played card index
-    discard_card_pile: a list to store the played cards
-    '''
-class Game:
-    def __init__(self, player_names):
-        self.players = [Player(name) for name in player_names]
-        self.current_player = 0 # initializing the index of the current player
-        self.deck = CardDeck()
-        self.turn_direction = 1 # sets the direction to 1 for clockwise and -1 for anticlockwise
-        self.game_over = False
+'''Class for Hand
+this class manages cards in player's hand; playing cards from hand and storing cards in hand
+
+'''
+
+class Hand:
+    def __init__(self):
         self.last_played_action_card = None
-        self.discard_card_pile = [] # initializing an empty list to store the played cards
-        self.initialize_game() # sets the game; card dealing, picking a player to start, card deck ready...
-
-    def initialize_game(self):
-        self.deck.initialize_deck()   ### NOTE: IMPLEMENT A FUNCTION THAT GETS THE INITIAL DECK WITHOUT TROUBLE AND SHIELD CARDS
-        for player in self.players:
-
-            for i in range(5): # dealing 5 cards to each player
-                card = self.deck.draw_a_card()
-
-                if card:
-                    player.player_cards.append(card)
+        self.discard_card_pile = []  # initializing an empty list to store the played cards
 
     def draw_card(self, player):
-        card = self.deck.draw_a_card() 
+        "" "Draw a card from the deck"""
+        card = self.deck.draw_a_card()
         if card:
-            player.player_cards.append(card) # adds the card to the player's cards
+            player.player_cards.append(card)  # adds the card to the player's cards
 
-            if card.card_name == "You're in Trouble": # handles drawing a trouble card case from manage_trouble_card function
+            if card.card_name == "You're in Trouble":  # handles drawing a trouble card case from manage_trouble_card function
                 self.manage_trouble_card(player)
             return card
         return None
@@ -584,10 +562,10 @@ class Game:
     def manage_trouble_card(self, player):
         if not player.has_shield:
             print(f"{player.player_name} You're in Trouble and therefore out of the game!")
-            self.players.remove(player) # remove a player if they don't have a shield card
+            self.players.remove(player)  # remove a player if they don't have a shield card
 
-            if len(self.players) == 1: # checks for winning case if only one player remains
-                self.game_over = True # declares game over
+            if len(self.players) == 1:  # checks for winning case if only one player remains
+                self.game_over = True  # declares game over
                 print(f"{self.players[0].player_name} is the winner!")
 
         else:
@@ -598,21 +576,21 @@ class Game:
     def player_plays_card(self, player, card_index):
         # make sure the card index is within the cards in player's cards
         if 0 <= card_index < len(player.player_cards):
-            card = player.player_cards[card_index] # get the card object from the player's cards
+            card = player.player_cards[card_index]  # get the card object from the player's cards
 
-            if card.card_type == "Action": # manage action cards
-                proceed = card.perform_action(self, player) # gets whether the action card was done or not
+            if card.card_type == "Action":  # manage action cards
+                proceed = card.perform_action(self, player)  # gets whether the action card was done or not
 
                 if proceed:
-                    self.last_played_action_card = card # overwrite (update) the last played action card
-                    player.player_cards.pop(card_index) # remove the played card from player's cards
-                    self.discard_card_pile.append(card) # add the card to the played card pile
+                    self.last_played_action_card = card  # overwrite (update) the last played action card
+                    player.player_cards.pop(card_index)  # remove the played card from player's cards
+                    self.discard_card_pile.append(card)  # add the card to the played card pile
                 return proceed
 
-            elif card.card_type == "Character": # manage character card
-                self.manage_character_cards(player, card) # process specific character effects and combinations
-                player.player_cards.pop(card_index) # remove the played card from player's cards
-                self.discard_card_pile.append(card) # add the card to the played card pile
+            elif card.card_type == "Character":  # manage character card
+                self.manage_character_cards(player, card)  # process specific character effects and combinations
+                player.player_cards.pop(card_index)  # remove the played card from player's cards
+                self.discard_card_pile.append(card)  # add the card to the played card pile
                 return True
         return False
 
@@ -623,34 +601,38 @@ class Game:
 
     def check_character_combinations(self, player):
         for char_num, count in player.character_counts.items():
-            if count == 2: # check for 2 of the same character card
+            if count == 2:  # check for 2 of the same character card
                 self.activate_char_combo(player, char_num, 2)
-            elif count == 3: # check for 3 of the same character card
+            elif count == 3:  # check for 3 of the same character card
                 self.activate_char_combo(player, char_num, 3)
 
-        if all(count >= 1 for count in player.character_counts.values()): # check for a full set; 1 of each 6 character cards
+        if all(count >= 1 for count in
+               player.character_counts.values()):  # check for a full set; 1 of each 6 character cards
             self.activate_full_set_combo(player)
 
     def activate_char_combo(self, player, char_num, combo_type):
-        target = next((p for p in self.players if p != player and p.player_cards), None) # NOTE: will change to letting the player chose the target (later in interface)
+        target = next((p for p in self.players if p != player and p.player_cards),
+                      None)  # NOTE: will change to letting the player chose the target (later in interface)
         if not target:
             return
 
-        if any(card.card_name == "No Chance" for card in target.player_cards): # check for cancelling effect with 'No Chance'
+        if any(card.card_name == "No Chance" for card in
+               target.player_cards):  # check for cancelling effect with 'No Chance'
             print(f"{target.player_name} blocked your character combination with 'No Chance!'")
 
-        if combo_type == 2: # 2 of the same character card
+        if combo_type == 2:  # 2 of the same character card
             if target.player_cards:
-                given_card = random.choice(target.player_cards)   # NOTE: will change random choice to target player choice; target chooses a card to give (later in interface)
-                target.player_cards.remove(given_card) # removing card from target player's cards
-                player.player_cards.append(given_card) # adding card to player's cards
+                given_card = random.choice(
+                    target.player_cards)  # NOTE: will change random choice to target player choice; target chooses a card to give (later in interface)
+                target.player_cards.remove(given_card)  # removing card from target player's cards
+                player.player_cards.append(given_card)  # adding card to player's cards
                 print(f"{target.player_name} gave {player.name} a card!")
 
-        elif combo_type == 3: # 3 of the same character card
+        elif combo_type == 3:  # 3 of the same character card
             if target.player_cards:
-                stolen_card = random.choice(target.player_cards) # takes a random card from target player
-                target.player_cards.remove(stolen_card) # removing card from target player's cards
-                player.player_cards.append(stolen_card) # adding card to player's cards
+                stolen_card = random.choice(target.player_cards)  # takes a random card from target player
+                target.player_cards.remove(stolen_card)  # removing card from target player's cards
+                player.player_cards.append(stolen_card)  # adding card to player's cards
                 print(f"{player.name} took a random card from {target.player_name}!")
 
     def activate_full_set_combo(self, player):
@@ -676,11 +658,50 @@ class Game:
                 break
             else:
                 print(f"{target.player_name} does not have {chosen_card_name}!")
+# ID: 5676233
+
+# ID: 5676233
+'''Class for Game:
+this class manages the game state and includes the main loop. Variable instances:
+    player_names: stores player names 
+    
+    current_player: stores current player index
+    self.deck = CardDeck() ; uses the CardDeck implementation 
+    turn_direction: stores the current direction; 1 for clockwise and -1 for anticlockwise
+    game_over: stores the game status 
+    last_played_action_card: stores the last played card index
+    discard_card_pile: a list to store the played cards
+    '''
+class Game:
+    def __init__(self, player_names):
+        self.players = [Player(name) for name in player_names]
+        self.current_player = 0 # initializing the index of the current player
+        self.deck = CardDeck()
+        self.turn_direction = 1 # sets the direction to 1 for clockwise and -1 for anticlockwise
+        self.game_over = False
+        self.initialize_game()  # sets the game; card dealing, picking a player to start, card deck ready...
+
+    def initialize_game(self):
+        """Initialize the game with card deck and deal appropriate cards to players"""
+        self.deck.initialize_deck()   ### NOTE: IMPLEMENT A FUNCTION THAT GETS THE INITIAL DECK WITHOUT TROUBLE AND SHIELD CARDS
+        for player in self.players:
+
+            for i in range(5): # dealing 5 cards to each player
+                card = self.deck.draw_a_card()
+
+                if card:
+                    player.player_cards.append(card)
 
     def next_player_turn(self):
         self.current_player = (self.current_player + self.turn_direction) % len(self.players) # move to next player
         self.players[self.current_player].character_counts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0} # reset character counter at the start of turn
         # NOTE: character counter tracker needs modification
 
+    def main_loop(self):
+        pass # to be continued...
+
 # ID: 5676233
+
+
+##### NOTE: Add docstrings + fix docstring format
 
