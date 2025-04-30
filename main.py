@@ -21,10 +21,12 @@ class Card:
         self.index = index
 
 class Trouble(Card):
+    """Class representing the "You're in Trouble" card which eliminates a player, given they don't have the shield"""
     def __init__(self, index = -1):
         super().__init__("You're in Trouble", "Trouble", " ", index)
 
 class Shield(Card):
+    """Class representing "The Shield" card which protects the player from the trouble card"""
     def __init__(self, index = -1):
         super().__init__("The Shield", "Shield", " ", index)
 
@@ -560,7 +562,7 @@ class Hand:
         self.deck = CardDeck()
 
     def end_turn(self, player): ### NOTE TO GROUP: changed draw_card to be 'End Turn' functionality
-        "" "Draw a card from the deck"""
+        """Draw a card from the deck to end turn and progress to next player"""
         card = self.deck.draw_a_card()
         if card:
             player.player_cards.append(card)  # adds the card to the player's cards
@@ -571,6 +573,7 @@ class Hand:
         self.current_player_index = (self.current_player_index + 1) % len(self.players) # move to next player
 
     def manage_trouble_card(self, player):
+        """Manages the effects of drawing a trouble card"""
         if not player.has_shield:
             print(f"{player.player_name} You're in Trouble and therefore out of the game!")
             self.players.remove(player)  # remove a player if they don't have a shield card
@@ -585,6 +588,7 @@ class Hand:
             player.has_shield = False  # Note: implement a check for multiple shields
 
     def player_plays_card(self, player, card_index):
+        """Play a card from the player's cards in hand"""
         # make sure the card index is within the cards in player's cards
         if 0 <= card_index < len(player.player_cards):
             card = player.player_cards[card_index]  # get the card object from the player's cards
@@ -606,11 +610,13 @@ class Hand:
         return False
 
     def manage_character_cards(self, player, card):
+        """Manage all possible character cards combinations and effects"""
         # update character counter when a character card is played
         player.character_counts[card.character_number] += 1
         self.check_character_combinations(player)
 
     def check_character_combinations(self, player):
+        """Checks for the appropriate character cards combinations and proceed with suitable actions"""
         for char_num, count in player.character_counts.items():
             if count == 2:  # check for 2 of the same character card
                 self.activate_char_combo(player, char_num, 2)
@@ -622,6 +628,7 @@ class Hand:
             self.activate_full_set_combo(player)
 
     def activate_char_combo(self, player, char_num, combo_type):
+        """Activates character cards combinations effects"""
         target = next((p for p in self.players if p != player and p.player_cards),
                       None)  # NOTE: will change to letting the player chose the target (later in interface)
         if not target:
@@ -647,6 +654,7 @@ class Hand:
                 print(f"{player.name} took a random card from {target.player_name}!")
 
     def activate_full_set_combo(self, player):
+        """Activate special character cards combinations effects"""
         # find the target player; NOTE: will change to letting the player chose the target (later in interface)
         target = next((p for p in self.players if p != player and p.player_cards), None)
         if not target:
@@ -694,6 +702,7 @@ class Game:
         self.game_over = False
 
     def players_setup(self):
+        """Sets the players with a human player and a chosen number of bots"""
         while True:
             try:
                 # asking the user for number of players
@@ -744,6 +753,7 @@ class Game:
         pass # to be continued
 
     def start_player_turn(self):
+        """Starts the player's turn while handling both the human and bot turns"""
         current_player = self.players[self.current_player_index]
 
         if current_player.player_name.startswith("CPU"):
@@ -753,6 +763,7 @@ class Game:
             self.current_player_actions = self.get_available_actions(current_player)
 
     def get_available_actions(self, player):
+        """Get all the available actions for a player"""
         actions = []
 
         # add playable cards as actions
@@ -768,6 +779,7 @@ class Game:
         return actions
 
     def handle_player_action(self, action):
+        """Handle all possible cases of a player's chosen action card"""
         if action['type'] == 'play_card':
             card_index = action['card_index']
             current_player = self.players[self.current_player_index]
@@ -791,12 +803,14 @@ class Game:
         pass # to be continued after bot implementation...
 
     def next_player_turn(self):
+        """Move on to the next player's turn"""
         self.current_player_index = (self.current_player_index + self.turn_direction) % len(self.players) # move to next player
         if len(self.players) > 1: # check if the game is still ongoing; no winner yet
             self.players[self.current_player_index].character_counts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0} # reset character counter at the start of turn
         # NOTE: character counter tracker needs modification
 
     def main_loop(self):
+        """Main loop of the game which controls the flow of the game"""
         self.game_over = False
         current_player = self.players[self.current_player_index]
 
