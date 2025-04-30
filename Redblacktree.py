@@ -1,4 +1,5 @@
 from queue import Queue
+from main import Card
 # ID: 5674312
 ''' Class for RedBlackNode:
 initializing class; variable instances:
