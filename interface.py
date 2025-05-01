@@ -81,6 +81,7 @@ action_pile = None
 
 #1. Sound effects 
 button_sf = pygame.mixer.Sound("C:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/button click.mp3")
+text_sf = pygame.mixer.Sound("C:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/text sound (2).mp3")
 
 #2. Fade transition effect between screens
 def fade_transition(width, height,colour, next_screen):
@@ -441,7 +442,8 @@ while game_running: #start the loop - keep going while the game is on
                 current_position = [current_position[0] + 2, current_position[1]] #position of the deck of cards, +2 means the gap between cards
 
             for text in all_text:
-                text.gets_clicked()
+                if text.gets_clicked():
+                    text_sf.play()
 
             if gameplay_button.gets_clicked():
                 print("Click")
