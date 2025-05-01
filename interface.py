@@ -4,30 +4,32 @@ import pygame
 pygame.init() 
 
 
-#the font function for interface
-font = pygame.font.SysFont(None, 30)
+#the font function for interface#Adjust font size
+font_1 = pygame.font.SysFont("None", 25)
+font_2 = pygame.font.SysFont("None", 40)
+font_3 = pygame.font.SysFont("None", 30)
 
 #setting the size of game window
 window = pygame.display.set_mode((1000, 800))
 pygame.display.set_caption("YOU'RE in trouble") #sets the title at the top of the window
 
 #Background Images
-background_img = pygame.transform.scale(pygame.image.load("Gameplay Background.png"), (1000, 800))
-instruction1_img = pygame.transform.scale(pygame.image.load("Instruction 1.png"), (1000, 800))
-instruction2_img = pygame.transform.scale(pygame.image.load("Instruction 2.png"), (1000, 800))
-ready2play_img = pygame.transform.scale(pygame.image.load("press to start.png"), (1000, 800))
-menu_img = pygame.transform.scale(pygame.image.load("menu image.png"), (1000, 800))
-paused_img = pygame.transform.scale(pygame.image.load("paused image.jpg"), (1000, 800))
-result_img = pygame.transform.scale(pygame.image.load("paused image.jpg"), (1000, 800))
+background_img = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/Gameplay Backg.png"), (1000, 800))
+instruction1_img = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/Instruction 1.png"), (1000, 800))
+instruction2_img = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/Instruction 2.png"), (1000, 800))
+ready2play_img = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/press to start.png"), (1000, 800))
+menu_img = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/menu image.png"), (1000, 800))
+paused_img = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/paused image.jpg"), (1000, 800))
+
 
 
 #Sound effects 
-button_sf = pygame.mixer.Sound("button click.mp3")
+button_sf = pygame.mixer.Sound("C:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/button click.mp3")
 
 #Main Gameplay image   
-player1 = pygame.transform.scale(pygame.image.load("player1.png").convert_alpha(), (250,200)) #width and height both 200
-player2 = pygame.transform.scale(pygame.image.load("player2.png").convert_alpha(), (250,200)) #width and height both 200
-player3 = pygame.transform.scale(pygame.image.load("player3.png").convert_alpha(), (250,200)) #width and height both 200
+player1 = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/player1.png").convert_alpha(), (250,200)) #width and height both 200
+player2 = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/player2.png").convert_alpha(), (250,200)) #width and height both 200
+player3 = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/player3.png").convert_alpha(), (250,200)) #width and height both 200
 
 
 #Define colours for drawing purpose
@@ -44,36 +46,39 @@ Orange = (255, 165, 0)
 #e.g. image size (150, 240)
 #1. Main Cards
 main_cards = {
-    "shield_image" : pygame.transform.scale(pygame.image.load("shield.png").convert_alpha(), (150, 240)),
-    "trouble_image" : pygame.transform.scale(pygame.image.load("trouble.png").convert_alpha(), (150, 240)),
+    "shield_image" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/shield.png").convert_alpha(), (150, 240)),
+    "trouble_image" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/trouble.png").convert_alpha(), (150, 240)),
     }
 
 
 #2. Action Cards 
 action_cards = {
-    "sick_leave" : pygame.transform.scale(pygame.image.load("sickleave.png").convert_alpha(), (150, 240)),
-    "U_turn" :pygame.transform.scale(pygame.image.load("uturn.png").convert_alpha(), (150, 240)), 
-    "Hacker" : pygame.transform.scale(pygame.image.load("hacker.png").convert_alpha(), (150, 240)), 
-    "TheSpell" : pygame.transform.scale(pygame.image.load("spell.png").convert_alpha(), (150, 240)), 
-    "Shuffle" : pygame.transform.scale(pygame.image.load("shuffle.png").convert_alpha(), (150, 240)), 
-    "Reveal" : pygame.transform.scale(pygame.image.load("Reveal.png").convert_alpha(), (150, 240)), 
-    "BeatIt" : pygame.transform.scale(pygame.image.load("Beat.png").convert_alpha(), (150, 240)), 
-    "BegYou" : pygame.transform.scale(pygame.image.load("Beg.png").convert_alpha(), (150, 240)), 
-    "no_chance" : pygame.transform.scale(pygame.image.load("nochance.png").convert_alpha(), (150, 240)),
-    "mirror" : pygame.transform.scale(pygame.image.load("Mirror.png").convert_alpha(), (150, 240))
+    "sick_leave" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/sickleave.png").convert_alpha(), (150, 240)),
+    "U_turn" :pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/uturn.png").convert_alpha(), (150, 240)), 
+    "Hacker" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/hacker.png").convert_alpha(), (150, 240)), 
+    "TheSpell" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/spell.png").convert_alpha(), (150, 240)), 
+    "Shuffle" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/shuffle.png").convert_alpha(), (150, 240)), 
+    "Reveal" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/reveal.png").convert_alpha(), (150, 240)), 
+    "BeatIt" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/Beat.png").convert_alpha(), (150, 240)), 
+    "BegYou" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/Beg.png").convert_alpha(), (150, 240)), 
+    "no_chance" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/nochance.png").convert_alpha(), (150, 240)),
+    "mirror" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/Mirror.png").convert_alpha(), (150, 240))
     }
 
 #3. Character Cards
 character_cards = {
-    "char1_image" : pygame.transform.scale(pygame.image.load("char1.png").convert_alpha(), (150, 240)), 
-    "char2_image" : pygame.transform.scale(pygame.image.load("char2.png").convert_alpha(), (150, 240)),
-    "char3_image" : pygame.transform.scale(pygame.image.load("char3.png").convert_alpha(), (150, 240)), 
-    "char4_image" : pygame.transform.scale(pygame.image.load("char4.png").convert_alpha(), (150, 240)), 
-    "char5_image" : pygame.transform.scale(pygame.image.load("char5.png").convert_alpha(), (150, 240)), 
-    "char6_image" : pygame.transform.scale(pygame.image.load("char6.png").convert_alpha(), (150, 240)), 
+    "ice king" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/char1.png").convert_alpha(), (150, 240)), 
+    "Bimo" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/char2.png").convert_alpha(), (150, 240)),
+    "Finn" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/char3.png").convert_alpha(), (150, 240)), 
+    "Jack" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/char4.png").convert_alpha(), (150, 240)), 
+    "Bubblegum" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/char5.png").convert_alpha(), (150, 240)), 
+    "lumpy" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/char6.png").convert_alpha(), (150, 240)), 
     }
 
+card_list = []
 
+
+    
 
 #Fade transition between screens
 def fade_transition(width, height,colour, next_screen):
@@ -112,7 +117,39 @@ class Cards:
 
     def draw(self,window):
         window.blit(self.image, self.card_positions)
-        
+
+#action = None means that if no action is provided, it defaults to None
+class Clickable_text:
+    def __init__(self, text, font, ori_colour, hover_colour, x, y, gets_clicked = None):
+        self.text = text
+        self.font = font
+        self.ori_colour = ori_colour
+        self.hover_colour = hover_colour
+        self.x = x
+        self.y = y
+        self.hovering = False
+        self.rect = self.font.render(self.text, True, self.ori_colour).get_rect(topleft=(self.x, self.y))
+        #renders the text as an image using the font and colour, and gets a transparent rectangle that is the size of the rendered text and places it at the position (self.x, self.y)
+    
+    def position(self):
+        mouse_position = pygame.mouse.get_pos() #gets current position of the mouse
+        self.hovering= self.rect.collidepoint(mouse_position) #check if mouse is over the button (rect area)
+     #collidepoint(...) check hover/click
+
+    #Text for display
+    def draw_text(self, window):
+        text_colour = self.hover_colour if self.hovering else self.ori_colour 
+        text_surface = self.font.render(self.text, True, text_colour) #self.font.render turns text into an image
+        rect = text_surface.get_rect(topleft=(self.x, self.y)) #get_rect() creates a transparent rectangle which is the same size as the text
+        window.blit(text_surface, rect)
+        #topleft = .. sets the clickable area to match the text's position.
+
+    def gets_clicked(self): #make text clickable
+        if self.hovering and pygame.mouse.get_pressed()[0]: #check if left mouse button is pressed
+            print("Click text")
+            return True
+
+
 class TheButton:
     def __init__(self, text, x, y, activated):
         self.text = text
@@ -129,7 +166,7 @@ class TheButton:
         button_hover = self.rect.collidepoint(mouse_pos) #detects mouse click 
 
         #the buttons
-        button_text = font.render(self.text, True, (255, 255, 255)) #(255, 255, 255) ---> text colour
+        button_text = font_3.render(self.text, True, (255, 255, 255)) #(255, 255, 255) ---> text colour
         button_rect = pygame.Rect((self.x, self.y),(127, 37)) #length and width of rectangle
         pygame.draw.rect(window, (144, 238, 144) if button_hover else (29,45,10), button_rect, border_radius = 10)
 
@@ -145,6 +182,8 @@ class TheButton:
                 print("Click")
                 return True
 
+
+#============================================= GAME VARIABLES =================================================
 #Game Buttons
 gameplay_button = TheButton("End turn", 900,  700, True)
 Next_button = TheButton("NEXT", 900, 700, True)
@@ -154,10 +193,35 @@ other_buttons = {"Start": TheButton("Start Game", 430, 380, True),
                  "resume": TheButton("Resume", 430, 300, True), 
                  "Menu": TheButton("Main Menu", 430, 360, True) }
 
+#Action cards text for display
+actions_text = [
+        Clickable_text("Hacker x1", font_1, White, Orange, 320, 580),
+        Clickable_text("Sick Leave x1", font_1, White, Orange, 320, 600),
+        Clickable_text("U turn x1", font_1, White, Orange, 320, 620),
+        Clickable_text("The Spell x1", font_1, White, Orange, 320, 640),
+        Clickable_text("Shuffle x1", font_1, White, Orange, 320, 660),
+        Clickable_text("Reveal x1", font_1, White, Orange, 320, 680),
+        Clickable_text("Beat x1", font_1, White, Orange, 320, 700),
+        Clickable_text("Beg You x1", font_1, White, Orange, 320, 720),
+        Clickable_text("No Chance x1", font_1, White, Orange, 320, 740),
+        Clickable_text("Mirror x1", font_1, White, Orange, 320, 760)
+        ]
+
+#Character Cards text for display
+character_text = [
+        Clickable_text("Ice King x1", font_1, White, Orange, 600, 600),
+        Clickable_text("Bimo x1", font_1, White,Orange, 600, 620),
+        Clickable_text("Finn x1", font_1, White, Orange, 600, 640),
+        Clickable_text("Jack x1", font_1, White, Orange, 600, 660),
+        Clickable_text("Bubblegum x1", font_1, White, Orange, 600, 680),
+        Clickable_text("Lumpy x1", font_1, White, Orange, 600, 700)
+        ]
+
 
 #current game mode (initial)
 game_status = "menu"
 instruction_page = 1
+
 
 
 #The function below basically groups all the drawings in one place 
@@ -196,7 +260,9 @@ def draw_window():
         window.blit(player1, (-50, 260)) #add player's image
         window.blit(player2, (400, -40))
         window.blit(player3, (800, 260))
-        gameplay_button.draw() 
+        gameplay_button.draw()
+
+      
 
         #grouped all cards 
         all_cards = {**main_cards, **action_cards, **character_cards} #Merge all card dictionaries together **
@@ -206,7 +272,11 @@ def draw_window():
         for name, image in all_cards.items(): #items(), lopping dict
             window.blit(image, current_position)
             current_position = [current_position[0] + 2, current_position[1]] #position of the deck of cards, +2 means the gap between cards
-    
+
+        #Display each card text on screen
+        for text in actions_text + character_text:
+            text.position()
+            text.draw_text(window)
 
     #PAUSING INTERFACE 
     elif game_status == "paused":
@@ -220,11 +290,15 @@ def draw_window():
             window.blit(result_img, (0,0))
 
 #DUMMY FUNCTIONS
+
+
 def draw_cards():
     print("Drawing card")
 
 def end_turn():
     print("Ending turn")
+    ''
+    ''
 
 def use_card():
     print("Using ")
@@ -232,6 +306,8 @@ def use_card():
 def shuffle_deck():
     print("Shuffling cards")
 
+def card_to_box():
+    print("Haha")
 
 
 #MAIN GAME LOOP
@@ -249,6 +325,7 @@ while game_running: #start the loop - keep going while the game is on
                 game_status = "playing"
                 
         #Buttons and pictures on Display based on current games status
+
     #=============== MENU SCREEN =================
         if game_status == "menu" and other_buttons["Start"].gets_clicked():
             button_sf.play()
@@ -322,6 +399,9 @@ while game_running: #start the loop - keep going while the game is on
 
 
 pygame.quit()
+
+
+
 
 
 
