@@ -237,12 +237,7 @@ character_text = [
         Clickable_text("Bubblegum", font_1, White, Orange, 670, 680),
         Clickable_text("Lumpy", font_1, White, Orange, 670, 700)
         ]
-
 all_text = [*actions_text, *character_text] #Merge all text together
-
-player1_text = font_2.render("Player 1", True, Black)
-player2_text = font_2.render("Player 2", True, Black)
-player3_text = font_2.render("Player 3", True, Black)
 
 
 
@@ -251,7 +246,7 @@ player3_text = font_2.render("Player 3", True, Black)
 #current game mode 
 game_status = "menu"
 instruction_page = 1
-
+current_player = 0 #Player1 = 0 ; Player2 = 1, Player3 = 2
 
 #======================================================= DRAWINGS ON SCREEN ============================================================
 
@@ -287,25 +282,41 @@ def draw_window():
 
     #=============== MAIN GAMEPLAY INTERFACE =================
     elif game_status == "playing":
+
         #background image 
         window.blit(background_img, (0,0)) 
+
+
 
         #player's image
         window.blit(player1, (-50, 260))
         window.blit(player2, (400, -40))
         window.blit(player3, (800, 260))
 
+
         #shield image
         window.blit(extra_shield_img, (470, 575) )
 
+
         #player's text
+        player_colour = [Dark_Green if i == current_player else Black for i in range(3)]
+        #render text into inmage for blitting later
+        player1_text = font_2.render("Player 1", Black, player_colour[0]) 
+        player2_text = font_2.render("Player 2", Black, player_colour[1])
+        player3_text = font_2.render("Player 3", Black, player_colour[2])
+        #display text with their positions on interface
         window.blit(player1_text, (40, 350))
         window.blit(player2_text, (470, 56))
         window.blit(player3_text, (855, 355))
+        
+
+        #Drawing "End Turn" button 
         gameplay_button.draw()
         
+
         #grouped all cards 
         all_cards = {**main_cards, **action_cards, **character_cards} #Merge all card dictionaries together **
+
 
         #Display each card on the screen
         current_position = [330, 250] #fixed position for all cards
@@ -414,6 +425,12 @@ while game_running: #start the loop - keep going while the game is on
     #=============== MAIN GAMEPLAY SCREEN =================
         elif game_status == "playing":
             
+            #Switching to next player
+            if gameplay_button.gets_clicked():
+                current_player += 1 #increment 1
+                if current_player > 2:
+                    current_player = 0 #loops back to fist player so player1 --> player 2 ---> player 3 ----> player 1
+
             #grouped all cards 
             all_cards = {**main_cards, **action_cards, **character_cards} #Merge all card dictionaries together **
 
@@ -457,6 +474,9 @@ while game_running: #start the loop - keep going while the game is on
 
 
 pygame.quit()
+
+
+
 
 
 
