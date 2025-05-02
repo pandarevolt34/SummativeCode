@@ -207,6 +207,12 @@ class Player:
 # ID: 5674312
 from Redblacktree import RedBlackTree
 
+''' Class for CardDeck:
+this class represents the deck that plays the role between the players and the red black tree which stores the cards
+initializing class; variable instances:
+    red_black_tree: stores the cards in the red black tree structure
+    counter: keeps track of how many cards have been removed so far
+    '''
 class CardDeck:
     def __init__(self):
         # the stack of cards
@@ -302,7 +308,6 @@ class CardDeck:
             # insert
             self.red_black_tree.insert_card(randomized_cards[i])
 
-
     def draw_a_card(self):
         # find card at the top of the deck
         node = self.red_black_tree.find_largest_node()
@@ -312,6 +317,7 @@ class CardDeck:
         card = node.card
         # delete node
         self.red_black_tree.delete(node)
+        self.counter += 1
         return card
 # ID 5674312
 
