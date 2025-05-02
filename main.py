@@ -97,10 +97,8 @@ class Hacker(ActionCard):
         super().__init__("Hacker", "Action", "Pick a card from any position in the deck", index)
 
     def perform_action(self, game, current_player):
-        if game.deck:
-            card = random.choice(game.deck) # picks a random card from the deck
-            game.deck.remove(card) # removes the random card from the deck
-            current_player.player_cards.append(card) # appends the random card to the player's cards
+        card = game.deck.red_black_tree.hacker_action() # picks a random card from the deck
+        current_player.player_cards.append(card) # appends the random card to the player's cards
         return True
 
 class TheSpell(ActionCard):
@@ -108,7 +106,7 @@ class TheSpell(ActionCard):
         # inheriting attributes from parent class Card
         super().__init__("The Spell", "Action", "Peek at the top 3 cards in the deck", index)
 
-    def perform_action(self, game, current_player):
+    def perform_action(self, game, current_player): # RAYAN FIX THIS: SEE TOP 3 CARDS
         print(f"Top three cards: {[c.card_name for c in game.deck[:3]]}") # gets the top 3 cards and includes them in a list to display to the player by using list comprehension
         return False
 
@@ -118,7 +116,7 @@ class Shuffle(ActionCard):
         super().__init__("Shuffle", "Action", "Shuffle the deck", index)
 
     def perform_action(self, game, current_player):
-        random.shuffle(game.deck)    ### NOTE TO GROUP: IMPLEMENT A SHUFFLING ALGORITHM (AS WELL AS IN THE MAIN LOOP)
+        random.shuffle(game.deck) # RAYAN FIX THIS   ### NOTE TO GROUP: IMPLEMENT A SHUFFLING ALGORITHM (AS WELL AS IN THE MAIN LOOP)
         print("The deck is shuffled")
         return False
 
@@ -128,7 +126,7 @@ class Reveal(ActionCard):
         super().__init__("Reveal", "Action", "Reveal the top 3 cards to all players", index)
         ### NOTE: THIS SHOULD APPEAR TO ALL PLAYERS; NOT LIKE THE SPELL
 
-    def perform_action(self, game, current_player):
+    def perform_action(self, game, current_player): # FIX THIS LIKE THE SPELL
         print(f"Cards revealed: {[c.card_name for c in game.deck[:3]]}") # gets the top 3 cards and includes them in a list to display to the player by using list comprehension
         return False
 

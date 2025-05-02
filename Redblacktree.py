@@ -1,5 +1,8 @@
 from queue import Queue
+from random import randint
+
 from main import Card
+import random
 # ID: 5674312
 ''' Class for RedBlackNode:
 initializing class; variable instances:
@@ -250,3 +253,22 @@ class RedBlackTree:
             print("children: ", node.left.card.index, " ", node.right.card.index)
             q.put(node.left)
             q.put(node.right)
+
+    # FUNCTIONS FOR ACTION CARDS:
+    def hacker_action(self):
+        # find a random card from the deck
+        node = self.root
+        while node != self.nil:
+            left_or_right = randint(0, 2)
+            # select randomly 0 or 1
+            if left_or_right == 0: # if 0 then go left
+                node = node.left
+            elif left_or_right == 1: # if 1 then go right
+                node = node.right
+            else: # if 2 then exit loop
+                break
+        if node == self.nil: # if it's nil then it must have a parent node containing a card
+            node = node.parent
+        card = node.card # store card data
+        self.delete(node) # delete selected node
+        return card
