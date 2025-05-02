@@ -291,6 +291,7 @@ class RedBlackTree:
             else:
                 return None
         return cards
+
     def shuffle_action(self):
         node = self.root
         while node != self.nil:

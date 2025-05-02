@@ -106,7 +106,7 @@ class TheSpell(ActionCard):
         # inheriting attributes from parent class Card
         super().__init__("The Spell", "Action", "Peek at the top 3 cards in the deck", index)
 
-    def perform_action(self, game, current_player):
+    def perform_action(self, game, current_player): # NEEDS FIXING TO CONSIDER BOT PLAYERS
         top_cards = game.deck.red_black_tree.the_spell_action()
         if top_cards is None:
             return None
@@ -132,7 +132,12 @@ class Reveal(ActionCard):
         ### NOTE: THIS SHOULD APPEAR TO ALL PLAYERS; NOT LIKE THE SPELL
 
     def perform_action(self, game, current_player): # FIX THIS LIKE THE SPELL
-        print(f"Cards revealed: {[c.card_name for c in game.deck[:3]]}") # gets the top 3 cards and includes them in a list to display to the player by using list comprehension
+        top_cards = game.deck.red_black_tree.the_spell_action()
+        if top_cards is None:
+            return None
+        print("Top 3 cards:")
+        for i in top_cards:
+            print(i.card_name)
         return False
 
 class BeatIt(ActionCard):
