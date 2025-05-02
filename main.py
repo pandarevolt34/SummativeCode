@@ -221,13 +221,13 @@ class CardDeck:
             # swap card stored at index with card stored at i
             arr[index], arr[i] = arr[i], arr[index]
 
-    def initialize_cards(self):
+    def initialize_cards(self, num_of_players):
         # will store an array of random indexes
         array_of_cards_indexes = []
         # will store the cards in a randomized order
         array_of_cards = []
         num_of_inserted_cards = 0
-        for i in range(42):
+        for i in range(42 + num_of_players*2):
             # multiply by 100 so that we can insert more cards in the tree later depending on query
             array_of_cards_indexes.append(i*100)
         # randomize indexes
@@ -283,11 +283,21 @@ class CardDeck:
             card.index = array_of_cards_indexes[num_of_inserted_cards]
             num_of_inserted_cards += 1
             array_of_cards.append(card)
+        for i in range(num_of_players):
+            card = Trouble()
+            card.index = array_of_cards_indexes[num_of_inserted_cards]
+            num_of_inserted_cards += 1
+            array_of_cards.append(card)
+        for i in range(num_of_players):
+            card = Shield()
+            card.index = array_of_cards_indexes[num_of_inserted_cards]
+            num_of_inserted_cards += 1
+            array_of_cards.append(card)
         return array_of_cards
 
-    def initialize_deck(self):
+    def initialize_deck(self, num_of_players):
         # randomized_cards is a list of card objects in a randomized order
-        randomized_cards = self.initialize_cards()
+        randomized_cards = self.initialize_cards(num_of_players)
         for i in range(len(randomized_cards)):
             # insert
             self.red_black_tree.insert_card(randomized_cards[i])
@@ -482,7 +492,7 @@ class Game:
 
     def initialize_game(self):
         """Initialize the game with card deck and deal appropriate cards to players"""
-        self.deck.initialize_deck()   ### NOTE: IMPLEMENT A FUNCTION THAT GETS THE INITIAL DECK WITHOUT TROUBLE AND SHIELD CARDS
+        self.deck.initialize_deck(len(self.players))   ### NOTE: IMPLEMENT A FUNCTION THAT GETS THE INITIAL DECK WITHOUT TROUBLE AND SHIELD CARDS
         # # dealing 5 cards to each player from initialized deck
         for player in self.players:
             for i in range(5):
