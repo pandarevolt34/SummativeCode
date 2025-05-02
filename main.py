@@ -121,7 +121,7 @@ class Shuffle(ActionCard):
         super().__init__("Shuffle", "Action", "Shuffle the deck", index)
 
     def perform_action(self, game, current_player):
-        random.shuffle(game.deck) # RAYAN FIX THIS   ### NOTE TO GROUP: IMPLEMENT A SHUFFLING ALGORITHM (AS WELL AS IN THE MAIN LOOP)
+        game.deck.red_black_tree.shuffle_action()
         print("The deck is shuffled")
         return False
 
