@@ -106,8 +106,13 @@ class TheSpell(ActionCard):
         # inheriting attributes from parent class Card
         super().__init__("The Spell", "Action", "Peek at the top 3 cards in the deck", index)
 
-    def perform_action(self, game, current_player): # RAYAN FIX THIS: SEE TOP 3 CARDS
-        print(f"Top three cards: {[c.card_name for c in game.deck[:3]]}") # gets the top 3 cards and includes them in a list to display to the player by using list comprehension
+    def perform_action(self, game, current_player):
+        top_cards = game.deck.red_black_tree.the_spell_action()
+        if top_cards is None:
+            return None
+        print("Top 3 cards:")
+        for i in top_cards:
+            print(i.card_name)
         return False
 
 class Shuffle(ActionCard):
