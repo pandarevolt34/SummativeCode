@@ -245,7 +245,7 @@ class RedBlackTree:
             node = q.get()
             if node == self.nil:
                 continue
-            print(node.card.index, end=" ")
+            print(node.card.index, " name: ", node.card.card_name, end=" ")
             if node.red:
                 print("RED", end= " - ")
             else:
@@ -283,7 +283,7 @@ class RedBlackTree:
         cards.append(node.card)
         if node.left != self.nil: # if 2nd largest node has a child to the left, then the left-child is the 3rd largest
             node = node.left
-            cards.append(node.left.card)
+            cards.append(node.card)
         else: # if 2nd largest node has no left-child, then it's parent is the 3rd largest
             node = node.parent
             if node != self.nil:
@@ -297,9 +297,11 @@ class RedBlackTree:
         while node != self.nil:
             if node.left != self.nil and node.right != self.nil:
                 card_left = node.left.card
+                index_card_left = node.left.card.index
                 card_right = node.right.card
+                index_card_right = node.right.card.index
                 node.left.card = card_right
+                node.left.card.index = index_card_left
                 node.right.card = card_left
-                node = node.right
-            else:
-                break
+                node.right.card.index = index_card_right
+            node = node.right
