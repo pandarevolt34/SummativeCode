@@ -354,20 +354,20 @@ class Hand:
 
     def manage_trouble_card(self, player):
         """Manages the effects of drawing a trouble card"""
-        if not player.has_shield:
-            print(f"{player.player_name} You're in Trouble and therefore out of the game!")
-            self.players.remove(player)  # remove a player if they don't have a shield card
-
-            if len(self.players) == 1:  # checks for winning case if only one player remains
-                self.game_over = True  # declares game over
-                print(f"{self.players[0].player_name} is the winner!")
-
-        else:
+        if player.has_shield:
             print(f"{player.player_name} has The Shield. You are safe!")
             # removes the shield card if player got trouble card (to cancel out the effect)
-            player.has_shield = False  # Note: implement a check for multiple shields
+            player.has_shield = False # Note: implement a check for multiple shields
+        else:
+            print(f"{player.player_name} You're in Trouble and therefore out of the game!")
+            self.players.remove(player) # remove a player if they don't have a shield card
 
-    def player_plays_card(self, player, card_index):
+            # check for winning case if only one player remains
+            if len(self.players) == 1:
+                self.game_over = True # declares game over
+                print(f"{self.players[0].player_name} is the winner!")
+
+    def player_plays_card(self, player, card_index):   ### NOTE TO GROUP: This function may be removed (duplication in main loop)
         """Play a card from the player's cards in hand"""
         # make sure the card index is within the cards in player's cards
         if 0 <= card_index < len(player.player_cards):
@@ -476,10 +476,11 @@ class Game:
         self.players = [Player(name) for name in player_names]
         self.current_player_index = 0 # initializing the index of the current player
         self.discard_card_pile = []  # initializing an empty list to store the played cards
-        self.deck = CardDeck()
+        self.deck = CardDeck() #creating CardDeck instance; making CardDeck a property of Game
         self.turn_direction = 1 # sets the direction to 1 for clockwise and -1 for anticlockwise
         self.initialize_game()  # sets the game; card dealing, picking a player to start, card deck ready...
         self.game_over = False
+        self.hand = Hand(player_names) # creating Hand instance; making Hand a property of Game
 
     def players_setup(self):
         """Sets the players with a human player and a chosen number of bots"""
@@ -518,7 +519,7 @@ class Game:
             player.player_cards.append(shield_card)
             player.has_shield = True
 
-    def shuffle_deck(self):
+    def shuffle_deck(self): ### NOTE TO GROUP: this function may be deleted if it has no use
         pass # to be continued
 
     def start_player_turn(self):
@@ -567,15 +568,20 @@ class Game:
 
         elif action['type'] == 'end_turn':
             self.end_turn()
+
     #5674312
     def handle_bot_turn(self, bot):
         pass # to be continued after bot implementation...
     #5674312
+
     def next_player_turn(self):
         """Move on to the next player's turn"""
         self.current_player_index = (self.current_player_index + self.turn_direction) % len(self.players) # move to next player
-        if len(self.players) > 1: # check if the game is still ongoing; no winner yet
-            self.players[self.current_player_index].character_counts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0} # reset character counter at the start of turn
+
+        current_player = self.players[self.current_player_index]
+        current_player.character_counts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0} # reset character counter at the start of turn
+
+        print(f"{current_player.player_name}'s turn!")
         # NOTE: character counter tracker needs modification
 
     def main_loop(self):
@@ -587,10 +593,69 @@ class Game:
             # start the game
             print(f"{current_player.player_name}'s turn!")
 
+            ### HANDLE IN INTERFACE
+            print("Cards in hand:")
+            for i, card in enumerate(current_player.player_cards):
+                print(f"{i+1}. {card.card_name}") # displaying player's hand
 
+            # player turn loop
+            turn_ended = False
+            while not turn_ended and not self.game_over:
+                # display choices to the player
+                print("1: Play a card")
+                print("2: End turn")
 
+                try:
+                    choice = int(input("Enter your choice: ")) # get player's choices
+                    if choice == 1: # option 1 to play a card
+                        if not current_player.player_cards:
+                            print("No cards to play!")
+                            continue # skip back to the choices display
 
+                        print("Pick a card to play:") # re-display the player's hand with description of cards
+                        for i, card in enumerate(current_player.player_cards):
+                            print(f"{i+1}. {card.card_name}: {card.card_description}")
 
+                        try:
+                            chosen_card = int(input("Choose a card: ")) - 1
+                            if 0 <= chosen_card < len(current_player.player_cards):
+                                card = current_player.player_cards[chosen_card]
+
+                                # manage different card types
+                                if card.card_type == "Action":
+                                    if card.perform_action(self, current_player):
+                                        current_player.player_cards.pop(chosen_card)
+                                        self.discard_card_pile.append(card)
+                                        self.hand.last_played_action_card = card
+                                        print(f"Card played: {card.card_name}") ### NOTE TO GROUP: these print statements are just for clarification as it will be removed in the interface
+
+                                elif card.card_type == "Character":
+                                    self.hand.manage_character_cards(current_player, card)
+                                    current_player.player_cards.pop(chosen_card)
+                                    self.discard_card_pile.append(card)
+                                    print(f"Card played: {card.card_name}")
+
+                                else: # for other card types; like the shield
+                                    print("THis card cannot be played directly")
+                            else:
+                                print("Card does not exist!")
+                        except ValueError:
+                            print("Enter a valid number.")
+
+                    elif choice == 2: # option 2 to end turn
+                        self.hand.end_turn(current_player)
+                        turn_ended = True # exit the player turn loop
+
+                    else: # if input is not 1 or 2
+                        print("Enter 1 or 2:")
+
+                except ValueError:
+                    print("Enter a valid number.")
+
+                # move on to next player while game is still ongoing
+            if not self.game_over:
+                self.next_player_turn()
+                current_player = self.players[self.current_player_index] # update current player
 
 # ID: 5676233
 
