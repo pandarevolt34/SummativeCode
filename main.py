@@ -40,12 +40,12 @@ initializing class by inheriting from class Card; variable instances:
 class CharacterCard(Card):
     def __init__(self, character_number, index = -1):
         names = {
-            1: "A",
-            2: "B",
-            3: "C",
-            4: "D",
-            5: "E",
-            6: "F"
+            1: "Ice King",
+            2: "BMO",
+            3: "Finn",
+            4: "Jack",
+            5: "Bubblegum",
+            6: "Lumpy"
         }
         super().__init__(
             card_name = names[character_number],
@@ -585,6 +585,17 @@ class Game:
 
 
 
+
+        cards = []
+        while True:
+            card = self.deck.draw_a_card()
+            if card is None:
+                break
+            cards.append(card)
+        self.deck.fisher_yates_shuffle(cards)
+
+        for card in cards:
+            self.deck.red_black_tree.insert_card(card)
 # ID: 5676233
 
 
