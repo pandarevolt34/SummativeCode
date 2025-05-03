@@ -233,11 +233,17 @@ class CardDeck:
         # will store the cards in a randomized order
         array_of_cards = []
         num_of_inserted_cards = 0
-        for i in range(42 + num_of_players*2):
+        for i in range(72):
             # multiply by 100 so that we can insert more cards in the tree later depending on query
             array_of_cards_indexes.append(i*100)
         # randomize indexes
         self.fisher_yates_shuffle(array_of_cards_indexes)
+        for i in range(1, 7):
+            card = CharacterCard(i, -1)
+            for j in range(4):
+                card.index = array_of_cards_indexes[num_of_inserted_cards]
+                num_of_inserted_cards += 1
+                array_of_cards.append(card)
         for i in range(4):
             card = SickLeave()
             # link card with a random index
