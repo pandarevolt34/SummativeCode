@@ -240,8 +240,7 @@ class CardDeck:
         self.fisher_yates_shuffle(array_of_cards_indexes)
         for i in range(1, 7):
             for j in range(4):
-                card = CharacterCard(i, -1)
-                card.index = array_of_cards_indexes[num_of_inserted_cards]
+                card = CharacterCard(i, array_of_cards_indexes[num_of_inserted_cards])
                 num_of_inserted_cards += 1
                 array_of_cards.append(card)
         for i in range(4):
