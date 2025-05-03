@@ -289,12 +289,12 @@ class CardDeck:
             card.index = array_of_cards_indexes[num_of_inserted_cards]
             num_of_inserted_cards += 1
             array_of_cards.append(card)
-        for i in range(num_of_players):
+        for i in range(num_of_players - 1):
             card = Trouble()
             card.index = array_of_cards_indexes[num_of_inserted_cards]
             num_of_inserted_cards += 1
             array_of_cards.append(card)
-        for i in range(num_of_players):
+        for i in range(7 - num_of_players):
             card = Shield()
             card.index = array_of_cards_indexes[num_of_inserted_cards]
             num_of_inserted_cards += 1
@@ -344,6 +344,7 @@ class Hand:
             if card.card_name == "You're in Trouble":  # handles drawing a trouble card case from manage_trouble_card function
                 self.manage_trouble_card(player)
             return card
+        # NOTE FROM RAYAN: The return ends the function and it won't reach this line
         self.current_player_index = (self.current_player_index + 1) % len(self.players) # move to next player
 
     def manage_trouble_card(self, player):
@@ -512,17 +513,6 @@ class Game:
             player.player_cards.append(shield_card)
             player.has_shield = True
 
-        # figure out how many trouble cards to add back to the deck after shuffling
-        num_trouble_cards = len(self.players) - 1
-
-        # add the appropriate number of trouble cards back to the deck
-        for i in range(num_trouble_cards):
-            trouble_card = Trouble()
-            self.deck.insert_card(trouble_card)
-
-        self.shuffle_deck() # shuffles the deck after adding trouble cards back (last shuffle before game starts)
-        ### NOTE TO GROUP: shuffle_deck and insert_card functions should be added to CardDeck class
-
     def shuffle_deck(self):
         pass # to be continued
 
@@ -531,7 +521,7 @@ class Game:
         current_player = self.players[self.current_player_index]
 
         if current_player.player_name.startswith("CPU"):
-            self.handle_bot_turn()
+            self.handle_bot_turn(current_player)
         else:
             self.waiting_for_player_action = True
             self.current_player_actions = self.get_available_actions(current_player)
@@ -572,10 +562,10 @@ class Game:
 
         elif action['type'] == 'end_turn':
             self.end_turn()
-
-    def handle_bot_turn(self):
+    #5674312
+    def handle_bot_turn(self, bot):
         pass # to be continued after bot implementation...
-
+    #5674312
     def next_player_turn(self):
         """Move on to the next player's turn"""
         self.current_player_index = (self.current_player_index + self.turn_direction) % len(self.players) # move to next player
@@ -599,4 +589,3 @@ class Game:
 
 
 ##### NOTE TO GROUP: Add docstrings + fix docstring format
-
