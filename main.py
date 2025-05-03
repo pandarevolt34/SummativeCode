@@ -657,6 +657,7 @@ class Game:
                 self.next_player_turn()
                 current_player = self.players[self.current_player_index] # update current player
 
+
 # ID: 5676233
 
 
