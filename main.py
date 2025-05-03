@@ -167,12 +167,13 @@ class BegYou(ActionCard):
 class NoChance(ActionCard):
     def __init__(self, index = -1):
         # inheriting attributes from parent class Card
-        super().__init__("No Chance", "Action", "Block action or character cards from other players", index)
+        super().__init__("No Chance", "Action", "Block action cards from other players", index)
 
     def perform_action(self, game, current_player):
         print(f"{current_player.name} played No Chance")
-        ### NOTE TO GROUP: REJECTION FUNCTION WILL BE ADDED HERE DURING IMPLEMENTATION IN THE MAIN LOOP
-        return False
+        current_player.has_block = True # indicates that the player has a ready block response
+        return True
+
 
 class Mirror(ActionCard):
     def __init__(self, index = -1):
@@ -180,10 +181,25 @@ class Mirror(ActionCard):
         super().__init__("No Chance", "Action", "Copy the last played action card", index)
 
     def perform_action(self, game, current_player):
-        if game.last_played_action_card and game.last_played_action_card.card_name not in ["Mirror", "You're in Trouble"]: # error handling
-            print(f"Mirroring {game.last_played_action_card.card_name}")
-            ### NOTE TO GROUP: COPYING FUNCTION WILL BE ADDED HERE DURING IMPLEMENTATION IN THE MAIN LOOP
-        return False
+        if not game.last_played_action_card and game.last_played_action_card.card_name not in ["Mirror", "You're in Trouble"]: # error handling
+            print("No action card to mirror.")
+            return False
+
+        last_card = game.last_played_action_card
+        print(f"Mirroring {last_card.card_name}")
+
+        try:
+            # create instances of the same card type
+            new_card = type(last_card)(index=-1) # using -1 as a temporary index
+            result = new_card.perform_action(game, current_player)
+
+            if result:
+                return True
+            return False
+
+        except Exception as e:
+            print(f"Mirror failed: {str(e)}")
+            return False
 # ID: 5676233
 
 # ID: 5676233
@@ -202,6 +218,7 @@ class Player:
         self.player_cards = []
         self.has_shield = False
         self.character_counts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0}
+        self.has_block = False
 # ID: 5676233
 
 # ID: 5674312
@@ -340,8 +357,10 @@ class Hand:
         self.game_over = False
         self.deck = CardDeck()
 
+
     def end_turn(self, player): ### NOTE TO GROUP: changed draw_card to be 'End Turn' functionality
         """Draw a card from the deck to end turn and progress to next player"""
+        player.has_block = False # Reset unused 'no chance' block states
         card = self.deck.draw_a_card()
         if card:
             player.player_cards.append(card)  # adds the card to the player's cards
@@ -480,7 +499,7 @@ class Game:
         self.turn_direction = 1 # sets the direction to 1 for clockwise and -1 for anticlockwise
         self.initialize_game()  # sets the game; card dealing, picking a player to start, card deck ready...
         self.game_over = False
-        self.hand = Hand(player_names) # creating Hand instance; making Hand a property of Game
+        self.hand = Hand(self) # passing game instance to Hand
 
     def players_setup(self):
         """Sets the players with a human player and a chosen number of bots"""
@@ -522,7 +541,7 @@ class Game:
     def shuffle_deck(self): ### NOTE TO GROUP: this function may be deleted if it has no use
         pass # to be continued
 
-    def start_player_turn(self):
+    '''def start_player_turn(self):
         """Starts the player's turn while handling both the human and bot turns"""
         current_player = self.players[self.current_player_index]
 
@@ -530,7 +549,7 @@ class Game:
             self.handle_bot_turn(current_player)
         else:
             self.waiting_for_player_action = True
-            self.current_player_actions = self.get_available_actions(current_player)
+            self.current_player_actions = self.get_available_actions(current_player)'''
 
     def get_available_actions(self, player):
         """Get all the available actions for a player"""
@@ -548,7 +567,7 @@ class Game:
         ### NOTE: add an end turn action
         return actions
 
-    def handle_player_action(self, action):
+    def handle_player_action(self, action): ### NOTE TO GROUP: This function may be removed (duplication in main loop)
         """Handle all possible cases of a player's chosen action card"""
         if action['type'] == 'play_card':
             card_index = action['card_index']
@@ -560,14 +579,15 @@ class Game:
                 if card.card_type == "Action":
                     card.perform_action(self, current_player)
                 elif card.card_type == "Character":
-                    self.manage_character_cards(current_player, card)
+                    self.hand.manage_character_cards(current_player, card)
 
                 # remove the played card and add it to discard pile
                 current_player.player_cards.pop(card_index)
                 self.discard_card_pile.append(card)
 
         elif action['type'] == 'end_turn':
-            self.end_turn()
+            self.hand.end_turn()
+    # ID: 5676233
 
     #5674312
     def handle_bot_turn(self, bot):
@@ -623,11 +643,18 @@ class Game:
 
                                 # manage different card types
                                 if card.card_type == "Action":
-                                    if card.perform_action(self, current_player):
-                                        current_player.player_cards.pop(chosen_card)
-                                        self.discard_card_pile.append(card)
-                                        self.hand.last_played_action_card = card
-                                        print(f"Card played: {card.card_name}") ### NOTE TO GROUP: these print statements are just for clarification as it will be removed in the interface
+                                    # handling the 'no chance' card; check if another player is blocking
+                                    for opponent in [p for p in self.players if p != current_player]:
+                                        if opponent.has_block and card.card_type in ["Action", "Character"]:
+                                            print(f"{opponent.player_name} blocks with 'No Chance'")
+                                            opponent.has_block = False
+                                            break
+                                    else:
+                                        if card.perform_action(self, current_player):
+                                            current_player.player_cards.pop(chosen_card)
+                                            self.discard_card_pile.append(card)
+                                            self.hand.last_played_action_card = card
+                                            print(f"Card played: {card.card_name}") ### NOTE TO GROUP: these print statements are just for clarification as it will be removed in the interface
 
                                 elif card.card_type == "Character":
                                     self.hand.manage_character_cards(current_player, card)
