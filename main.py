@@ -592,16 +592,7 @@ class Game:
 
 
 
-        cards = []
-        while True:
-            card = self.deck.draw_a_card()
-            if card is None:
-                break
-            cards.append(card)
-        self.deck.fisher_yates_shuffle(cards)
 
-        for card in cards:
-            self.deck.red_black_tree.insert_card(card)
 # ID: 5676233
 
 
