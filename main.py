@@ -178,7 +178,7 @@ class NoChance(ActionCard):
 class Mirror(ActionCard):
     def __init__(self, index = -1):
         # inheriting attributes from parent class Card
-        super().__init__("No Chance", "Action", "Copy the last played action card", index)
+        super().__init__("Mirror", "Action", "Copy the last played action card", index)
 
     def perform_action(self, game, current_player):
         if not game.last_played_action_card and game.last_played_action_card.card_name not in ["Mirror", "You're in Trouble"]: # error handling
@@ -640,21 +640,23 @@ class Game:
                             chosen_card = int(input("Choose a card: ")) - 1
                             if 0 <= chosen_card < len(current_player.player_cards):
                                 card = current_player.player_cards[chosen_card]
+                                # handling the 'no chance' card; check if another player is blocking
+                                if card.card_type in ["Action", "Character"]:
+                                    blocked = any(p.has_block for p in self.players if p != current_player)
+
+                                    if blocked:
+                                        blocker = next(p for p in self.players if p.has_block)
+                                        print(f"{blocker.player_name} blocks using 'No Chance'")
+                                        blocker.has_block = False
+                                        continue
 
                                 # manage different card types
                                 if card.card_type == "Action":
-                                    # handling the 'no chance' card; check if another player is blocking
-                                    for opponent in [p for p in self.players if p != current_player]:
-                                        if opponent.has_block and card.card_type in ["Action", "Character"]:
-                                            print(f"{opponent.player_name} blocks with 'No Chance'")
-                                            opponent.has_block = False
-                                            break
-                                    else:
-                                        if card.perform_action(self, current_player):
-                                            current_player.player_cards.pop(chosen_card)
-                                            self.discard_card_pile.append(card)
-                                            self.hand.last_played_action_card = card
-                                            print(f"Card played: {card.card_name}") ### NOTE TO GROUP: these print statements are just for clarification as it will be removed in the interface
+                                    if card.perform_action(self, current_player):
+                                        current_player.player_cards.pop(chosen_card)
+                                        self.discard_card_pile.append(card)
+                                        self.hand.last_played_action_card = card
+                                        print(f"Card played: {card.card_name}") ### NOTE TO GROUP: these print statements are just for clarification as it will be removed in the interface
 
                                 elif card.card_type == "Character":
                                     self.hand.manage_character_cards(current_player, card)
