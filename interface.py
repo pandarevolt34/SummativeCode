@@ -20,11 +20,12 @@ instruction2_img = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chi
 ready2play_img = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/press to start.png"), (1000, 800))
 menu_img = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/menu image.png"), (1000, 800))
 paused_img = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/paused image.jpg"), (1000, 800))
+option_img = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/Background Image.png"), (1000, 800))
 
 #Main Gameplay image   
-player1 = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/PLAYER 1.png").convert_alpha(), (250,200)) #width and height both 200
-player2 = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/PLAYER 2.png").convert_alpha(), (250,200)) #width and height both 200
-player3 = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/PLAYER 3.png").convert_alpha(), (250,200)) #width and height both 200
+player_ver_left = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/vertical left.png").convert_alpha(), (250,200)) #width and height both 200
+player_hori_mid = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/horizontal.png").convert_alpha(), (250,200)) #width and height both 200
+player_ver_right = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/vertical right.png").convert_alpha(), (250,200)) #width and height both 200
 
 #Define colours for drawing purpose
 Dark_Green	= (0, 100, 0)
@@ -34,6 +35,7 @@ White = (255, 255, 255)
 Dark_Blue = (0, 0, 139)
 Light_Blue = (173, 216, 230)
 Orange = (255, 165, 0)
+
 
 
 
@@ -213,7 +215,12 @@ ready_button = TheButton("Play Game", 430, 450, True)
 other_buttons = {"Start": TheButton("Start Game", 430, 380, True), 
                  "resume": TheButton("Resume", 430, 300, True), 
                  "Menu": TheButton("Main Menu", 430, 360, True) }
-option_button = TheButton("Options", 900, 700, True)
+option_button ={"2P":  TheButton("2 Players", 400, 300, True), 
+                "3P": TheButton("3 Players", 400, 360, True), 
+                "4P": TheButton("4 Players", 400, 420, True)
+                }
+
+
 
 #Action cards text for display
 actions_text = [
@@ -248,6 +255,8 @@ all_text = [*actions_text, *character_text] #Merge all text together
 game_status = "menu"
 instruction_page = 1
 current_player = 0 #Player1 = 0 ; Player2 = 1, Player3 = 2
+num_players = 0
+
 
 #======================================================= DRAWINGS ON SCREEN ============================================================
 
@@ -274,43 +283,70 @@ def draw_window():
             window.blit(instruction2_img, (0,0))
             Next_button.draw()
             previous_button.draw()
-          
-        #ready to play (screen before main gameplay) 
+        
         elif instruction_page == 3:
             window.blit(ready2play_img, (0,0))
             ready_button.draw()
             previous_button.draw()
+          
 
-    #=============== MAIN GAMEPLAY INTERFACE =================
+    #================= READY 2 PLAY SCREEN ============
+    elif game_status == "Start Game":
+        window.blit(ready2play_img, (0,0))
+        ready_button.draw()
+        previous_button.draw()
+
+    #================ OPTION SCREEN =================
+    elif game_status == "select player":
+        window.blit(option_img, (0,0))
+
+        for button in option_button.values():
+            button.draw()
+        
+
+           
+
+        
+    #================ GAMEPLAY SCREEN ===============
     elif game_status == "playing":
-
+        
         #background image 
         window.blit(background_img, (0,0)) 
+        
+        #player's text
+        player_colour = [Dark_Green if i == current_player else Black for i in range(num_players)]
 
+        #display text with their positions on interface
+        if num_players == 2:
+            window.blit(player_hori_mid, (400, -40))
+            player1_text = font_2.render("Player 1", Black, player_colour[0]) 
+            window.blit(player1_text, (470, 56)) 
 
+        if num_players == 3:
+            window.blit(player_ver_left, (-50, 260))
+            window.blit(player_ver_right, (800, 260))
+            player1_text = font_2.render("Player 1", True, player_colour[0])
+            player2_text = font_2.render("Player 2", True, player_colour[1])
+            window.blit(player1_text, (40, 350))
+            window.blit(player2_text, (855, 355))
 
-        #player's image
-        window.blit(player1, (-50, 260))
-        window.blit(player2, (400, -40))
-        window.blit(player3, (800, 260))
+        if num_players == 4:
+            window.blit(player_ver_left, (-50, 260))
+            window.blit(player_hori_mid, (400, -40))
+            window.blit(player_ver_right, (800, 260))
+            player1_text = font_2.render("Player 1", True, player_colour[0])
+            player2_text = font_2.render("Player 2", True, player_colour[1])
+            player3_text = font_2.render("Player 3", True, player_colour[2])
+            window.blit(player1_text, (40, 350))
+            window.blit(player2_text, (470, 55))
+            window.blit(player3_text, (855, 355))
 
+        
 
         #shield image
         window.blit(extra_shield_img, (470, 575) )
 
-
-        #player's text
-        player_colour = [Dark_Green if i == current_player else Black for i in range(3)]
-        #render text into inmage for blitting later
-        player1_text = font_2.render("Player 1", Black, player_colour[0]) 
-        player2_text = font_2.render("Player 2", Black, player_colour[1])
-        player3_text = font_2.render("Player 3", Black, player_colour[2])
-        #display text with their positions on interface
-        window.blit(player1_text, (40, 350))
-        window.blit(player2_text, (470, 56))
-        window.blit(player3_text, (855, 355))
         
-
         #Drawing "End Turn" button 
         gameplay_button.draw()
         
@@ -384,11 +420,13 @@ while game_running: #start the loop - keep going while the game is on
                 
         #Buttons and pictures on Display based on current games status
 
-    #=============== MENU SCREEN =================
+
+    #================ MENU SCREEN =================
         if game_status == "menu" and other_buttons["Start"].gets_clicked():
             button_sf.play()
             pygame.time.delay(300)
             game_status = "instruction"
+
 
     #================ INSTRUCTION SCREEN =================
        
@@ -419,17 +457,49 @@ while game_running: #start the loop - keep going while the game is on
                 elif ready_button.gets_clicked():
                     button_sf.play()
                     pygame.time.delay(300)
-                    fade_transition(1000, 800, White, "playing")
-                    game_status = "playing"
-                    
-        
+                    game_status = "select player"
+    
+    #================= READY 2 PLAY SCREEN ============
+        elif game_status == "Start Game":
+            button_sf.play()
+            pygame.time.delay(300)
+            game_status = "select player"  
+
+    #================ OPTION SCREEN =================
+        elif game_status == "select player":
+            if option_button["2P"].gets_clicked():
+                button_sf.play()
+                pygame.time.delay(300)
+                num_players = 2
+                current_player = 0
+                fade_transition(1000, 800, White, "playing")
+                game_status = "playing"
+
+            elif option_button["3P"].gets_clicked():
+                button_sf.play()
+                pygame.time.delay(300)
+                num_players = 3
+                current_player= 0
+                fade_transition(1000, 800, White, "playing")
+                game_status = "playing"
+
+            elif option_button["4P"].gets_clicked():
+                button_sf.play()
+                pygame.time.delay(300)
+                num_players = 4
+                current_player= 0
+                fade_transition(1000, 800, White, "playing")
+                game_status = "playing"
+
+    
+
     #=============== MAIN GAMEPLAY SCREEN =================
         elif game_status == "playing":
             
             #Switching to next player
             if gameplay_button.gets_clicked():
                 current_player += 1 #increment 1
-                if current_player > 2:
+                if current_player >= num_players:
                     current_player = 0 #loops back to fist player so player1 --> player 2 ---> player 3 ----> player 1
 
             #grouped all cards 
@@ -476,7 +546,6 @@ while game_running: #start the loop - keep going while the game is on
 
 
 pygame.quit()
-
 
 
 
