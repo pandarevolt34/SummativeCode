@@ -14,18 +14,18 @@ window = pygame.display.set_mode((1000, 800))
 pygame.display.set_caption("YOU'RE in trouble") #sets the title at the top of the window
 
 #Background Images
-background_img = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/Gameplay Backg 2.png"), (1000, 800))
-instruction1_img = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/Instruction 1.png"), (1000, 800))
-instruction2_img = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/Instruction 2.png"), (1000, 800))
-ready2play_img = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/press to start.png"), (1000, 800))
-menu_img = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/menu image.png"), (1000, 800))
-paused_img = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/paused image.jpg"), (1000, 800))
-option_img = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/Background Image.png"), (1000, 800))
+background_img = pygame.transform.scale(pygame.image.load("Python image/Gameplay Backg 2.png"), (1000, 800))
+instruction1_img = pygame.transform.scale(pygame.image.load("Python image/Instruction 1.png"), (1000, 800))
+instruction2_img = pygame.transform.scale(pygame.image.load("Python image/Instruction 2.png"), (1000, 800))
+ready2play_img = pygame.transform.scale(pygame.image.load("Python image/press to start.png"), (1000, 800))
+menu_img = pygame.transform.scale(pygame.image.load("Python image/menu image.png"), (1000, 800))
+paused_img = pygame.transform.scale(pygame.image.load("Python image/paused image.jpg"), (1000, 800))
+option_img = pygame.transform.scale(pygame.image.load("Python image/Background Image.png"), (1000, 800))
 
 #Main Gameplay image   
-player_ver_left = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/vertical left.png").convert_alpha(), (250,200)) #width and height both 200
-player_hori_mid = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/horizontal.png").convert_alpha(), (250,200)) #width and height both 200
-player_ver_right = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/vertical right.png").convert_alpha(), (250,200)) #width and height both 200
+player_ver_left = pygame.transform.scale(pygame.image.load("Python image/vertical left.png").convert_alpha(), (250,200)) #width and height both 200
+player_hori_mid = pygame.transform.scale(pygame.image.load("Python image/horizontal.png").convert_alpha(), (250,200)) #width and height both 200
+player_ver_right = pygame.transform.scale(pygame.image.load("Python image/vertical right.png").convert_alpha(), (250,200)) #width and height both 200
 
 #Define colours for drawing purpose
 Dark_Green	= (0, 100, 0)
@@ -43,47 +43,47 @@ Orange = (255, 165, 0)
 #e.g. image size (150, 240)
 #1. Main Cards
 main_cards = {
-    "shield_image" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/shield.png").convert_alpha(), (150, 240)),
-    "trouble_image" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/trouble.png").convert_alpha(), (150, 240)),
+    "shield_image" : pygame.transform.scale(pygame.image.load("Python image/shield.png").convert_alpha(), (150, 240)),
+    "trouble_image" : pygame.transform.scale(pygame.image.load("Python image/trouble.png").convert_alpha(), (150, 240)),
     }
 
 #an extra shield that will be displayed next to the screen
-extra_shield_img = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/shield.png").convert_alpha(), (100, 160))
+extra_shield_img = pygame.transform.scale(pygame.image.load("Python image/shield.png").convert_alpha(), (100, 160))
 shield_rect = extra_shield_img.get_rect(topleft=(470, 575))
 
 #2. Action Cards 
 action_cards = {
-    "Sick Leave" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/sickleave.png").convert_alpha(), (150, 240)),
-    "U turn" :pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/uturn.png").convert_alpha(), (150, 240)), 
-    "Hacker" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/hacker.png").convert_alpha(), (150, 240)), 
-    "The Spell" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/spell.png").convert_alpha(), (150, 240)), 
-    "Shuffle" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/shuffle.png").convert_alpha(), (150, 240)), 
-    "Reveal" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/reveal.png").convert_alpha(), (150, 240)), 
-    "Beat" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/Beat.png").convert_alpha(), (150, 240)), 
-    "Beg You" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/Beg.png").convert_alpha(), (150, 240)), 
-    "No Chance" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/nochance.png").convert_alpha(), (150, 240)),
-    "Mirror" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/Mirror.png").convert_alpha(), (150, 240))
+    "Sick Leave" : pygame.transform.scale(pygame.image.load("Python image/sickleave.png").convert_alpha(), (150, 240)),
+    "U turn" :pygame.transform.scale(pygame.image.load("Python image/uturn.png").convert_alpha(), (150, 240)), 
+    "Hacker" : pygame.transform.scale(pygame.image.load("Python image/hacker.png").convert_alpha(), (150, 240)), 
+    "The Spell" : pygame.transform.scale(pygame.image.load("Python image/spell.png").convert_alpha(), (150, 240)), 
+    "Shuffle" : pygame.transform.scale(pygame.image.load("Python image/shuffle.png").convert_alpha(), (150, 240)), 
+    "Reveal" : pygame.transform.scale(pygame.image.load("Python image/reveal.png").convert_alpha(), (150, 240)), 
+    "Beat" : pygame.transform.scale(pygame.image.load("Python image/Beat.png").convert_alpha(), (150, 240)), 
+    "Beg You" : pygame.transform.scale(pygame.image.load("Python image/Beg.png").convert_alpha(), (150, 240)), 
+    "No Chance" : pygame.transform.scale(pygame.image.load("Python image/nochance.png").convert_alpha(), (150, 240)),
+    "Mirror" : pygame.transform.scale(pygame.image.load("Python image/Mirror.png").convert_alpha(), (150, 240))
     }
 
 #3. Character Cards
 character_cards = {
-    "Ice King" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/char1.png").convert_alpha(), (150, 240)), 
-    "Bimo" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/char2.png").convert_alpha(), (150, 240)),
-    "Finn" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/char3.png").convert_alpha(), (150, 240)), 
-    "Jack" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/char4.png").convert_alpha(), (150, 240)), 
-    "Bubblegum" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/char5.png").convert_alpha(), (150, 240)), 
-    "Lumpy" : pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/char6.png").convert_alpha(), (150, 240)), 
+    "Ice King" : pygame.transform.scale(pygame.image.load("Python image/char1.png").convert_alpha(), (150, 240)), 
+    "Bimo" : pygame.transform.scale(pygame.image.load("Python image/char2.png").convert_alpha(), (150, 240)),
+    "Finn" : pygame.transform.scale(pygame.image.load("Python image/char3.png").convert_alpha(), (150, 240)), 
+    "Jack" : pygame.transform.scale(pygame.image.load("Python image/char4.png").convert_alpha(), (150, 240)), 
+    "Bubblegum" : pygame.transform.scale(pygame.image.load("Python image/char5.png").convert_alpha(), (150, 240)), 
+    "Lumpy" : pygame.transform.scale(pygame.image.load("Python image/char6.png").convert_alpha(), (150, 240)), 
     }
 
 card_list = []
 
-action_pile = None 
 
 #======================================================== GAME EFFECTS =============================================================
 
 #1. Sound effects 
-button_sf = pygame.mixer.Sound("C:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/button click.mp3")
-text_sf = pygame.mixer.Sound("C:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/text sound (2).mp3")
+button_sf = pygame.mixer.Sound("Python image/button click.mp3")
+text_sf = pygame.mixer.Sound("Python image/text sound (2).mp3")
+shield_sf = pygame.mixer.Sound("Python image/shield.mp3")
 
 #2. Fade transition effect between screens
 def fade_transition(width, height,colour, next_screen):
@@ -215,9 +215,9 @@ ready_button = TheButton("Play Game", 430, 450, True)
 other_buttons = {"Start": TheButton("Start Game", 430, 380, True), 
                  "resume": TheButton("Resume", 430, 300, True), 
                  "Menu": TheButton("Main Menu", 430, 360, True) }
-option_button ={"2P":  TheButton("2 Players", 400, 300, True), 
-                "3P": TheButton("3 Players", 400, 360, True), 
-                "4P": TheButton("4 Players", 400, 420, True)
+option_button ={"2P":  TheButton("2 Players", 390, 300, True), 
+                "3P": TheButton("3 Players", 390, 360, True), 
+                "4P": TheButton("4 Players", 390, 420, True)
                 }
 
 
@@ -247,6 +247,8 @@ character_text = [
         ]
 all_text = [*actions_text, *character_text] #Merge all text together
 
+text_1 = font_1.render("Press SPACE key to pause", True, Dark_Green)
+text_2 = font_2.render("Select players:", True, Black)
 
 
 #====================================================== INTIALISE GAME MODE ==========================================================
@@ -255,6 +257,7 @@ all_text = [*actions_text, *character_text] #Merge all text together
 game_status = "menu"
 instruction_page = 1
 current_player = 0 #Player1 = 0 ; Player2 = 1, Player3 = 2
+action_pile = None 
 num_players = 0
 
 
@@ -300,6 +303,8 @@ def draw_window():
     elif game_status == "select player":
         window.blit(option_img, (0,0))
 
+        window.blit(text_2, (355, 250))
+
         for button in option_button.values():
             button.draw()
         
@@ -312,7 +317,11 @@ def draw_window():
         
         #background image 
         window.blit(background_img, (0,0)) 
-        
+
+        #text_image ---> Press Space Key to Pause
+        window.blit(text_1, (780, 20))
+
+
         #player's text
         player_colour = [Dark_Green if i == current_player else Black for i in range(num_players)]
 
@@ -363,7 +372,7 @@ def draw_window():
         
         if action_pile is not None:
             window.blit(action_pile, (560, 250))
-    
+
         #Display each card text on screen
         for text in actions_text + character_text:
             text.position()
@@ -522,6 +531,8 @@ while game_running: #start the loop - keep going while the game is on
                 mouse_position = pygame.mouse.get_pos()
                 if shield_rect.collidepoint(mouse_position):
                     print("Shield used!")
+                    shield_sf.play()
+                    action_pile = main_cards["shield_image"]
             
 
     #================ PAUSING INTERFACE ==================
@@ -546,7 +557,6 @@ while game_running: #start the loop - keep going while the game is on
 
 
 pygame.quit()
-
 
 
 
