@@ -94,7 +94,7 @@ class UTurn(ActionCard):
 class Hacker(ActionCard):
     def __init__(self, index = -1):
         # inheriting attributes from parent class Card
-        super().__init__("Hacker", "Action", "Pick a card from any position in the deck", index)
+        super().__init__("Hacker", "Action", "Take a card from a random position in the deck", index)
 
     def perform_action(self, game, current_player):
         card = game.deck.red_black_tree.hacker_action() # picks a random card from the deck
@@ -537,9 +537,6 @@ class Game:
             shield_card = Shield()
             player.player_cards.append(shield_card)
             player.has_shield = True
-
-    def shuffle_deck(self): ### NOTE TO GROUP: this function may be deleted if it has no use
-        pass # to be continued
 
     '''def start_player_turn(self):
         """Starts the player's turn while handling both the human and bot turns"""
