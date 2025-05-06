@@ -81,7 +81,7 @@ class SickLeave(ActionCard):
         super().__init__("Sick Leave", "Action", "End your turn without drawing a card", index)
 
     def perform_action(self, game, current_player):
-        print(f"{current_player.name} used Sick Leave")
+        print(f"{current_player.player_name} used Sick Leave")
         return True
 
 
@@ -161,7 +161,7 @@ class BeatIt(ActionCard):
     def perform_action(self, game, current_player):
         target_player = game.players[(game.current_player_index + game.turn_direction) % len(game.players)]
         game.special_effects.append(("double_turn", target_player))
-        print(f"{target_player.name} should play twice")
+        print(f"{target_player.player_name} should play twice")
         return True
 
 
