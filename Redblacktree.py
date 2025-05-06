@@ -1,7 +1,6 @@
 from queue import Queue
 from random import randint
 
-from main import Card
 import random
 # ID: 5674312
 ''' Class for RedBlackNode:
@@ -13,10 +12,11 @@ initializing class; variable instances:
     right: stores the right child node 
     '''
 class RedBlackNode:
-    def __init__(self, card):
+    def __init__(self, card, index = -1):
         self.red = False
         self.parent = None
         self.card = card
+        self.index = index
         self.left = None
         self.right = None
 
@@ -31,13 +31,14 @@ initializing class; variable instances:
     '''
 class RedBlackTree:
     def __init__(self):
-        self.nil = RedBlackNode(Card("null","null","null")) #initialize first node
+        self.nil = RedBlackNode("null") #initialize first node
         self.root = self.nil # set starting nil root
 
     #insert
 
     def insert_card(self, card):
         red_black_node = RedBlackNode(card) # create new node
+        red_black_node.index = card.index
         red_black_node.parent = None
         red_black_node.left = self.nil
         red_black_node.right = self.nil
@@ -48,17 +49,17 @@ class RedBlackTree:
         while current_node != self.nil:
             parent_node = current_node # when while loop ends, we will have the parent of the new node
             # compare the index of new node with index of current node
-            if red_black_node.card.index < current_node.card.index: # go down left subtree
+            if red_black_node.index < current_node.index: # go down left subtree
                 current_node = current_node.left
-            elif red_black_node.card.index > current_node.card.index: # go down right subtree
+            elif red_black_node.index > current_node.index: # go down right subtree
                 current_node = current_node.right
 
         red_black_node.parent = parent_node
         if parent_node is None: # first card in tree
             self.root = red_black_node # set as current root
-        elif red_black_node.card.index < parent_node.card.index: # set node as left subtree of parent
+        elif red_black_node.index < parent_node.index: # set node as left subtree of parent
             parent_node.left = red_black_node
-        elif red_black_node.card.index > parent_node.card.index: # set node as right subtree of parent
+        elif red_black_node.index > parent_node.index: # set node as right subtree of parent
             parent_node.right = red_black_node
 
         self.fix_tree_insert(red_black_node)
@@ -245,12 +246,12 @@ class RedBlackTree:
             node = q.get()
             if node == self.nil:
                 continue
-            print(node.card.index, " name: ", node.card.card_name, end=" ")
+            print(node.index, " name: ", node.card.card_name, end=" ")
             if node.red:
                 print("RED", end= " - ")
             else:
                 print("BLACK", end= " - ")
-            print("children: ", node.left.card.index, " ", node.right.card.index)
+            print("children: ", node.left.index, " ", node.right.index)
             q.put(node.left)
             q.put(node.right)
 
@@ -309,11 +310,11 @@ class RedBlackTree:
         while node != self.nil:
             if node.left != self.nil and node.right != self.nil:
                 card_left = node.left.card
-                index_card_left = node.left.card.index
+                index_card_left = node.left.index
                 card_right = node.right.card
-                index_card_right = node.right.card.index
+                index_card_right = node.right.index
                 node.left.card = card_right
-                node.left.card.index = index_card_left
+                node.left.index = index_card_left
                 node.right.card = card_left
-                node.right.card.index = index_card_right
+                node.right.index = index_card_right
             node = node.right
