@@ -121,7 +121,7 @@ class TheSpell(ActionCard):
         print("Top 3 cards:")
         for i in top_cards:
             print(i.card_name)
-        return False
+        return True
 
 
 class Shuffle(ActionCard):
@@ -132,7 +132,7 @@ class Shuffle(ActionCard):
     def perform_action(self, game, current_player):
         print(f"{current_player.player_name} used Shuffle - The deck is shuffled")
         game.deck.red_black_tree.shuffle_action()
-        return False
+        return True
 
 
 class Reveal(ActionCard):
@@ -149,7 +149,7 @@ class Reveal(ActionCard):
         print("Top 3 cards:")
         for i in top_cards:
             print(i.card_name)
-        return False
+        return True
 
 
 class BeatIt(ActionCard):
@@ -548,89 +548,89 @@ class Game:
         # perform U Turn if possible
         if cards_available.get("U Turn") is not None:
             card = cards_available["U Turn"]
-            card.perform_action(self, bot)
-            bot.player_cards.remove(card)
-            self.last_played_action_card = card
+            if card.perform_action(self, bot):
+                bot.player_cards.remove(card)
+                self.last_played_action_card = card
 
         revealing_card_used = False
         if cards_available.get("The Spell") is not None:
             revealing_card_used = True
             card = cards_available["The Spell"]
-            card.perform_action(self, bot)
-            bot.player_cards.remove(card)
-            self.last_played_action_card = card
+            if card.perform_action(self, bot):
+                bot.player_cards.remove(card)
+                self.last_played_action_card = card
 
         if cards_available.get("Beg You") is not None:
             card = cards_available["Beg You"]
-            card.perform_action(self, bot)
-            bot.player_cards.remove(card)
-            self.last_played_action_card = card
+            if card.perform_action(self, bot):
+                bot.player_cards.remove(card)
+                self.last_played_action_card = card
 
         if cards_available.get("Reveal") is not None:
             if revealing_card_used is False:
                 revealing_card_used = True
                 card = cards_available["Reveal"]
-                card.perform_action(self, bot)
-                bot.player_cards.remove(card)
-                self.last_played_action_card = card
+                if card.perform_action(self, bot):
+                    bot.player_cards.remove(card)
+                    self.last_played_action_card = card
 
         if cards_available.get("Mirror") is not None:
             if self.deck.num_of_cards >= 50:
                 if self.last_played_action_card.card_name == "Beat It":
                     card = cards_available["Mirror"]
-                    card.perform_action(self, bot)
-                    bot.player_cards.remove(card)
-                    self.last_played_action_card = card
+                    if card.perform_action(self, bot):
+                        bot.player_cards.remove(card)
+                        self.last_played_action_card = card
             elif self.deck.num_of_cards >= 35:
                 if self.last_played_action_card.card_name == "Beat It" or "Sick Leave":
                     card = cards_available["Mirror"]
-                    card.perform_action(self, bot)
-                    bot.player_cards.remove(card)
-                    self.last_played_action_card = card
+                    if card.perform_action(self, bot):
+                        bot.player_cards.remove(card)
+                        self.last_played_action_card = card
             elif self.deck.num_of_cards >= 20:
                 if self.last_played_action_card.card_name == "Beat It" or "Sick Leave" or "Shuffle":
                     card = cards_available["Mirror"]
-                    card.perform_action(self, bot)
-                    bot.player_cards.remove(card)
-                    self.last_played_action_card = card
+                    if card.perform_action(self, bot):
+                        bot.player_cards.remove(card)
+                        self.last_played_action_card = card
             else:
                 if self.last_played_action_card.card_name != "null":
                     card = cards_available["Mirror"]
-                    card.perform_action(self, bot)
-                    bot.player_cards.remove(card)
-                    self.last_played_action_card = card
+                    if card.perform_action(self, bot):
+                        bot.player_cards.remove(card)
+                        self.last_played_action_card = card
 
             if cards_available.get("Hacker") is not None:
                 if self.deck.num_of_cards > 20:
                     card = cards_available["Hacker"]
-                    card.perform_action(self, bot)
-                    bot.player_cards.remove(card)
-                    self.last_played_action_card = card
+                    if card.perform_action(self, bot):
+                        bot.player_cards.remove(card)
+                        self.last_played_action_card = card
 
             if cards_available.get("Sick Leave") is not None:
                 # NOTE: DON'T FORGET SCENARIO WITH THE SPELL
                 if self.deck.num_of_cards <= 20:
                     card = cards_available["Sick Leave"]
-                    card.perform_action(self, bot)
-                    bot.player_cards.remove(card)
-                    self.last_played_action_card = card
+                    if card.perform_action(self, bot):
+                        bot.player_cards.remove(card)
+                        self.last_played_action_card = card
 
             if cards_available.get("Shuffle") is not None:
                 # DONT FORGET THE SPELL SCENARIO
                 chance = random.randint(1, 100)
                 if chance <= 20:
                     card = cards_available["Shuffle"]
-                    card.perform_action(self, bot)
-                    bot.player_cards.remove(card)
-                    self.last_played_action_card = card
+                    if card.perform_action(self, bot):
+                        bot.player_cards.remove(card)
+                        self.last_played_action_card = card
 
             if cards_available.get("Beat It") is not None:
                 chance = random.randint(1, 100)
                 if chance <= 20 or self.deck.num_of_cards <= 30:
                     card = cards_available["Beat It"]
-                    card.perform_action(self, bot)
-                    bot.player_cards.remove(card)
-                    self.last_played_action_card = card
+                    if card.perform_action(self, bot):
+                        bot.player_cards.remove(card)
+                        self.last_played_action_card = card
 
             self.end_turn(bot)
 
