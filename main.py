@@ -63,17 +63,20 @@ by inheriting from ActionCard class...
     10 Action Cards; each contributes to prevent from picking the "You're in trouble" losing card:
 SickLeave, UTurn, Hacker, TheSpell, Shuffle, Reveal, BeatIt, BegYou, NoChance, and Mirror
 '''
+
+
 class ActionCard(Card):
-    def __init__(self, card_name, card_type, card_description, index = -1):
+    def __init__(self, card_name, card_type, card_description, index=-1):
         # inheriting attributes from parent class Card
         super().__init__(card_name, card_type, card_description, index)
         self.used = False
 
     def perform_action(self, game, current_player):
-        raise NotImplementedError   # implementation will be added
+        raise NotImplementedError  # implementation will be added
+
 
 class SickLeave(ActionCard):
-    def __init__(self, index = -1):
+    def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("Sick Leave", "Action", "End your turn without drawing a card", index)
 
@@ -81,32 +84,37 @@ class SickLeave(ActionCard):
         print(f"{current_player.name} used Sick Leave")
         return True
 
+
 class UTurn(ActionCard):
-    def __init__(self, index = -1):
+    def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("U Turn", "Action", "Reverse the direction of the game", index)
 
     def perform_action(self, game, current_player):
-        game.turn_direction *= -1 # turns the game direction to be -1 (anticlockwise)
-        print(f"{current_player.name} used U Turn - Direction reversed.")
+        game.turn_direction *= -1  # turns the game direction to be -1 (anticlockwise)
+        print(f"{current_player.player_name} used U Turn - Direction reversed.")
         return True
 
+
 class Hacker(ActionCard):
-    def __init__(self, index = -1):
+    def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("Hacker", "Action", "Take a card from a random position in the deck", index)
 
     def perform_action(self, game, current_player):
-        card = game.deck.red_black_tree.hacker_action() # picks a random card from the deck
-        current_player.player_cards.append(card) # appends the random card to the player's cards
+        print(f"{current_player.player_name} used Hacker!")
+        card = game.deck.red_black_tree.hacker_action()  # picks a random card from the deck
+        current_player.player_cards.append(card)  # appends the random card to the player's cards
         return True
 
+
 class TheSpell(ActionCard):
-    def __init__(self, index = -1):
+    def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("The Spell", "Action", "Peek at the top 3 cards in the deck", index)
 
-    def perform_action(self, game, current_player): # NEEDS FIXING TO CONSIDER BOT PLAYERS
+    def perform_action(self, game, current_player):  # NEEDS FIXING TO CONSIDER BOT PLAYERS
+        print(f"{current_player.player_name} used TheSpell")
         top_cards = game.deck.red_black_tree.the_spell_action()
         if top_cards is None:
             return None
@@ -115,23 +123,26 @@ class TheSpell(ActionCard):
             print(i.card_name)
         return False
 
+
 class Shuffle(ActionCard):
-    def __init__(self, index = -1):
+    def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("Shuffle", "Action", "Shuffle the deck", index)
 
     def perform_action(self, game, current_player):
+        print(f"{current_player.player_name} used Shuffle - The deck is shuffled")
         game.deck.red_black_tree.shuffle_action()
-        print("The deck is shuffled")
         return False
 
+
 class Reveal(ActionCard):
-    def __init__(self, index = -1):
+    def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("Reveal", "Action", "Reveal the top 3 cards to all players", index)
         ### NOTE: THIS SHOULD APPEAR TO ALL PLAYERS; NOT LIKE THE SPELL
 
-    def perform_action(self, game, current_player): # FIX THIS LIKE THE SPELL
+    def perform_action(self, game, current_player):  # FIX THIS LIKE THE SPELL
+        print(f"{current_player.player_name} used Reveal!")
         top_cards = game.deck.red_black_tree.the_spell_action()
         if top_cards is None:
             return None
@@ -140,10 +151,12 @@ class Reveal(ActionCard):
             print(i.card_name)
         return False
 
+
 class BeatIt(ActionCard):
-    def __init__(self, index = -1):
+    def __init__(self, index=-1):
         # inheriting attributes from parent class Card
-        super().__init__("Beat It", "Action", "Avoid drawing a card, and force the next player to play two consecutive turns", index)
+        super().__init__("Beat It", "Action",
+                         "Avoid drawing a card, and force the next player to play two consecutive turns", index)
 
     def perform_action(self, game, current_player):
         target_player = game.players[(game.current_player_index + game.turn_direction) % len(game.players)]
@@ -151,37 +164,42 @@ class BeatIt(ActionCard):
         print(f"{target_player.name} should play twice")
         return True
 
+
 class BegYou(ActionCard):
-    def __init__(self, index = -1):
+    def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("Beg You", "Action", "Ask a any player to give you a card of their choice", index)
 
     def perform_action(self, game, current_player):
-        target_player = random.choice([p for p in game.players if p != current_player]) # picks a random player to perform the card's action on
+        print(f"{current_player.player_name} used Beg You!")
+        target_player = random.choice(
+            [p for p in game.players if p != current_player])  # picks a random player to perform the card's action on
         if target_player.player_cards:
-            card = random.choice(target_player.player_cards) # taking a random card from the player's cards
-            target_player.player_cards.remove(card) # removes that card from the target player's cards
-            current_player.player_cards.append(card) # adds that card to the player who played the action card
+            card = random.choice(target_player.player_cards)  # taking a random card from the player's cards
+            target_player.player_cards.remove(card)  # removes that card from the target player's cards
+            current_player.player_cards.append(card)  # adds that card to the player who played the action card
         return True
 
+
 class NoChance(ActionCard):
-    def __init__(self, index = -1):
+    def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("No Chance", "Action", "Block action cards from other players", index)
 
     def perform_action(self, game, current_player):
-        print(f"{current_player.name} played No Chance")
-        current_player.has_block = True # indicates that the player has a ready block response
+        print(f"{current_player.player_name} played No Chance")
+        current_player.has_block = True  # indicates that the player has a ready block response
         return True
 
 
 class Mirror(ActionCard):
-    def __init__(self, index = -1):
+    def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("Mirror", "Action", "Copy the last played action card", index)
 
     def perform_action(self, game, current_player):
-        if not game.last_played_action_card and game.last_played_action_card.card_name not in ["Mirror", "You're in Trouble"]: # error handling
+        if not game.last_played_action_card and game.last_played_action_card.card_name not in ["Mirror",
+                                                                                               "You're in Trouble"]:  # error handling
             print("No action card to mirror.")
             return False
 
@@ -190,7 +208,7 @@ class Mirror(ActionCard):
 
         try:
             # create instances of the same card type
-            new_card = type(last_card)(index=-1) # using -1 as a temporary index
+            new_card = type(last_card)(index=-1)  # using -1 as a temporary index
             result = new_card.perform_action(game, current_player)
 
             if result:
@@ -449,29 +467,6 @@ class Game:
             if len(self.players) == 1:
                 self.game_over = True  # declares game over
                 print(f"{self.players[0].player_name} is the winner!")
-
-    def player_plays_card(self, player,
-                          card_index):  ### NOTE TO GROUP: This function may be removed (duplication in main loop)
-        """Play a card from the player's cards in hand"""
-        # make sure the card index is within the cards in player's cards
-        if 0 <= card_index < len(player.player_cards):
-            card = player.player_cards[card_index]  # get the card object from the player's cards
-
-            if card.card_type == "Action":  # manage action cards
-                proceed = card.perform_action(self, player)  # gets whether the action card was done or not
-
-                if proceed:
-                    self.last_played_action_card = card  # overwrite (update) the last played action card
-                    player.player_cards.pop(card_index)  # remove the played card from player's cards
-                    self.discard_card_pile.append(card)  # add the card to the played card pile
-                return proceed
-
-            elif card.card_type == "Character":  # manage character card
-                self.manage_character_cards(player, card)  # process specific character effects and combinations
-                player.player_cards.pop(card_index)  # remove the played card from player's cards
-                self.discard_card_pile.append(card)  # add the card to the played card pile
-                return True
-        return False
 
     def manage_character_cards(self, player, card):
         """Manage all possible character cards combinations and effects"""
@@ -735,10 +730,10 @@ class Game:
 # ID: 5676233
 ##### NOTE TO GROUP: Add docstrings + fix docstring format
 
-"""
+
 game = Game()
 game.players_setup()
 game.initialize_game()
 game.main_loop()
-"""
+
 
