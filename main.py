@@ -672,7 +672,7 @@ class Game:
 
     # 5674312
     def handle_bot_turn(self, bot):
-        cards_available = {} # map for cards so that the order can be maintained
+        cards_available = {} # dictionary for cards so that the order can be maintained
         for i in bot.player_cards:
             cards_available[i.card_name] = i
 
@@ -769,12 +769,10 @@ class Game:
 
     def next_player_turn(self):
         """Move on to the next player's turn"""
-        self.current_player_index = (self.current_player_index + self.turn_direction) % len(self.players) # move to next player
+        self.current_player_index = (self.current_player_index + self.turn_direction) % len(self.players)  # move to next player
 
         current_player = self.players[self.current_player_index]
-        current_player.character_counts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0} # reset character counter at the start of turn
-
-        print(f"{current_player.player_name}'s turn!")
+        current_player.character_counts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0}  # reset character counter at the start of turn
         # NOTE: character counter tracker needs modification
 
     def main_loop(self):
@@ -785,79 +783,81 @@ class Game:
         while not self.game_over:
             # start the game
             print(f"{current_player.player_name}'s turn!")
+            if self.current_player_index == 0:
+                ### HANDLE IN INTERFACE
+                print("Cards in hand:")
+                for i, card in enumerate(current_player.player_cards):
+                    print(f"{i + 1}. {card.card_name}")  # displaying player's hand
 
-            ### HANDLE IN INTERFACE
-            print("Cards in hand:")
-            for i, card in enumerate(current_player.player_cards):
-                print(f"{i+1}. {card.card_name}") # displaying player's hand
+                # player turn loop
+                turn_ended = False
+                while not turn_ended and not self.game_over:
+                    # display choices to the player
+                    print("1: Play a card")
+                    print("2: End turn")
 
-            # player turn loop
-            turn_ended = False
-            while not turn_ended and not self.game_over:
-                # display choices to the player
-                print("1: Play a card")
-                print("2: End turn")
+                    try:
+                        choice = int(input("Enter your choice: "))  # get player's choices
+                        if choice == 1:  # option 1 to play a card
+                            if not current_player.player_cards:
+                                print("No cards to play!")
+                                continue  # skip back to the choices display
 
-                try:
-                    choice = int(input("Enter your choice: ")) # get player's choices
-                    if choice == 1: # option 1 to play a card
-                        if not current_player.player_cards:
-                            print("No cards to play!")
-                            continue # skip back to the choices display
+                            print("Pick a card to play:")  # re-display the player's hand with description of cards
+                            for i, card in enumerate(current_player.player_cards):
+                                print(f"{i + 1}. {card.card_name}: {card.card_description}")
 
-                        print("Pick a card to play:") # re-display the player's hand with description of cards
-                        for i, card in enumerate(current_player.player_cards):
-                            print(f"{i+1}. {card.card_name}: {card.card_description}")
+                            try:
+                                chosen_card = int(input("Choose a card: ")) - 1
+                                if 0 <= chosen_card < len(current_player.player_cards):
+                                    card = current_player.player_cards[chosen_card]
+                                    # handling the 'no chance' card; check if another player is blocking
+                                    if card.card_type in ["Action", "Character"]:
+                                        blocked = any(p.has_block for p in self.players if p != current_player)
 
-                        try:
-                            chosen_card = int(input("Choose a card: ")) - 1
-                            if 0 <= chosen_card < len(current_player.player_cards):
-                                card = current_player.player_cards[chosen_card]
-                                # handling the 'no chance' card; check if another player is blocking
-                                if card.card_type in ["Action", "Character"]:
-                                    blocked = any(p.has_block for p in self.players if p != current_player)
+                                        if blocked:
+                                            blocker = next(p for p in self.players if p.has_block)
+                                            print(f"{blocker.player_name} blocks using 'No Chance'")
+                                            blocker.has_block = False
+                                            continue
 
-                                    if blocked:
-                                        blocker = next(p for p in self.players if p.has_block)
-                                        print(f"{blocker.player_name} blocks using 'No Chance'")
-                                        blocker.has_block = False
-                                        continue
+                                    # manage different card types
+                                    if card.card_type == "Action":
+                                        if card.perform_action(self, current_player):
+                                            current_player.player_cards.remove(card)
+                                            self.discard_card_pile.append(card)
+                                            self.last_played_action_card = card
+                                            print(
+                                                f"Card played: {card.card_name}")  ### NOTE TO GROUP: these print statements are just for clarification as it will be removed in the interface
 
-                                # manage different card types
-                                if card.card_type == "Action":
-                                    if card.perform_action(self, current_player):
-                                        current_player.player_cards.pop(chosen_card)
+                                    elif card.card_type == "Character":
+                                        self.manage_character_cards(current_player, card)
+                                        current_player.player_cards.remove(card)
                                         self.discard_card_pile.append(card)
-                                        self.hand.last_played_action_card = card
-                                        print(f"Card played: {card.card_name}") ### NOTE TO GROUP: these print statements are just for clarification as it will be removed in the interface
+                                        print(f"Card played: {card.card_name}")
 
-                                elif card.card_type == "Character":
-                                    self.hand.manage_character_cards(current_player, card)
-                                    current_player.player_cards.pop(chosen_card)
-                                    self.discard_card_pile.append(card)
-                                    print(f"Card played: {card.card_name}")
+                                    else:  # for other card types; like the shield
+                                        print("THis card cannot be played directly")
+                                else:
+                                    print("Card does not exist!")
+                            except ValueError:
+                                print("Enter a valid number.")
 
-                                else: # for other card types; like the shield
-                                    print("THis card cannot be played directly")
-                            else:
-                                print("Card does not exist!")
-                        except ValueError:
-                            print("Enter a valid number.")
+                        elif choice == 2:  # option 2 to end turn
+                            self.end_turn(current_player)
+                            turn_ended = True  # exit the player turn loop
 
-                    elif choice == 2: # option 2 to end turn
-                        self.hand.end_turn(current_player)
-                        turn_ended = True # exit the player turn loop
+                        else:  # if input is not 1 or 2
+                            print("Enter 1 or 2:")
 
-                    else: # if input is not 1 or 2
-                        print("Enter 1 or 2:")
-
-                except ValueError:
-                    print("Enter a valid number.")
-
+                    except ValueError:
+                        print("Enter a valid number.")
+            else: # handle bot scenario
+                self.handle_bot_turn(current_player)
                 # move on to next player while game is still ongoing
             if not self.game_over:
                 self.next_player_turn()
-                current_player = self.players[self.current_player_index] # update current player
+                current_player = self.players[self.current_player_index]  # update current player
 
 
 # ID: 5676233
