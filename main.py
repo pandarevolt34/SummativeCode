@@ -253,7 +253,7 @@ class CardDeck:
         # will store the cards in a randomized order
         array_of_cards = []
         num_of_inserted_cards = 0
-        for i in range(72):
+        for i in range(66):
             # multiply by 100 so that we can insert more cards in the tree later depending on query
             array_of_cards_indexes.append(i * 100)
         # randomize indexes
@@ -734,9 +734,11 @@ class Game:
             if not self.game_over:
                 self.next_player_turn()
                 current_player = self.players[self.current_player_index]  # update current player
-
-
 # ID: 5676233
-
-
 ##### NOTE TO GROUP: Add docstrings + fix docstring format
+"""
+game = Game()
+game.players_setup()
+game.initialize_game()
+game.main_loop()
+"""
