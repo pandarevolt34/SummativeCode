@@ -230,21 +230,24 @@ initializing class; variable instances:
     red_black_tree: stores the cards in the red black tree structure
     counter: keeps track of how many cards have been removed so far
     '''
+
+
 class CardDeck:
     def __init__(self):
         # the stack of cards
         self.red_black_tree = RedBlackTree()
-        self.counter = 0
+        self.counter = 1
+        self.num_of_cards = 72
 
     def fisher_yates_shuffle(self, arr):
         # loop from starting from len(arr)-1 down to 0
-        for i in range(len(arr)-1, 0, -1):
+        for i in range(len(arr) - 1, 0, -1):
             # select a random index from 0 to i
             index = random.randint(0, i)
             # swap card stored at index with card stored at i
             arr[index], arr[i] = arr[i], arr[index]
 
-    def initialize_cards(self, num_of_players):
+    def initialize_cards(self):
         # will store an array of random indexes
         array_of_cards_indexes = []
         # will store the cards in a randomized order
@@ -252,7 +255,7 @@ class CardDeck:
         num_of_inserted_cards = 0
         for i in range(72):
             # multiply by 100 so that we can insert more cards in the tree later depending on query
-            array_of_cards_indexes.append(i*100)
+            array_of_cards_indexes.append(i * 100)
         # randomize indexes
         self.fisher_yates_shuffle(array_of_cards_indexes)
         for i in range(1, 7):
@@ -311,24 +314,38 @@ class CardDeck:
             card.index = array_of_cards_indexes[num_of_inserted_cards]
             num_of_inserted_cards += 1
             array_of_cards.append(card)
-        for i in range(num_of_players - 1):
-            card = Trouble()
-            card.index = array_of_cards_indexes[num_of_inserted_cards]
-            num_of_inserted_cards += 1
-            array_of_cards.append(card)
-        for i in range(7 - num_of_players):
-            card = Shield()
-            card.index = array_of_cards_indexes[num_of_inserted_cards]
-            num_of_inserted_cards += 1
-            array_of_cards.append(card)
         return array_of_cards
 
-    def initialize_deck(self, num_of_players):
+    def initialize_trouble_shield_cards(self, num_of_players):
+        for i in range(num_of_players - 1):
+            card = Trouble()
+            card.index = random.randint(1, 66 + i)
+            card.index *= 100
+            card.index += self.counter
+            self.counter += 1
+            self.red_black_tree.insert_card(card)
+        for i in range(7 - num_of_players):
+            card = Shield()
+            card.index = random.randint(1, 65 + num_of_players + i)
+            card.index *= 100
+            card.index += self.counter
+            self.counter += 1
+            self.red_black_tree.insert_card(card)
+        pass
+
+    def initialize_deck(self):
         # randomized_cards is a list of card objects in a randomized order
-        randomized_cards = self.initialize_cards(num_of_players)
+        randomized_cards = self.initialize_cards()
         for i in range(len(randomized_cards)):
             # insert
             self.red_black_tree.insert_card(randomized_cards[i])
+
+    def add_trouble_card_back(self):
+        card = Trouble()
+        card.index = random.randint(1, self.num_of_cards)
+        card.index *= 100
+        card.index += self.counter
+        self.red_black_tree.insert_card(card)
 
     def draw_a_card(self):
         # find card at the top of the deck
@@ -340,7 +357,10 @@ class CardDeck:
         # delete node
         self.red_black_tree.delete(node)
         self.counter += 1
+        self.num_of_cards -= 1
         return card
+
+
 # ID 5674312
 
 # ID: 5676233
@@ -350,8 +370,7 @@ this class manages cards in player's hand; playing cards from hand and storing c
 '''
 
 class Hand:
-    def __init__(self, player_names):
-        self.players = [Player(name) for name in player_names]
+    def __init__(self):
         self.last_played_action_card = None
         self.discard_card_pile = []  # initializing an empty list to store the played cards
         self.game_over = False
@@ -491,15 +510,15 @@ this class manages the game state and includes the main loop. Variable instances
     discard_card_pile: a list to store the played cards
     '''
 class Game:
-    def __init__(self, player_names):
-        self.players = [Player(name) for name in player_names]
+    def __init__(self):
+        self.players = []
         self.current_player_index = 0 # initializing the index of the current player
         self.discard_card_pile = []  # initializing an empty list to store the played cards
         self.deck = CardDeck() #creating CardDeck instance; making CardDeck a property of Game
         self.turn_direction = 1 # sets the direction to 1 for clockwise and -1 for anticlockwise
         self.initialize_game()  # sets the game; card dealing, picking a player to start, card deck ready...
         self.game_over = False
-        self.hand = Hand(self) # passing game instance to Hand
+        self.hand = Hand() # passing game instance to Hand
 
     def players_setup(self):
         """Sets the players with a human player and a chosen number of bots"""
