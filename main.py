@@ -239,25 +239,24 @@ class CardDeck:
         self.counter = 1
         self.num_of_cards = 72
 
-    def fisher_yates_shuffle(self, arr):
+    def fisher_yates_shuffle(self):
         # loop from starting from len(arr)-1 down to 0
+        arr = []
+        for i in range(66):
+            # multiply by 100 so that we can insert more cards in the tree later depending on query
+            arr.append(i * 100)
         for i in range(len(arr) - 1, 0, -1):
             # select a random index from 0 to i
             index = random.randint(0, i)
             # swap card stored at index with card stored at i
             arr[index], arr[i] = arr[i], arr[index]
+        return arr
 
     def initialize_cards(self):
-        # will store an array of random indexes
-        array_of_cards_indexes = []
         # will store the cards in a randomized order
         array_of_cards = []
         num_of_inserted_cards = 0
-        for i in range(66):
-            # multiply by 100 so that we can insert more cards in the tree later depending on query
-            array_of_cards_indexes.append(i * 100)
-        # randomize indexes
-        self.fisher_yates_shuffle(array_of_cards_indexes)
+        array_of_cards_indexes = self.fisher_yates_shuffle() # store an array of random indexes
         for i in range(1, 7):
             for j in range(4):
                 card = CharacterCard(i, array_of_cards_indexes[num_of_inserted_cards])
@@ -382,7 +381,6 @@ class Game:
         self.last_played_action_card = ActionCard("null", "null", "null") # last played action card for mirror
         self.deck = CardDeck() #creating CardDeck instance; making CardDeck a property of Game
         self.turn_direction = 1 # sets the direction to 1 for clockwise and -1 for anticlockwise
-        self.initialize_game()  # sets the game; card dealing, picking a player to start, card deck ready...
         self.game_over = False
 
     def players_setup(self):
@@ -736,9 +734,11 @@ class Game:
                 current_player = self.players[self.current_player_index]  # update current player
 # ID: 5676233
 ##### NOTE TO GROUP: Add docstrings + fix docstring format
+
 """
 game = Game()
 game.players_setup()
 game.initialize_game()
 game.main_loop()
 """
+
