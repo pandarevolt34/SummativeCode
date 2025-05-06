@@ -279,31 +279,35 @@ class RedBlackTree:
         cards = []
         if node == self.root: # if largest node is the root, then there aren't 3 cards left
             return None # None AKA error
-        cards.append(node.card)
+        cards.append(node.card) # 1st card
+
         if node.left != self.nil: # 2nd largest card is the left child of the largest card
-            cards.append(node.left.card)
-        else:
-            node = node.parent # 2nd largest card is the parent of largest card
-            if node != self.nil: # if 2nd largest node has a child to the left, then the left-child is the 3rd largest
-                cards.append(node.card)
-            else: # if 2nd largest node has no left-child, then it's parent is the 3rd largest
-                return None
-            if node.left != self.nil:
-                node = node.left
-                cards.append(node.card)
+            node2 = node.left
+            while node2.right != self.nil:
+                node2 = node2.right
+            cards.append(node2.card) # 2nd card
+            node = node.parent
+            if node != self.nil:
+                cards.append(node.card)  # 3rd card
             else:
-                node = node.parent
-                if node != self.nil:
-                    cards.append(node.card)
+                return None
             return cards
 
-        node = node.parent
-        if node != self.nil:
-            cards.append(node.card)
         else:
-            return None
-
-        return cards
+            node = node.parent # 2nd largest card is the parent of largest card (also isn't root so parent isn't null)
+            cards.append(node.card) # 2nd card
+            if node.left != self.nil:
+                node2 = node.left
+                while node2.right != self.nil:
+                    node2 = node2.right
+                cards.append(node2.card) # 3rd card
+            else:
+                node2 = node.parent
+                if node2 != self.nil:
+                    cards.append(node2.card) # 3rd card
+                else:
+                    return None
+            return cards
 
     def shuffle_action(self):
         node = self.root
