@@ -286,12 +286,16 @@ class RedBlackTree:
             while node2.right != self.nil:
                 node2 = node2.right
             cards.append(node2.card) # 2nd card
-            node = node.parent
-            if node != self.nil:
-                cards.append(node.card)  # 3rd card
+            if node2.parent != node:
+                node2 = node2.parent
+                cards.append(node2.card) # 3rd card
             else:
-                return None
-            return cards
+                node = node.parent
+                if node != self.nil:
+                    cards.append(node.card)  # 3rd card
+                else:
+                    return None
+                return cards
 
         else:
             node = node.parent # 2nd largest card is the parent of largest card (also isn't root so parent isn't null)

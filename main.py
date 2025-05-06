@@ -735,5 +735,3 @@ game = Game()
 game.players_setup()
 game.initialize_game()
 game.main_loop()
-
-
