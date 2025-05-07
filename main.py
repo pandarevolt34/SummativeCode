@@ -204,11 +204,12 @@ class Mirror(ActionCard):
         super().__init__("Mirror", "Action", "Copy the last played action card", index)
 
     def perform_action(self, game, current_player):
-        if not game.last_played_action_card and game.last_played_action_card.card_name not in ["Mirror",
-                                                                                               "You're in Trouble"]:  # error handling
+        if game.last_played_action_card.card_name == "null":  # error handling
             print("No action card to mirror.")
             return False
-
+        elif game.last_played_action_card.card_name == "Mirror":
+            print("Can't mirror a mirror.")
+            return False
         last_card = game.last_played_action_card
         print(f"Mirroring {last_card.card_name}")
 
