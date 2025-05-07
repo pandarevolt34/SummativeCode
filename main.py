@@ -646,15 +646,15 @@ class Game:
         current_player = self.players[self.current_player_index]
 
         while not self.game_over:
-            if self.losers.get(current_player) is not None:
+            if self.losers.get(current_player) is not None: # current player is not playing
                 number_of_losers = 0
-                winner = current_player
-                for i in self.players:
-                    if self.losers.get(i) is not None:
+                winner = None # will store a player who is still in the game
+                for i in self.players: # iterate over the 2 to 4 players
+                    if self.losers.get(i) is not None: # if player is a loser
                         number_of_losers += 1
                     else:
-                        winner = i
-                if number_of_losers == len(self.players) - 1:
+                        winner = i # player isn't a loser, if player is alone then the player is the winner
+                if number_of_losers == len(self.players) - 1: # player is alone
                     self.game_over = True
                     print(f"{winner.player_name} is the winner!")
                     continue
