@@ -543,7 +543,7 @@ class Game:
         self.end_turn(bot)
         return None
         """
-        cards_available = {} # dictionary for cards so that the order can be maintained
+        cards_available = {} # dictionary for cards so that we can see which cards are available
         for i in bot.player_cards:
             cards_available[i.card_name] = i
 
