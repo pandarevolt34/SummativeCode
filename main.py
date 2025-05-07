@@ -446,13 +446,10 @@ class Game:
         player.has_block = False  # Reset unused 'no chance' block states
         card = self.deck.draw_a_card()
         if card:
-            player.player_cards.append(card)  # adds the card to the player's cards
-
             if card.card_name == "You're in Trouble":  # handles drawing a trouble card case from manage_trouble_card function
                 self.manage_trouble_card(player)
-            return card
-        # NOTE FROM RAYAN: The return ends the function and it won't reach this line
-        self.current_player_index = (self.current_player_index + 1) % len(self.players)  # move to next player
+            else:
+                player.player_cards.append(card)  # adds the card to the player's cards
 
     def manage_trouble_card(self, player):
         """Manages the effects of drawing a trouble card"""
@@ -646,6 +643,7 @@ class Game:
         current_player = self.players[self.current_player_index]
 
         while not self.game_over:
+            # 5674312
             if self.losers.get(current_player) is not None: # current player is not playing
                 number_of_losers = 0
                 winner = None # will store a player who is still in the game
@@ -658,6 +656,7 @@ class Game:
                     self.game_over = True
                     print(f"{winner.player_name} is the winner!")
                     continue
+            # 5674312
             # start the game
             print(f"{current_player.player_name}'s turn!")
             if self.current_player_index == 0:
