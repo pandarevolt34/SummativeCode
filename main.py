@@ -394,6 +394,7 @@ this class manages the game state and includes the main loop. Variable instances
 class Game:
     def __init__(self):
         self.players = []
+        self.losers = {}
         self.current_player_index = 0 # initializing the index of the current player
         self.discard_card_pile = []  # initializing an empty list to store the played cards
         self.last_played_action_card = ActionCard("null", "null", "null") # last played action card for mirror
@@ -461,12 +462,7 @@ class Game:
             player.has_shield = False  # Note: implement a check for multiple shields
         else:
             print(f"{player.player_name} You're in Trouble and therefore out of the game!")
-            self.players.remove(player)  # remove a player if they don't have a shield card
-
-            # check for winning case if only one player remains
-            if len(self.players) == 1:
-                self.game_over = True  # declares game over
-                print(f"{self.players[0].player_name} is the winner!")
+            self.losers[player] = True  # remove a player if they don't have a shield card
 
     def manage_character_cards(self, player, card):
         """Manage all possible character cards combinations and effects"""
@@ -650,6 +646,18 @@ class Game:
         current_player = self.players[self.current_player_index]
 
         while not self.game_over:
+            if self.losers.get(current_player) is not None:
+                number_of_losers = 0
+                winner = current_player
+                for i in self.players:
+                    if self.losers.get(i) is not None:
+                        number_of_losers += 1
+                    else:
+                        winner = i
+                if number_of_losers == len(self.players) - 1:
+                    self.game_over = True
+                    print(f"{winner.player_name} is the winner!")
+                    continue
             # start the game
             print(f"{current_player.player_name}'s turn!")
             if self.current_player_index == 0:
