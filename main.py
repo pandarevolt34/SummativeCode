@@ -117,10 +117,11 @@ class TheSpell(ActionCard):
         print(f"{current_player.player_name} used TheSpell")
         top_cards = game.deck.red_black_tree.the_spell_action()
         if top_cards is None:
-            return None
-        print("Top 3 cards:")
-        for i in top_cards:
-            print(i.card_name)
+            return False
+        if game.current_player_index == 0:
+            print("Top 3 cards:")
+            for i in top_cards:
+                print(i.card_name)
         return True
 
 
@@ -145,7 +146,7 @@ class Reveal(ActionCard):
         print(f"{current_player.player_name} used Reveal!")
         top_cards = game.deck.red_black_tree.the_spell_action()
         if top_cards is None:
-            return None
+            return False
         print("Top 3 cards:")
         for i in top_cards:
             print(i.card_name)
@@ -160,8 +161,8 @@ class BeatIt(ActionCard):
 
     def perform_action(self, game, current_player):
         target_player = game.players[(game.current_player_index + game.turn_direction) % len(game.players)]
-        game.special_effects.append(("double_turn", target_player))
-        print(f"{target_player.player_name} should play twice")
+        print(f"{target_player.player_name} has taken an extra card from the deck")
+        game.end_turn(target_player)
         return True
 
 
@@ -608,6 +609,7 @@ class Game:
                         bot.player_cards.remove(card)
                         self.last_played_action_card = card
 
+            skip_turn = False
             if cards_available.get("Sick Leave") is not None:
                 # NOTE: DON'T FORGET SCENARIO WITH THE SPELL
                 if self.deck.num_of_cards <= 20:
@@ -615,6 +617,7 @@ class Game:
                     if card.perform_action(self, bot):
                         bot.player_cards.remove(card)
                         self.last_played_action_card = card
+                        skip_turn = True
 
             if cards_available.get("Shuffle") is not None:
                 # DONT FORGET THE SPELL SCENARIO
@@ -632,8 +635,8 @@ class Game:
                     if card.perform_action(self, bot):
                         bot.player_cards.remove(card)
                         self.last_played_action_card = card
-
-            self.end_turn(bot)
+            if skip_turn is False:
+                self.end_turn(bot)
 
     # 5674312
 
@@ -713,8 +716,8 @@ class Game:
                                             current_player.player_cards.remove(card)
                                             self.discard_card_pile.append(card)
                                             self.last_played_action_card = card
-                                            print(
-                                                f"Card played: {card.card_name}")  ### NOTE TO GROUP: these print statements are just for clarification as it will be removed in the interface
+                                            if card.card_name == "Sick Leave":
+                                                turn_ended = True
 
                                     elif card.card_type == "Character":
                                         self.manage_character_cards(current_player, card)
@@ -723,7 +726,7 @@ class Game:
                                         print(f"Card played: {card.card_name}")
 
                                     else:  # for other card types; like the shield
-                                        print("THis card cannot be played directly")
+                                        print("This card cannot be played directly")
                                 else:
                                     print("Card does not exist!")
                             except ValueError:
