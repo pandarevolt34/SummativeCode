@@ -537,18 +537,21 @@ class Game:
 
     # 5674312
     def handle_bot_turn(self, bot):
+        """ function allowing the bot to make decisions in the game """
+        """
+        # debug: for testing game functionality without bot
         self.end_turn(bot)
         return None
+        """
         cards_available = {} # dictionary for cards so that the order can be maintained
         for i in bot.player_cards:
             cards_available[i.card_name] = i
 
-        # perform U Turn if possible
-        if cards_available.get("U Turn") is not None:
+        if cards_available.get("U Turn") is not None: # if U Turn is within the bots cards
             card = cards_available["U Turn"]
-            if card.perform_action(self, bot):
-                bot.player_cards.remove(card)
-                self.last_played_action_card = card
+            if card.perform_action(self, bot): # if action returns True then it was played
+                bot.player_cards.remove(card) # remove the card
+                self.last_played_action_card = card # set as last action card
 
         revealing_card_used = False
         if cards_available.get("The Spell") is not None:
