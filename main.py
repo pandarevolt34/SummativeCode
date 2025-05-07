@@ -433,6 +433,8 @@ class Game:
                 if card:
                     player.player_cards.append(card)
 
+        self.deck.initialize_trouble_shield_cards(len(self.players)) # add the trouble and shield cards
+
         # give each player 1 shield card
         for player in self.players:
             shield_card = Shield()
@@ -534,6 +536,8 @@ class Game:
 
     # 5674312
     def handle_bot_turn(self, bot):
+        self.end_turn(bot)
+        return None
         cards_available = {} # dictionary for cards so that the order can be maintained
         for i in bot.player_cards:
             cards_available[i.card_name] = i
@@ -655,7 +659,9 @@ class Game:
                 if number_of_losers == len(self.players) - 1: # player is alone
                     self.game_over = True
                     print(f"{winner.player_name} is the winner!")
-                    continue
+                self.next_player_turn()
+                current_player = self.players[self.current_player_index]  # update current player
+                continue
             # 5674312
             # start the game
             print(f"{current_player.player_name}'s turn!")
