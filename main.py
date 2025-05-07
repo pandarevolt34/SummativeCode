@@ -241,7 +241,7 @@ class Player:
     def __init__(self, player_name):
         self.player_name = player_name
         self.player_cards = []
-        self.has_shield = False
+        self.has_shield = []
         self.character_counts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0}
         '''self.has_block = False'''
 # ID: 5676233
@@ -448,26 +448,30 @@ class Game:
         for player in self.players:
             shield_card = Shield()
             player.player_cards.append(shield_card)
-            player.has_shield = True
+            player.has_shield.append(shield_card)
 
         # ID: 5676233
 
     def end_turn(self, player):  ### NOTE TO GROUP: changed draw_card to be 'End Turn' functionality
         """Draw a card from the deck to end turn and progress to next player"""
-        player.has_block = False  # Reset unused 'no chance' block states
+        # player.has_block = False  # Reset unused 'no chance' block states
         card = self.deck.draw_a_card()
         if card:
             if card.card_name == "You're in Trouble":  # handles drawing a trouble card case from manage_trouble_card function
                 self.manage_trouble_card(player)
             else:
                 player.player_cards.append(card)  # adds the card to the player's cards
+                if card.card_name == "The Shield":
+                    player.has_shield.append(card)
 
     def manage_trouble_card(self, player):
         """Manages the effects of drawing a trouble card"""
-        if player.has_shield:
+        if len(player.has_shield) != 0:
             print(f"{player.player_name} has The Shield. You are safe!")
             # removes the shield card if player got trouble card (to cancel out the effect)
-            player.has_shield = False  # Note: implement a check for multiple shields
+            card = player.has_shield[-1]
+            player.player_cards.remove(card)
+            player.has_shield.remove(card)
             self.deck.add_trouble_card_back()
         else:
             print(f"{player.player_name} You're in Trouble and therefore out of the game!")
