@@ -621,7 +621,7 @@ class Game:
                     bot.player_cards.remove(card)
                     self.last_played_action_card = card
 
-        #skip_turn = False
+        skip_turn = False
         if cards_available.get("Sick Leave") is not None:
             # NOTE: DON'T FORGET SCENARIO WITH THE SPELL
             if self.deck.num_of_cards <= 20:
@@ -629,7 +629,7 @@ class Game:
                 if card.perform_action(self, bot):
                     bot.player_cards.remove(card)
                     self.last_played_action_card = card
-                    #skip_turn = True
+                    skip_turn = True
 
         if cards_available.get("Shuffle") is not None:
             # DONT FORGET THE SPELL SCENARIO
@@ -647,8 +647,8 @@ class Game:
                 if card.perform_action(self, bot):
                     bot.player_cards.remove(card)
                     self.last_played_action_card = card
-        #if skip_turn is False:
-        self.end_turn(bot)
+        if skip_turn is False:
+            self.end_turn(bot)
 
     # 5674312
 
