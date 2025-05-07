@@ -459,6 +459,7 @@ class Game:
             print(f"{player.player_name} has The Shield. You are safe!")
             # removes the shield card if player got trouble card (to cancel out the effect)
             player.has_shield = False  # Note: implement a check for multiple shields
+            self.deck.add_trouble_card_back()
         else:
             print(f"{player.player_name} You're in Trouble and therefore out of the game!")
             self.losers[player] = True  # remove a player if they don't have a shield card
