@@ -237,7 +237,7 @@ class Player:
         self.player_cards = []
         self.has_shield = False
         self.character_counts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0}
-        self.has_block = False
+        '''self.has_block = False'''
 # ID: 5676233
 
 # ID: 5674312
@@ -490,9 +490,9 @@ class Game:
         if not target:
             return
 
-        if any(card.card_name == "No Chance" for card in
+        '''if any(card.card_name == "No Chance" for card in
                target.player_cards):  # check for cancelling effect with 'No Chance'
-            print(f"{target.player_name} blocked your character combination with 'No Chance!'")
+            print(f"{target.player_name} blocked your character combination with 'No Chance!'")'''
 
         if combo_type == 2:  # 2 of the same character card
             if target.player_cards:
@@ -517,9 +517,9 @@ class Game:
             return
 
         # check for cancelling effect with 'No Chance'
-        if any(card.card_name == "No Chance" for card in target.player_cards):
+        '''if any(card.card_name == "No Chance" for card in target.player_cards):
             print(f"{target.player_name} blocked your character combination with 'No Chance!'")
-            return
+            return'''
 
         # player names a card to request from target player
         # NOTE: will change to let player chose (later in interface)
@@ -701,14 +701,14 @@ class Game:
                                 if 0 <= chosen_card < len(current_player.player_cards):
                                     card = current_player.player_cards[chosen_card]
                                     # handling the 'no chance' card; check if another player is blocking
-                                    if card.card_type in ["Action", "Character"]:
+                                    '''if card.card_type in ["Action", "Character"]:
                                         blocked = any(p.has_block for p in self.players if p != current_player)
 
                                         if blocked:
                                             blocker = next(p for p in self.players if p.has_block)
                                             print(f"{blocker.player_name} blocks using 'No Chance'")
                                             blocker.has_block = False
-                                            continue
+                                            continue'''
 
                                     # manage different card types
                                     if card.card_type == "Action":
