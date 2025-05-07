@@ -1,6 +1,7 @@
 #CS Python Project
 
 import random
+import time
 
 # ID: 5676233
 ''' Class for Cards:
@@ -556,6 +557,7 @@ class Game:
         self.end_turn(bot)
         return None
         """
+        time.sleep(2)
         cards_available = {} # dictionary for cards so that we can see which cards are available
         for i in bot.player_cards:
             cards_available[i.card_name] = i
@@ -565,6 +567,7 @@ class Game:
             if card.perform_action(self, bot): # if action returns True then it was played
                 bot.player_cards.remove(card) # remove the card
                 self.last_played_action_card = card # set as last action card
+                time.sleep(2)
 
         revealing_card_used = False
         if cards_available.get("The Spell") is not None:
@@ -573,12 +576,14 @@ class Game:
             if card.perform_action(self, bot):
                 bot.player_cards.remove(card)
                 self.last_played_action_card = card
+                time.sleep(2)
 
         if cards_available.get("Beg You") is not None:
             card = cards_available["Beg You"]
             if card.perform_action(self, bot):
                 bot.player_cards.remove(card)
                 self.last_played_action_card = card
+                time.sleep(2)
 
         if cards_available.get("Reveal") is not None:
             if revealing_card_used is False:
@@ -587,6 +592,7 @@ class Game:
                 if card.perform_action(self, bot):
                     bot.player_cards.remove(card)
                     self.last_played_action_card = card
+                    time.sleep(2)
 
         if cards_available.get("Mirror") is not None:
             if self.deck.num_of_cards >= 50:
@@ -595,24 +601,28 @@ class Game:
                     if card.perform_action(self, bot):
                         bot.player_cards.remove(card)
                         self.last_played_action_card = card
+                        time.sleep(2)
             elif self.deck.num_of_cards >= 35:
                 if self.last_played_action_card.card_name == "Beat It" or "Sick Leave":
                     card = cards_available["Mirror"]
                     if card.perform_action(self, bot):
                         bot.player_cards.remove(card)
                         self.last_played_action_card = card
+                        time.sleep(2)
             elif self.deck.num_of_cards >= 20:
                 if self.last_played_action_card.card_name == "Beat It" or "Sick Leave" or "Shuffle":
                     card = cards_available["Mirror"]
                     if card.perform_action(self, bot):
                         bot.player_cards.remove(card)
                         self.last_played_action_card = card
+                        time.sleep(2)
             else:
                 if self.last_played_action_card.card_name != "null":
                     card = cards_available["Mirror"]
                     if card.perform_action(self, bot):
                         bot.player_cards.remove(card)
                         self.last_played_action_card = card
+                        time.sleep(2)
 
         if cards_available.get("Hacker") is not None:
             if self.deck.num_of_cards > 20:
@@ -620,6 +630,7 @@ class Game:
                 if card.perform_action(self, bot):
                     bot.player_cards.remove(card)
                     self.last_played_action_card = card
+                    time.sleep(2)
 
         skip_turn = False
         if cards_available.get("Sick Leave") is not None:
@@ -630,6 +641,7 @@ class Game:
                     bot.player_cards.remove(card)
                     self.last_played_action_card = card
                     skip_turn = True
+                    time.sleep(2)
 
         if cards_available.get("Shuffle") is not None:
             # DONT FORGET THE SPELL SCENARIO
@@ -639,6 +651,7 @@ class Game:
                 if card.perform_action(self, bot):
                     bot.player_cards.remove(card)
                     self.last_played_action_card = card
+                    time.sleep(2)
 
         if cards_available.get("Beat It") is not None:
             chance = random.randint(1, 100)
@@ -647,7 +660,9 @@ class Game:
                 if card.perform_action(self, bot):
                     bot.player_cards.remove(card)
                     self.last_played_action_card = card
+                    time.sleep(2)
         if skip_turn is False:
+            time.sleep(2)
             self.end_turn(bot)
 
     # 5674312
