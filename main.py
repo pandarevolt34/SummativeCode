@@ -169,16 +169,21 @@ class BeatIt(ActionCard):
 class BegYou(ActionCard):
     def __init__(self, index=-1):
         # inheriting attributes from parent class Card
-        super().__init__("Beg You", "Action", "Ask a any player to give you a card of their choice", index)
+        super().__init__("Beg You", "Action", "A random player will give you a random card of theirs", index)
 
     def perform_action(self, game, current_player):
         print(f"{current_player.player_name} used Beg You!")
-        target_player = random.choice(
-            [p for p in game.players if p != current_player])  # picks a random player to perform the card's action on
+        available_players = [] # picks a random player to perform the card's action on
+        for i in game.players:
+            if game.losers.get(i) is None and i != current_player:
+                available_players.append(i)
+        target_player = random.choice(available_players)
         if target_player.player_cards:
             card = random.choice(target_player.player_cards)  # taking a random card from the player's cards
             target_player.player_cards.remove(card)  # removes that card from the target player's cards
             current_player.player_cards.append(card)  # adds that card to the player who played the action card
+        else:
+            print(f"{target_player.player_name} has no cards therefore Beg You affect is cancelled!")
         return True
 
 
