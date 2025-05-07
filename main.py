@@ -186,7 +186,7 @@ class BegYou(ActionCard):
             print(f"{target_player.player_name} has no cards therefore Beg You affect is cancelled!")
         return True
 
-
+""""
 class NoChance(ActionCard):
     def __init__(self, index=-1):
         # inheriting attributes from parent class Card
@@ -196,7 +196,7 @@ class NoChance(ActionCard):
         print(f"{current_player.player_name} played No Chance")
         current_player.has_block = True  # indicates that the player has a ready block response
         return True
-
+"""
 
 class Mirror(ActionCard):
     def __init__(self, index=-1):
@@ -266,7 +266,7 @@ class CardDeck:
     def fisher_yates_shuffle(self):
         # loop from starting from len(arr)-1 down to 0
         arr = []
-        for i in range(66):
+        for i in range(61): # originally 66 but now 61
             # multiply by 100 so that we can insert more cards in the tree later depending on query
             arr.append(i * 100)
         for i in range(len(arr) - 1, 0, -1):
@@ -327,11 +327,13 @@ class CardDeck:
             card.index = array_of_cards_indexes[num_of_inserted_cards]
             num_of_inserted_cards += 1
             array_of_cards.append(card)
+        """"
         for i in range(5):
             card = NoChance()
             card.index = array_of_cards_indexes[num_of_inserted_cards]
             num_of_inserted_cards += 1
             array_of_cards.append(card)
+        """
         for i in range(4):
             card = Mirror()
             card.index = array_of_cards_indexes[num_of_inserted_cards]
