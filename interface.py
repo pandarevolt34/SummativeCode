@@ -550,6 +550,7 @@ while game_running: #start the loop - keep going while the game is on
             window.blit(result_img, (0,0))
 
 
+
     draw_window()
     pygame.display.update()
 
