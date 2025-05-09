@@ -2,7 +2,7 @@
 import pygame
 import random
 import main
-from main import Card, ActionCard
+from main import ActionCard, Card, GameHandling
 
 pygame.init()
 
@@ -349,6 +349,13 @@ class Clickable_text:
         if self.hovering and pygame.mouse.get_pressed()[0]:  # check if left mouse button is pressed
             global action_pile  # read the variable further up
             global all_cards
+            print(action_pile)
+            print(all_cards.get(self.text))  # print the card images associated with the text
+            print(self.text)
+            action_pile = all_cards.pop(self.text, action_pile)
+
+            if not interactivity_enable:
+                return False
 
             card_name = self.text.split(' x')[0]
             if card_name in card_text_to_class:
@@ -356,7 +363,7 @@ class Clickable_text:
                 new_card = card_class()
 
                 if hasattr(new_card, "perform_action"):
-                    game = main.Game()
+                    game = main.GameHandling()
                     initial = game.initialize_game()
                     game.players.append(main.Player("Player"))
                     new_card.perform_action(game, game.players[0])
@@ -419,6 +426,9 @@ class TheButton:
 
     # mouse click detection
     def gets_clicked(self):  # make button clickable
+        if not interactivity_enable:
+            return False
+
         mouse_position = pygame.mouse.get_pos()  # gets current position of the mouse
         if self.rect.collidepoint(mouse_position):  # check if mouse is over the button (rect area)
             if pygame.mouse.get_pressed()[0]:  # check if left mouse button is pressed
@@ -517,6 +527,17 @@ instruction_page = 1
 current_player = 0  # Player1 = 0 ; Player2 = 1, Player3 = 2
 action_pile = None
 num_players = 0
+interactivity_enable = True
+
+def enable_interactivity():
+    global interactivity_enabled
+    interactivity_enabled = True
+    print("button enabled")
+
+def disable_interactivity():
+    global interactivity_enabled
+    interactivity_enabled = False
+    print("button disabled")
 
 
 # ======================================================= DRAWINGS ON SCREEN ============================================================
@@ -568,8 +589,6 @@ def draw_window():
 
 
 
-
-
     # ================ GAMEPLAY SCREEN ===============
     elif game_status == "playing":
 
@@ -608,10 +627,12 @@ def draw_window():
             window.blit(player3_text, (855, 355))
 
         # shield image
-        window.blit(extra_shield_img, (470, 575))
+        if current_player == 0:
+            window.blit(extra_shield_img, (470, 575))
 
         # Drawing "End Turn" button
-        end_turn_button.draw()
+        if current_player == 0:
+            end_turn_button.draw()
 
         # drawing "Play a card" button
         play_card_button.draw()
@@ -630,9 +651,10 @@ def draw_window():
             window.blit(action_pile, (560, 250))
 
         # Display each card text on screen
-        for text in actions_text + character_text:
-            text.position()
-            text.draw_text(window)
+        if current_player == 0:
+            for text in actions_text + character_text:
+                text.position()
+                text.draw_text(window)
 
 
 
@@ -676,6 +698,7 @@ def card_to_box():
 
 
 game_running = True
+game = GameHandling()
 while game_running:  # start the loop - keep going while the game is on
     for event in pygame.event.get():  # event handler
 
@@ -739,34 +762,42 @@ while game_running:  # start the loop - keep going while the game is on
             if option_button["2P"].gets_clicked():
                 button_sf.play()
                 pygame.time.delay(300)
+                game.players_setup(2, "Player1")
                 num_players = 2
                 current_player = 0
                 fade_transition(1000, 800, White, "playing")
+                game.initialize_game()
                 game_status = "playing"
 
             elif option_button["3P"].gets_clicked():
                 button_sf.play()
                 pygame.time.delay(300)
+                game.players_setup(3, "Player1")
                 num_players = 3
                 current_player = 0
                 fade_transition(1000, 800, White, "playing")
+                game.initialize_game()
                 game_status = "playing"
 
             elif option_button["4P"].gets_clicked():
                 button_sf.play()
                 pygame.time.delay(300)
+                game.players_setup(4, "Player1")
                 num_players = 4
                 current_player = 0
                 fade_transition(1000, 800, White, "playing")
+                game.initialize_game()
                 game_status = "playing"
 
 
 
         # =============== MAIN GAMEPLAY SCREEN =================
         elif game_status == "playing":
+            #game.main_loop()
 
             # Switching to next player   ### End turn functionality here ###
             if end_turn_button.gets_clicked():
+                game.end_turn(current_player)
                 current_player += 1  # increment 1
                 if current_player >= num_players:
                     current_player = 0  # loops back to fist player so player1 --> player 2 ---> player 3 ----> player 1
@@ -789,10 +820,11 @@ while game_running:  # start the loop - keep going while the game is on
                 print("end turn")
                 player = main.Player("Player 1")
                 print(player)
-                game = main.Game()
+                game = main.GameHandling()
                 print(game)
 
                 game.end_turn(player)
+                game.next_player_turn() ###############
                 print("end turn2")
 
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -821,7 +853,8 @@ while game_running:  # start the loop - keep going while the game is on
     draw_window()
     pygame.display.update()
 
-pygame.quit()
+
+# pygame.quit()
 
 
 def main_loop(self):
@@ -861,57 +894,59 @@ def main_loop(self):
                 print("1: Play a card")
                 print("2: End turn")
 
-                try:
-                    choice = int(input("Enter your choice: "))  # get player's choices
-                    if choice == 1:  # option 1 to play a card
-                        if not current_player.player_cards:
-                            print("No cards to play!")
-                            continue  # skip back to the choices display
-
-                        print("Pick a card to play:")  # re-display the player's hand with description of cards
+                if play_card_button.gets_clicked():  # option 1 to play a card
+                    if not current_player.player_cards:
+                        print("No cards to play!")
+                    else:
+                        # display cards in interface
                         for i, card in enumerate(current_player.player_cards):
                             print(f"{i + 1}. {card.card_name}: {card.card_description}")
 
-                        try:
-                            chosen_card = int(input("Choose a card: ")) - 1
-                            if 0 <= chosen_card < len(current_player.player_cards):
-                                card = current_player.player_cards[chosen_card]
-                                # handling the 'no chance' card; check if another player is blocking
+                        chosen_card = card_gets_selected()  # replace this with the function that already exists in the ui
 
-                                # manage different card types
-                                if card.card_type == "Action":
-                                    if card.perform_action(self, current_player):
-                                        current_player.player_cards.remove(card)
-                                        self.discard_card_pile.append(card)
-                                        self.last_played_action_card = card
-                                        if card.card_name == "Sick Leave":
-                                            turn_ended = True
+                        if 0 <= chosen_card < len(current_player.player_cards):
+                            card = current_player.player_cards[chosen_card]
 
-                                elif card.card_type == "Character":
-                                    self.manage_character_cards(current_player, card)
+                            # manage different card types
+                            if card.card_type == "Action":
+                                if card.perform_action(self, current_player):
                                     current_player.player_cards.remove(card)
                                     self.discard_card_pile.append(card)
-                                    print(f"Card played: {card.card_name}")
+                                    self.last_played_action_card = card
+                                    if card.card_name == "Sick Leave":
+                                        turn_ended = True
 
-                                else:  # for other card types; like the shield
-                                    print("This card cannot be played directly")
-                            else:
-                                print("Card does not exist!")
-                        except ValueError:
-                            print("Enter a valid number.")
+                            elif card.card_type == "Character":
+                                self.manage_character_cards(current_player, card)
+                                current_player.player_cards.remove(card)
+                                self.discard_card_pile.append(card)
 
-                    elif choice == 2:  # option 2 to end turn
-                        self.end_turn(current_player)
-                        turn_ended = True  # exit the player turn loop
+                            else:  # for other card types; like the shield
+                                print("This card cannot be played directly")
+                        else:
+                            print("Card does not exist!")
 
-                    else:  # if input is not 1 or 2
-                        print("Enter 1 or 2:")
 
-                except ValueError:
-                    print("Enter a valid number.")
+                elif end_turn_button.gets_clicked():  # option 2 to end turn
+                    self.end_turn(current_player)
+                    self.next_player_turn()
+                    turn_ended = True  # exit the player turn loop
+
+
+
+
         else:  # handle bot scenario
             self.handle_bot_turn(current_player)
             # move on to next player while game is still ongoing
         if not self.game_over:
             self.next_player_turn()
             current_player = self.players[self.current_player_index]  # update current player
+
+
+#game = GameHandling()
+#game.players_setup()
+#game.initialize_game()
+#game.main_loop()
+pygame.quit()
+
+
