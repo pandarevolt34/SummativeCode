@@ -796,9 +796,6 @@ while game_running:  # start the loop - keep going while the game is on
                 game_status = "playing"
 
         elif game_status == "playing":
-            if game.check_winner() is not None:
-                game_status = "result"
-                continue
 
             current_player = game.players[game.current_player_index]
             if game.current_player_index == 0:
@@ -806,6 +803,8 @@ while game_running:  # start the loop - keep going while the game is on
                 if end_turn_button.gets_clicked():  # option 2 to end turn
                     game.end_turn()
                     game.next_player_turn()
+                    if game.check_winner() is not None:
+                        game_status = "result"
                     #disable_interactivity()
 
                 # grouped all cards
@@ -821,12 +820,17 @@ while game_running:  # start the loop - keep going while the game is on
                 for text in all_text:
                     if text.gets_clicked():
                         text_sf.play()
-                        game.play_selected_card(text)
+                        game.play_selected_card(text.text)
+                        if game.check_winner() is not None:
+                            game_status = "result"
                         #if text == "Sick Leave" and current_player != game.players[game.current_player_index]:
                             #disable_interactivity()
 
             else:
                 game.handle_bot_turn(current_player)
+                game.next_player_turn()
+                if game.check_winner() is not None:
+                    game_status = "result"
                 #if game.current_player_index == 0:
                     #enable_interactivity()
 
