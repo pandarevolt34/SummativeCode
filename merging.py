@@ -267,6 +267,7 @@ character_cards = {
 
 card_list = []
 
+
 # ======================================================== GAME EFFECTS =============================================================
 
 # 1. Sound effects
@@ -353,10 +354,11 @@ class Clickable_text:
             print(all_cards.get(self.text))  # print the card images associated with the text
             print(self.text)
             action_pile = all_cards.pop(self.text, action_pile)
-
+            return True # COMMENT COME BACK HERE AND UNDERSTAND REST OF THE CODE
+            '''
             if not interactivity_enable:
                 return False
-
+            '''
             card_name = self.text.split(' x')[0]
             if card_name in card_text_to_class:
                 card_class = card_text_to_class[card_name]
@@ -426,9 +428,10 @@ class TheButton:
 
     # mouse click detection
     def gets_clicked(self):  # make button clickable
+        '''
         if not interactivity_enable:
             return False
-
+        '''
         mouse_position = pygame.mouse.get_pos()  # gets current position of the mouse
         if self.rect.collidepoint(mouse_position):  # check if mouse is over the button (rect area)
             if pygame.mouse.get_pressed()[0]:  # check if left mouse button is pressed
@@ -452,6 +455,9 @@ option_button = {"2P": TheButton("2 Players", 390, 300, True),
                  }
 
 # Action cards text for display
+
+
+
 actions_text = [
     Clickable_text("Hacker", font_1, White, Orange, 290, 580),
     Clickable_text("Sick Leave", font_1, White, Orange, 290, 600),
@@ -475,6 +481,7 @@ character_text = [
     Clickable_text("Lumpy", font_1, White, Orange, 670, 700)
 ]
 all_text = [*actions_text, *character_text]  # Merge all text together
+
 
 
 def create_card_text_objects(player):
@@ -527,6 +534,7 @@ instruction_page = 1
 current_player = 0  # Player1 = 0 ; Player2 = 1, Player3 = 2
 action_pile = None
 num_players = 0
+'''
 interactivity_enable = True
 
 def enable_interactivity():
@@ -538,7 +546,7 @@ def disable_interactivity():
     global interactivity_enabled
     interactivity_enabled = False
     print("button disabled")
-
+'''
 
 # ======================================================= DRAWINGS ON SCREEN ============================================================
 
@@ -627,15 +635,14 @@ def draw_window():
             window.blit(player3_text, (855, 355))
 
         # shield image
-        if current_player == 0:
-            window.blit(extra_shield_img, (470, 575))
+        #if current_player == 0:
+        window.blit(extra_shield_img, (470, 575))
 
         # Drawing "End Turn" button
-        if current_player == 0:
-            end_turn_button.draw()
+        #if current_player == 0:
+        end_turn_button.draw()
 
-        # drawing "Play a card" button
-        play_card_button.draw()
+
 
         # grouped all cards
         all_cards = {**main_cards, **action_cards, **character_cards}  # Merge all card dictionaries together **
@@ -651,10 +658,9 @@ def draw_window():
             window.blit(action_pile, (560, 250))
 
         # Display each card text on screen
-        if current_player == 0:
-            for text in actions_text + character_text:
-                text.position()
-                text.draw_text(window)
+        for text in actions_text + character_text:
+            text.position()
+            text.draw_text(window)
 
 
 
@@ -696,7 +702,7 @@ def card_to_box():
 
 # =================================================== MAIN GAME LOOP ====================================================================================================
 
-
+'''
 game_running = True
 game = GameHandling()
 while game_running:  # start the loop - keep going while the game is on
@@ -816,12 +822,6 @@ while game_running:  # start the loop - keep going while the game is on
                 if text.gets_clicked():
                     text_sf.play()
 
-            if end_turn_button.gets_clicked():
-                print("end turn")
-                player = main.Player("Player 1")
-                print(player)
-                game = main.GameHandling()
-                print(game)
 
                 game.end_turn(player)
                 game.next_player_turn() ###############
@@ -853,10 +853,155 @@ while game_running:  # start the loop - keep going while the game is on
     draw_window()
     pygame.display.update()
 
+'''
 
+game = main.GameHandling()
+
+game_running = True
+while game_running:  # start the loop - keep going while the game is on
+    for event in pygame.event.get():  # event handler
+
+        if event.type == pygame.QUIT:  # quit game
+            game_running = False  # if player click close button, the loop stops   if event.type == pygame.KEYDOWN:
+
+        elif event.type == pygame.KEYDOWN:  # KEYDOWN = whenever keyboard is pressed
+            if game_status == "playing" and event.key == pygame.K_SPACE:
+                game_status = "paused"
+            elif game_status == "paused" and event.key == pygame.K_SPACE:
+                game_status = "playing"
+        # Buttons and pictures on Display based on current games status
+
+        # ================ MENU SCREEN =================
+        if game_status == "menu" and other_buttons["Start"].gets_clicked():
+            button_sf.play()
+            pygame.time.delay(300)
+            game_status = "instruction"
+
+
+        # ================ INSTRUCTION SCREEN =================
+
+        elif game_status == "instruction":
+            # instruction page 1
+            if instruction_page == 1 and Next_button.gets_clicked():
+                button_sf.play()
+                pygame.time.delay(300)  # delay a very small amount of time when pressing button
+                instruction_page = 2
+
+            # instruction page 2
+            elif instruction_page == 2:
+                if Next_button.gets_clicked():
+                    button_sf.play()
+                    pygame.time.delay(300)
+                    instruction_page = 3
+                elif previous_button.gets_clicked():
+                    button_sf.play()
+                    pygame.time.delay(300)
+                    instruction_page = 1
+
+            # ready to play (page before actual gameplay)
+            elif instruction_page == 3:
+                if previous_button.gets_clicked():
+                    button_sf.play()
+                    pygame.time.delay(300)
+                    instruction_page = 2
+                elif ready_button.gets_clicked():
+                    button_sf.play()
+                    pygame.time.delay(300)
+                    game_status = "select player"
+
+        # ================= READY 2 PLAY SCREEN ============
+        elif game_status == "Start Game":
+            button_sf.play()
+            pygame.time.delay(300)
+            game_status = "select player"
+
+            # ================ OPTION SCREEN =================
+        elif game_status == "select player":
+            if option_button["2P"].gets_clicked():
+                button_sf.play()
+                pygame.time.delay(300)
+                game.players_setup(2, "Player1")
+                num_players = 2
+                current_player = 0
+                fade_transition(1000, 800, White, "playing")
+                game.initialize_game()
+                game_status = "playing"
+
+            elif option_button["3P"].gets_clicked():
+                button_sf.play()
+                pygame.time.delay(300)
+                game.players_setup(3, "Player1")
+                num_players = 3
+                current_player = 0
+                fade_transition(1000, 800, White, "playing")
+                game.initialize_game()
+                game_status = "playing"
+
+            elif option_button["4P"].gets_clicked():
+                button_sf.play()
+                pygame.time.delay(300)
+                game.players_setup(4, "Player1")
+                num_players = 4
+                current_player = 0
+                fade_transition(1000, 800, White, "playing")
+                game.initialize_game()
+                game_status = "playing"
+
+        elif game_status == "playing":
+            if game.check_winner() is not None:
+                game_status = "result"
+                continue
+
+            current_player = game.players[game.current_player_index]
+            if game.current_player_index == 0:
+                #enable_interactivity()
+                if end_turn_button.gets_clicked():  # option 2 to end turn
+                    game.end_turn()
+                    game.next_player_turn()
+                    #disable_interactivity()
+
+                # grouped all cards
+                all_cards = {**main_cards, **action_cards, **character_cards}  # Merge all card dictionaries together **
+
+                # Display each card on the screen
+                current_position = [700, 700]  # fixed position for all cards
+                for name, image in all_cards.items():  # items(), lopping dict
+                    window.blit(image, current_position)
+                    current_position = [current_position[0] + 2, current_position[
+                        1]]  # position of the deck of cards, +2 means the gap between cards
+
+                for text in all_text:
+                    if text.gets_clicked():
+                        text_sf.play()
+                        game.play_selected_card(text)
+                        #if text == "Sick Leave" and current_player != game.players[game.current_player_index]:
+                            #disable_interactivity()
+
+            else:
+                game.handle_bot_turn(current_player)
+                #if game.current_player_index == 0:
+                    #enable_interactivity()
+
+        # ================ PAUSING INTERFACE ==================
+        elif game_status == "paused":
+            if other_buttons["resume"].gets_clicked():
+                game_status = "playing"
+                button_sf.play()
+                pygame.time.delay(300)
+            elif other_buttons["Menu"].gets_clicked():
+                game_status = "menu"
+                button_sf.play()
+                pygame.time.delay(300)
+
+        # =============== WINNER INTERFACE ====================
+        elif game_status == "result":
+            window.blit(result_img, (0, 0))
+
+    draw_window()
+    pygame.display.update()
 # pygame.quit()
 
-
+'''
 def main_loop(self):
     """Main loop of the game which controls the flow of the game"""
     self.game_over = False
@@ -948,5 +1093,5 @@ def main_loop(self):
 #game.initialize_game()
 #game.main_loop()
 pygame.quit()
-
+'''
 
