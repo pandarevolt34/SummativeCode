@@ -26,12 +26,10 @@ paused_img = pygame.transform.scale(pygame.image.load("paused image.jpg"), (1000
 option_img = pygame.transform.scale(pygame.image.load("Background Image.png"), (1000, 800))
 
 # Main Gameplay image
-player_ver_left = pygame.transform.scale(pygame.image.load("vertical left.png").convert_alpha(),
-                                         (250, 200))  # width and height both 200
-player_hori_mid = pygame.transform.scale(pygame.image.load("horizontal.png").convert_alpha(),
-                                         (250, 200))  # width and height both 200
-player_ver_right = pygame.transform.scale(pygame.image.load("vertical right.png").convert_alpha(),
-                                          (250, 200))  # width and height both 200
+BOT1_img = pygame.transform.scale(pygame.image.load("vertical left.png").convert_alpha(), (250,200)) #width and height both 200
+BOT2_img = pygame.transform.scale(pygame.image.load("horizontal.png").convert_alpha(), (250,200)) #width and height both 200
+BOT3_img = pygame.transform.scale(pygame.image.load("vertical right.png").convert_alpha(), (250,200)) #width and height both 200
+
 
 # Define colours for drawing purpose
 Dark_Green = (0, 100, 0)
@@ -513,8 +511,8 @@ def create_card_text_objects(player):
     # Create Clickable_text objects with counts
     all_text = []
     for card_name, (x, y) in card_definitions.items():
-        count = card_counts.get(card_name, 0)
-        display_text = f"{card_name} x{count}" if count > 0 else f"{card_name} x0"
+        count = card_counts.get(card_name, 0) #card count doesnt exists if its 0
+        display_text = f"{card_name} x{count}"
         text_obj = Clickable_text(display_text, font_1,
                                   White if count > 0 else Gray,  # Gray out if count is 0
                                   Orange, x, y)
@@ -611,28 +609,40 @@ def draw_window():
 
         # display text with their positions on interface
         if num_players == 2:
-            window.blit(player_hori_mid, (400, -40))
-            player1_text = font_2.render("Player 1", Black, player_colour[0])
-            window.blit(player1_text, (470, 56))
+            window.blit(BOT2_img, (400, -40))
+
+            human_player_text = font_2.render("You", True, player_colour[0])
+            bot1_text = font_2.render("BOT 1", True, player_colour[1])
+
+            window.blit(bot1_text, (470, 56))
+            window.blit(human_player_text, (470, 400))
 
         if num_players == 3:
-            window.blit(player_ver_left, (-50, 260))
-            window.blit(player_ver_right, (800, 260))
-            player1_text = font_2.render("Player 1", True, player_colour[0])
-            player2_text = font_2.render("Player 2", True, player_colour[1])
-            window.blit(player1_text, (40, 350))
-            window.blit(player2_text, (855, 355))
+            window.blit(BOT1_img, (-50, 260))
+            window.blit(BOT3_img, (800, 260))
+
+            human_player_text = font_2.render("You", True, player_colour[0])
+            bot1_text = font_2.render("BOT 1", True, player_colour[1])
+            bot2_text = font_2.render("BOT 2", True, player_colour[2])
+
+            window.blit(human_player_text, (470, 400))
+            window.blit(bot1_text, (40, 350))
+            window.blit(bot2_text, (855, 355))
 
         if num_players == 4:
-            window.blit(player_ver_left, (-50, 260))
-            window.blit(player_hori_mid, (400, -40))
-            window.blit(player_ver_right, (800, 260))
-            player1_text = font_2.render("Player 1", True, player_colour[0])
-            player2_text = font_2.render("Player 2", True, player_colour[1])
-            player3_text = font_2.render("Player 3", True, player_colour[2])
-            window.blit(player1_text, (40, 350))
-            window.blit(player2_text, (470, 55))
-            window.blit(player3_text, (855, 355))
+            window.blit(BOT1_img, (-50, 260))
+            window.blit(BOT2_img, (400, -40))
+            window.blit(BOT3_img, (800, 260))
+
+            human_player_text = font_2.render("You", True, player_colour[0])
+            bot1_text = font_2.render("BOT 1", True, player_colour[1])
+            bot2_text = font_2.render("BOT 2", True, player_colour[2])
+            bot3_text = font_2.render("BOT 3", True, player_colour[3])
+
+            window.blit(human_player_text, (490, 550))
+            window.blit(bot1_text, (40, 350))
+            window.blit(bot2_text, (470, 55))
+            window.blit(bot3_text, (855, 355))
 
         # shield image
         #if current_player == 0:
