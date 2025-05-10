@@ -163,7 +163,14 @@ class BeatIt(ActionCard):
     def perform_action(self, game, current_player):
         target_player = game.players[(game.current_player_index + game.turn_direction) % len(game.players)]
         print(f"{target_player.player_name} has taken an extra card from the deck")
-        game.end_turn(target_player)
+        card = game.deck.draw_a_card()
+        if card:
+            if card.card_name == "You're in Trouble":  # handles drawing a trouble card case from manage_trouble_card function
+                game.manage_trouble_card(target_player)
+            else:
+                target_player.player_cards.append(card)  # adds the card to the player's cards
+                if card.card_name == "The Shield":
+                    target_player.has_shield.append(card)
         return True
 
 
@@ -245,6 +252,9 @@ class Player:
         self.has_shield = []
         self.character_counts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0}
         '''self.has_block = False'''
+
+
+
 # ID: 5676233
 
 # ID: 5674312
@@ -401,7 +411,7 @@ this class manages the game state and includes the main loop. Variable instances
     last_played_action_card: stores the last played card index
     discard_card_pile: a list to store the played cards
     '''
-class Game:
+class GameHandling:
     def __init__(self):
         self.players = []
         self.losers = {}
@@ -412,26 +422,25 @@ class Game:
         self.turn_direction = 1 # sets the direction to 1 for clockwise and -1 for anticlockwise
         self.game_over = False
 
-    def players_setup(self):
+    def players_setup(self, num_players, human_name = "Player"):
         """Sets the players with a human player and a chosen number of bots"""
-        while True:
+        '''while True:
             try:
                 # asking the user for number of players
-                num_of_players = int(input("Enter the number of players between 2-4: "))
-                if 2 <= num_of_players <= 4:
+                num_players = int(input("Enter the number of players between 2-4: "))
+                if 2 <= num_players <= 4:
                     break
                 print("Invalid number of players! Enter a number between 2-4")
             except ValueError:
-                print("Please enter a number!")
+                print("Please enter a number!")'''
 
         # getting player names
-        human_name = input("Enter your name: ")
-        bot_name = ["CPU1", "CPU2", "CPU3"]
-
-        # define players
         self.players = [Player(human_name)]
-        for i in range(num_of_players - 1): # excluding the human player
-            self.players.append(Player(bot_name[i])) # adding bots based on user's choice
+        bot_names = ["CPU1", "CPU2", "CPU3"]
+
+        # Add bot players
+        for i in range(num_players - 1):
+            self.players.append(Player(bot_names[i]))
 
     def initialize_game(self):
         """Initialize the game with card deck and deal appropriate cards to players"""
@@ -452,18 +461,10 @@ class Game:
             player.has_shield.append(shield_card)
 
         # ID: 5676233
+    def play_card(self):
+        pass
 
-    def end_turn(self, player):  ### NOTE TO GROUP: changed draw_card to be 'End Turn' functionality
-        """Draw a card from the deck to end turn and progress to next player"""
-        # player.has_block = False  # Reset unused 'no chance' block states
-        card = self.deck.draw_a_card()
-        if card:
-            if card.card_name == "You're in Trouble":  # handles drawing a trouble card case from manage_trouble_card function
-                self.manage_trouble_card(player)
-            else:
-                player.player_cards.append(card)  # adds the card to the player's cards
-                if card.card_name == "The Shield":
-                    player.has_shield.append(card)
+
 
     def manage_trouble_card(self, player):
         """Manages the effects of drawing a trouble card"""
@@ -498,19 +499,13 @@ class Game:
 
     def activate_char_combo(self, player, char_num, combo_type):
         """Activates character cards combinations effects"""
-        target = next((p for p in self.players if p != player and p.player_cards),
-                      None)  # NOTE: will change to letting the player chose the target (later in interface)
+        target = next((p for p in self.players if p != player and p.player_cards), None)  # NOTE: will change to letting the player chose the target (later in interface)
         if not target:
             return
 
-        '''if any(card.card_name == "No Chance" for card in
-               target.player_cards):  # check for cancelling effect with 'No Chance'
-            print(f"{target.player_name} blocked your character combination with 'No Chance!'")'''
-
         if combo_type == 2:  # 2 of the same character card
             if target.player_cards:
-                given_card = random.choice(
-                    target.player_cards)  # NOTE: will change random choice to target player choice; target chooses a card to give (later in interface)
+                given_card = random.choice(target.player_cards)  # NOTE: will change random choice to target player choice; target chooses a card to give (later in interface)
                 target.player_cards.remove(given_card)  # removing card from target player's cards
                 player.player_cards.append(given_card)  # adding card to player's cards
                 print(f"{target.player_name} gave {player.name} a card!")
@@ -663,7 +658,7 @@ class Game:
                     time.sleep(2)
         if skip_turn is False:
             time.sleep(2)
-            self.end_turn(bot)
+            self.end_turn()
 
     # 5674312
 
@@ -674,6 +669,51 @@ class Game:
         current_player = self.players[self.current_player_index]
         current_player.character_counts = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0}  # reset character counter at the start of turn
         # NOTE: character counter tracker needs modification
+
+    def play_selected_card(self, wanted_card_name):
+        current_player = self.players[self.current_player_index]
+        card = Card("null", "null", "null")
+        for i in current_player.player_cards:
+            if i.card_name == wanted_card_name:
+                card = i
+        if card.card_type == "Action":
+            if card.perform_action(self, current_player):
+                current_player.player_cards.remove(card)
+                self.discard_card_pile.append(card)
+                self.last_played_action_card = card
+                if card.card_name == "Sick Leave":
+                    self.next_player_turn()
+
+        elif card.card_type == "Character":
+            self.manage_character_cards(current_player, card)
+            current_player.player_cards.remove(card)
+            self.discard_card_pile.append(card)
+
+    def end_turn(self):  ### NOTE TO GROUP: changed draw_card to be 'End Turn' functionality
+        """Draw a card from the deck to end turn and progress to next player"""
+        # player.has_block = False  # Reset unused 'no chance' block states
+        player = self.players[self.current_player_index]
+        card = self.deck.draw_a_card()
+        if card:
+            if card.card_name == "You're in Trouble":  # handles drawing a trouble card case from manage_trouble_card function
+                self.manage_trouble_card(player)
+            else:
+                player.player_cards.append(card)  # adds the card to the player's cards
+                if card.card_name == "The Shield":
+                    player.has_shield.append(card)
+
+    def check_winner(self):
+        number_of_losers = 0
+        winner = None  # will store a player who is still in the game
+        for i in self.players:  # iterate over the 2 to 4 players
+            if self.losers.get(i) is not None:  # if player is a loser
+                number_of_losers += 1
+            else:
+                winner = i  # player isn't a loser, if player is alone then the player is the winner
+        if number_of_losers == len(self.players) - 1:  # player is alone
+            self.game_over = True
+            return winner.player_name
+        return None
 
     def main_loop(self):
         """Main loop of the game which controls the flow of the game"""
@@ -728,14 +768,6 @@ class Game:
                                 if 0 <= chosen_card < len(current_player.player_cards):
                                     card = current_player.player_cards[chosen_card]
                                     # handling the 'no chance' card; check if another player is blocking
-                                    '''if card.card_type in ["Action", "Character"]:
-                                        blocked = any(p.has_block for p in self.players if p != current_player)
-
-                                        if blocked:
-                                            blocker = next(p for p in self.players if p.has_block)
-                                            print(f"{blocker.player_name} blocks using 'No Chance'")
-                                            blocker.has_block = False
-                                            continue'''
 
                                     # manage different card types
                                     if card.card_type == "Action":
@@ -778,7 +810,7 @@ class Game:
 ##### NOTE TO GROUP: Add docstrings + fix docstring format
 
 
-game = Game()
+'''game = GameHandling()
 game.players_setup()
 game.initialize_game()
-game.main_loop()
+game.main_loop()'''
