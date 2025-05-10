@@ -3,7 +3,7 @@
 import random
 import time
 
-from merging import character_cards
+
 
 # ID: 5676233
 ''' Class for Cards:
@@ -563,11 +563,11 @@ class GameHandling:
 
             # character cards
             "Ice King": lambda: CharacterCard(1),
-            "BMO": lambda: character_cards(2),
-            "Finn": lambda: character_cards(3),
-            "Jake": lambda: character_cards(4),
-            "Bubblegum": lambda: character_cards(5),
-            "Lumpy": lambda: character_cards(6)
+            "BMO": lambda: CharacterCard(2),
+            "Finn": lambda: CharacterCard(3),
+            "Jake": lambda: CharacterCard(4),
+            "Bubblegum": lambda: CharacterCard(5),
+            "Lumpy": lambda: CharacterCard(6),
         }
 
         if self.current_player_index == 0:
