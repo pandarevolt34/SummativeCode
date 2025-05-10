@@ -193,6 +193,8 @@ class BegYou(ActionCard):
         if target_player.player_cards:
             card = random.choice(target_player.player_cards)  # taking a random card from the player's cards
             target_player.player_cards.remove(card)  # removes that card from the target player's cards
+            if card.card_name == "The Shield":
+                target_player.has_shield.remove(card)
             current_player.player_cards.append(card)  # adds that card to the player who played the action card
         else:
             print(f"{target_player.player_name} has no cards therefore Beg You affect is cancelled!")
