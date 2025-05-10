@@ -474,6 +474,7 @@ class GameHandling:
             print(f"{player.player_name} has The Shield. You are safe!")
             # removes the shield card if player got trouble card (to cancel out the effect)
             card = player.has_shield[-1]
+            self.discard_card_pile.append(card)
             player.player_cards.remove(card)
             player.has_shield.remove(card)
             self.deck.add_trouble_card_back()
@@ -763,6 +764,7 @@ class GameHandling:
         player = self.players[self.current_player_index]
         card = self.deck.draw_a_card()
         if card:
+            self.discard_card_pile.append(card)
             if card.card_name == "You're in Trouble":  # handles drawing a trouble card case from manage_trouble_card function
                 self.manage_trouble_card(player)
             else:
