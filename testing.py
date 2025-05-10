@@ -485,7 +485,10 @@ all_text = [*actions_text, *character_text]  # Merge all text together
 
 def create_card_text_objects(player):
     # Get card counts from the player
-    card_counts = player.count_card_occurrences()
+    card_counts = {}
+    for card in player.player_cards:
+        card_name = card.card_name
+        card_counts[card_name] = card_counts.get(card_name, 0) + 1
 
     # Define all possible card names and their positions
     card_definitions = {
@@ -510,16 +513,16 @@ def create_card_text_objects(player):
     }
 
     # Create Clickable_text objects with counts
-    all_text = []
+    text_count = []
     for card_name, (x, y) in card_definitions.items():
         count = card_counts.get(card_name, 0) #card count doesnt exists if its 0
         display_text = f"{card_name} x{count}"
         text_obj = Clickable_text(display_text, font_1,
                                   White if count > 0 else Gray,  # Gray out if count is 0
                                   Orange, x, y)
-        all_text.append(text_obj)
+        text_count.append(text_obj)
 
-    return all_text
+    return text_count
 
 
 text_1 = font_1.render("Press SPACE key to pause", True, Dark_Green)
