@@ -3,6 +3,8 @@
 import random
 import time
 
+from merging import character_cards
+
 # ID: 5676233
 ''' Class for Cards:
 initializing class; variable instances:
@@ -44,7 +46,7 @@ class CharacterCard(Card):
             1: "Ice King",
             2: "BMO",
             3: "Finn",
-            4: "Jack",
+            4: "Jake",
             5: "Bubblegum",
             6: "Lumpy"
         }
@@ -508,40 +510,106 @@ class GameHandling:
                 given_card = random.choice(target.player_cards)  # NOTE: will change random choice to target player choice; target chooses a card to give (later in interface)
                 target.player_cards.remove(given_card)  # removing card from target player's cards
                 player.player_cards.append(given_card)  # adding card to player's cards
-                print(f"{target.player_name} gave {player.name} a card!")
+                print(f"{player.name} took a random card from {target.player_name}!")
 
         elif combo_type == 3:  # 3 of the same character card
-            if target.player_cards:
-                stolen_card = random.choice(target.player_cards)  # takes a random card from target player
-                target.player_cards.remove(stolen_card)  # removing card from target player's cards
-                player.player_cards.append(stolen_card)  # adding card to player's cards
-                print(f"{player.name} took a random card from {target.player_name}!")
+            top_cards = self.deck.red_black_tree.the_spell_action()
+            if top_cards is None:
+                return False
+
+            print("Top 3 cards:")
+            for i in top_cards:
+                print(i.card_name)
+
+            if self.current_player_index == 0:
+                while True:
+                    try:
+                        card_choice = int(input("Which card do you want to take: "))
+                        if 1 <= card_choice <= len(top_cards):
+                            chosen_card = top_cards[card_choice - 1]
+                            self.deck.red_black_tree.delete(chosen_card.index)
+                            player.player_cards.append(chosen_card)
+                            print(f"Player 1 took a took a card using combo 3")
+                            break
+                        else:
+                            print(f"Enter a number between 1-{len(top_cards)}")
+                    except ValueError:
+                        print("Enter a valid number.")
+
+            else: # handling bot player
+                chosen_card = random.choice(top_cards)
+                self.deck.red_black_tree.delete(chosen_card.index)
+                player.player_cards.append(chosen_card)
+                print(f"{player.player_name} took a took a card using combo 3")
+
+            return True
 
     def activate_full_set_combo(self, player):
         """Activate special character cards combinations effects"""
-        # find the target player; NOTE: will change to letting the player chose the target (later in interface)
-        target = next((p for p in self.players if p != player and p.player_cards), None)
-        if not target:
-            return
+        cards = {
+            # shield card
+            "The Shield": lambda: Shield(),
 
-        # check for cancelling effect with 'No Chance'
-        '''if any(card.card_name == "No Chance" for card in target.player_cards):
-            print(f"{target.player_name} blocked your character combination with 'No Chance!'")
-            return'''
+            # action cards
+            "Sick Leave": lambda: SickLeave(),
+            "U Turn": lambda: UTurn(),
+            "Hacker": lambda: Hacker(),
+            "The Spell": lambda: TheSpell(),
+            "Shuffle": lambda: Shuffle(),
+            "Reveal": lambda: Reveal(),
+            "Beat It": lambda: BeatIt(),
+            "Beg You": lambda: BegYou(),
+            "Mirror": lambda: Mirror(),
 
-        # player names a card to request from target player
-        # NOTE: will change to let player chose (later in interface)
-        chosen_card_name = random.choice(
-            [c.card_name for c in target.player_cards]) if target.player_cards else None
+            # character cards
+            "Ice King": lambda: CharacterCard(1),
+            "BMO": lambda: character_cards(2),
+            "Finn": lambda: character_cards(3),
+            "Jake": lambda: character_cards(4),
+            "Bubblegum": lambda: character_cards(5),
+            "Lumpy": lambda: character_cards(6)
+        }
 
-        for card in target.player_cards:
-            if card.card_name == chosen_card_name:
-                target.player_cards.remove(card)
-                player.player_cards.append(card)
-                print(f"{player.name} took {card.card_name} from {target.player_name}!")
-                break
-            else:
-                print(f"{target.player_name} does not have {chosen_card_name}!")
+        if self.current_player_index == 0:
+            print("Cards: ")
+            for i, card_name in enumerate(cards.keys(), 1):
+                print(f"{i}: {card_name}")
+
+            while True:
+                try:
+                    choice = int(input("Which card do you want to take: "))
+                    if 1 <= choice <= len(cards.keys()):
+                        card_name = list(cards.keys())[choice - 1]
+                        new_card = cards[card_name]()
+                        player.player_cards.append(new_card)
+
+                        if card_name == "The Shield":
+                            player.has_shield.append(new_card)
+                        print(f"{card_name} was added to your hand")
+                        break
+                    else:
+                        print(f"Enter a number between 1-{len(cards)}")
+                except ValueError:
+                    print("Enter a valid number.")
+
+        else: # handling bot
+            useful_cards = [
+                "The Shield",
+                "Hacker",
+                "The Spell",
+                "Mirror",
+                "Shuffle"
+            ]
+
+            available_cards = [card for card in useful_cards if card in useful_cards]
+            chosen_card_name = random.choice(available_cards) if available_cards else random.choice(list(useful_cards.keys()))
+
+            new_card = cards[chosen_card_name]()
+            player.player_cards.append(new_card)
+
+            if chosen_card_name == "The Shield":
+                player.has_shield.append(new_card)
+            print(f"{chosen_card_name} was added to {player.player_name}'s hand")
     # ID: 5676233
 
     # 5674312
