@@ -697,9 +697,7 @@ def draw_window():
                                 current_position[1]]  # position of the deck of cards, +2 means the gap between cards
 
         global action_card_trig
-        if action_pile is not None and current_player_id == human_player_index:
-            window.blit(action_pile, (560, 250))
-        elif action_pile is not None and current_time - start_time_cards < 2.5 and action_card_trig == 1 and current_player_id != human_player_index:
+        if action_pile is not None: #and current_player_id == human_player_index:
             window.blit(action_pile, (560, 250))
         else:
             action_card_trig = 0
@@ -865,7 +863,6 @@ while game_running:  # start the loop - keep going while the game is on
                 if end_turn_button.gets_clicked():  # option 2 to end turn
                     disable_interactivity()
                     game.end_turn()
-                    action_pile = None
                     if game.discard_card_pile[-1].card_name == "The Shield":
                         start_time_trouble = current_time
                         youre_in_trouble_trig = 1
@@ -907,7 +904,6 @@ while game_running:  # start the loop - keep going while the game is on
                 elif trigger_for_bot_wait is True and current_time - start_time_cards > 1:
                     if len(played_bots_cards) == 0:
                         game.next_player_turn()
-                        action_pile = None
                         trigger_for_bot_wait = False
                         winner = game.check_winner()
                         if winner is not None:
