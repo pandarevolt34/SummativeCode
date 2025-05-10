@@ -24,8 +24,8 @@ ready2play_img = pygame.transform.scale(pygame.image.load("press to start.png"),
 menu_img = pygame.transform.scale(pygame.image.load("menu image.png"), (1000, 800))
 paused_img = pygame.transform.scale(pygame.image.load("paused image.jpg"), (1000, 800))
 option_img = pygame.transform.scale(pygame.image.load("Background Image.png"), (1000, 800))
-humanwins_img = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/human wins.png"), (1000, 800))
-botwins_img = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/bot wins.png"), (1000, 800))
+humanwins_img = pygame.transform.scale(pygame.image.load("human wins.png"), (1000, 800))
+botwins_img = pygame.transform.scale(pygame.image.load("bot wins.png"), (1000, 800))
 
 # Main Gameplay image
 BOT1_img = pygame.transform.scale(pygame.image.load("vertical left.png").convert_alpha(), (250,200)) #width and height both 200
