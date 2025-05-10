@@ -544,7 +544,7 @@ start_time_trouble = None
 start_time_cards = None
 current_time = None
 human_player_index = 0
-global user_won
+user_won = False
 
 interactivity_enabled = True
 
@@ -709,7 +709,6 @@ def draw_window():
             for text in actions_text + character_text:
                 text.position()
                 text.draw_text(window)
-
         global youre_in_trouble_trig
         if youre_in_trouble_trig == 1 and current_time - start_time_trouble < 5:
             print_trouble_card_with_shield()
@@ -863,7 +862,7 @@ while game_running:  # start the loop - keep going while the game is on
                 if end_turn_button.gets_clicked():  # option 2 to end turn
                     disable_interactivity()
                     game.end_turn()
-                    if game.discard_card_pile[-1].card_name == "The Shield":
+                    if game.discard_card_pile[-1].card_name == "The Shield" and game.discard_card_pile[-2].card_name == "You're in Trouble":
                         start_time_trouble = current_time
                         youre_in_trouble_trig = 1
                     if game.discard_card_pile[-1].card_name == "You're in Trouble":

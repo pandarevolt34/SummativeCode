@@ -277,7 +277,7 @@ class CardDeck:
         # the stack of cards
         self.red_black_tree = RedBlackTree()
         self.counter = 1
-        self.num_of_cards = 67
+        self.num_of_cards = 0
 
     def fisher_yates_shuffle(self):
         # loop from starting from len(arr)-1 down to 0
@@ -355,6 +355,7 @@ class CardDeck:
             card.index = array_of_cards_indexes[num_of_inserted_cards]
             num_of_inserted_cards += 1
             array_of_cards.append(card)
+        self.num_of_cards = num_of_inserted_cards
         return array_of_cards
 
     def initialize_trouble_shield_cards(self, num_of_players):
@@ -364,6 +365,7 @@ class CardDeck:
             card.index *= 100
             card.index += self.counter
             self.counter += 1
+            self.num_of_cards += 1
             self.red_black_tree.insert_card(card)
         for i in range(7 - num_of_players):
             card = Shield()
@@ -371,6 +373,7 @@ class CardDeck:
             card.index *= 100
             card.index += self.counter
             self.counter += 1
+            self.num_of_cards += 1
             self.red_black_tree.insert_card(card)
         pass
 
@@ -383,9 +386,11 @@ class CardDeck:
 
     def add_trouble_card_back(self):
         card = Trouble()
-        card.index = random.randint(1, self.num_of_cards)
+        card.index = random.randint(1, self.num_of_cards + 1)
         card.index *= 100
         card.index += self.counter
+        self.num_of_cards += 1
+        self.counter += 1
         self.red_black_tree.insert_card(card)
 
     def draw_a_card(self):
@@ -759,7 +764,7 @@ class GameHandling:
     def end_turn(self):  ### NOTE TO GROUP: changed draw_card to be 'End Turn' functionality
         """Draw a card from the deck to end turn and progress to next player"""
         # player.has_block = False  # Reset unused 'no chance' block states
-        #print(self.deck.num_of_cards)
+        print(self.deck.num_of_cards)
         player = self.players[self.current_player_index]
         card = self.deck.draw_a_card()
         if card:
