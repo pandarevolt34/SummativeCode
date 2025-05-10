@@ -530,7 +530,7 @@ text_2 = font_2.render("Select players:", True, Black)
 # current game mode
 game_status = "menu"
 instruction_page = 1
-current_player = 0  # Player1 = 0 ; Player2 = 1, Player3 = 2
+current_player_id = 0  # Player1 = 0 ; Player2 = 1, Player3 = 2
 action_pile = None
 num_players = 0
 youre_in_trouble_trig = 0
@@ -628,7 +628,7 @@ def draw_window():
         window.blit(text_1, (780, 20))
 
         # player's text
-        player_colour = [Dark_Green if i == current_player else Black for i in range(num_players)]
+        player_colour = [Dark_Green if i == current_player_id else Black for i in range(num_players)]
 
         # display text with their positions on interface
         if num_players == 2:
@@ -668,7 +668,6 @@ def draw_window():
             window.blit(bot3_text, (855, 355))
 
         # shield image
-        #if current_player_index == human_player_index:
         window.blit(extra_shield_img, (470, 575))
 
         # Drawing "End Turn" button
@@ -837,6 +836,7 @@ while game_running:  # start the loop - keep going while the game is on
 
         elif game_status == "playing":
             current_player = game.players[game.current_player_index]
+            current_player_id = game.current_player_index
             if game.current_player_index == 0:
                 enable_interactivity()
                 if end_turn_button.gets_clicked():  # option 2 to end turn
