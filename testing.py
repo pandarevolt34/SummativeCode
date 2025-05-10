@@ -537,19 +537,17 @@ youre_in_trouble_trig = 0
 start_time = None
 current_time = None
 human_player_index = 0
-'''
-interactivity_enable = True
+
+interactivity_enabled = True
 
 def enable_interactivity():
     global interactivity_enabled
     interactivity_enabled = True
-    print("button enabled")
 
 def disable_interactivity():
     global interactivity_enabled
     interactivity_enabled = False
-    print("button disabled")
-'''
+
 def print_trouble_card_with_shield():
     #create an overlay message
     overlay = pygame.Surface ((725, 100))
@@ -670,12 +668,12 @@ def draw_window():
             window.blit(bot3_text, (855, 355))
 
         # shield image
-        #if current_player == 0:
+        #if current_player_index == human_player_index:
         window.blit(extra_shield_img, (470, 575))
 
         # Drawing "End Turn" button
-        #if current_player == 0:
-        end_turn_button.draw()
+        if interactivity_enabled is True:
+            end_turn_button.draw()
 
 
 
@@ -693,9 +691,10 @@ def draw_window():
             window.blit(action_pile, (560, 250))
 
         # Display each card text on screen
-        for text in actions_text + character_text:
-            text.position()
-            text.draw_text(window)
+        if interactivity_enabled is True:
+            for text in actions_text + character_text:
+                text.position()
+                text.draw_text(window)
 
         global youre_in_trouble_trig
         if youre_in_trouble_trig == 1 and current_time - start_time < 5:
@@ -814,7 +813,6 @@ while game_running:  # start the loop - keep going while the game is on
                 pygame.time.delay(300)
                 game.players_setup(2, "Player1")
                 num_players = 2
-                current_player = 0
                 fade_transition(1000, 800, White, "playing")
                 game.initialize_game()
                 game_status = "playing"
@@ -824,7 +822,6 @@ while game_running:  # start the loop - keep going while the game is on
                 pygame.time.delay(300)
                 game.players_setup(3, "Player1")
                 num_players = 3
-                current_player = 0
                 fade_transition(1000, 800, White, "playing")
                 game.initialize_game()
                 game_status = "playing"
@@ -834,7 +831,6 @@ while game_running:  # start the loop - keep going while the game is on
                 pygame.time.delay(300)
                 game.players_setup(4, "Player1")
                 num_players = 4
-                current_player = 0
                 fade_transition(1000, 800, White, "playing")
                 game.initialize_game()
                 game_status = "playing"
@@ -842,8 +838,9 @@ while game_running:  # start the loop - keep going while the game is on
         elif game_status == "playing":
             current_player = game.players[game.current_player_index]
             if game.current_player_index == 0:
-                #enable_interactivity()
+                enable_interactivity()
                 if end_turn_button.gets_clicked():  # option 2 to end turn
+                    disable_interactivity()
                     game.end_turn()
                     if game.discard_card_pile[-1].card_name == "The Shield":
                         start_time = current_time
@@ -854,7 +851,6 @@ while game_running:  # start the loop - keep going while the game is on
                     game.next_player_turn()
                     if game.check_winner() is not None:
                         game_status = "result"
-                    #disable_interactivity()
 
                 # grouped all cards
                 all_cards = {**main_cards, **action_cards, **character_cards}  # Merge all card dictionaries together **
@@ -872,16 +868,14 @@ while game_running:  # start the loop - keep going while the game is on
                         game.play_selected_card(text.text)
                         if game.check_winner() is not None:
                             game_status = "result"
-                        #if text == "Sick Leave" and current_player != game.players[game.current_player_index]:
-                            #disable_interactivity()
+                        if text == "Sick Leave" and current_player != game.players[game.current_player_index]:
+                            disable_interactivity()
 
             else:
                 game.handle_bot_turn(current_player)
                 game.next_player_turn()
                 if game.check_winner() is not None:
                     game_status = "result"
-                #if game.current_player_index == 0:
-                    #enable_interactivity()
 
         # ================ PAUSING INTERFACE ==================
         elif game_status == "paused":
