@@ -164,6 +164,8 @@ class BeatIt(ActionCard):
 
     def perform_action(self, game, current_player):
         target_player = game.players[(game.current_player_index + game.turn_direction) % len(game.players)]
+        while game.losers.get(target_player) is not None:
+            target_player = game.players[(game.current_player_index + game.turn_direction) % len(game.players)]
         print(f"{target_player.player_name} has taken an extra card from the deck")
         card = game.deck.draw_a_card()
         if card:
@@ -275,7 +277,7 @@ class CardDeck:
         # the stack of cards
         self.red_black_tree = RedBlackTree()
         self.counter = 1
-        self.num_of_cards = 72
+        self.num_of_cards = 67
 
     def fisher_yates_shuffle(self):
         # loop from starting from len(arr)-1 down to 0
@@ -463,8 +465,6 @@ class GameHandling:
             player.has_shield.append(shield_card)
 
         # ID: 5676233
-    def play_card(self):
-        pass
 
 
 
@@ -759,6 +759,7 @@ class GameHandling:
     def end_turn(self):  ### NOTE TO GROUP: changed draw_card to be 'End Turn' functionality
         """Draw a card from the deck to end turn and progress to next player"""
         # player.has_block = False  # Reset unused 'no chance' block states
+        #print(self.deck.num_of_cards)
         player = self.players[self.current_player_index]
         card = self.deck.draw_a_card()
         if card:
@@ -860,7 +861,7 @@ class GameHandling:
                                 print("Enter a valid number.")
 
                         elif choice == 2:  # option 2 to end turn
-                            self.end_turn(current_player)
+                            self.end_turn()
                             turn_ended = True  # exit the player turn loop
 
                         else:  # if input is not 1 or 2
@@ -877,8 +878,9 @@ class GameHandling:
 # ID: 5676233
 ##### NOTE TO GROUP: Add docstrings + fix docstring format
 
-
-'''game = GameHandling()
-game.players_setup()
+'''
+game = GameHandling()
+game.players_setup(2)
 game.initialize_game()
-game.main_loop()'''
+game.main_loop()
+'''

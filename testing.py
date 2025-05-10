@@ -24,6 +24,8 @@ ready2play_img = pygame.transform.scale(pygame.image.load("press to start.png"),
 menu_img = pygame.transform.scale(pygame.image.load("menu image.png"), (1000, 800))
 paused_img = pygame.transform.scale(pygame.image.load("paused image.jpg"), (1000, 800))
 option_img = pygame.transform.scale(pygame.image.load("Background Image.png"), (1000, 800))
+humanwins_img = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/human wins.png"), (1000, 800))
+botwins_img = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/bot wins.png"), (1000, 800))
 
 # Main Gameplay image
 BOT1_img = pygame.transform.scale(pygame.image.load("vertical left.png").convert_alpha(), (250,200)) #width and height both 200
@@ -460,7 +462,7 @@ option_button = {"2P": TheButton("2 Players", 390, 300, True),
 actions_text = [
     Clickable_text("Hacker", font_1, White, Orange, 290, 580),
     Clickable_text("Sick Leave", font_1, White, Orange, 290, 600),
-    Clickable_text("U turn", font_1, White, Orange, 290, 620),
+    Clickable_text("U Turn", font_1, White, Orange, 290, 620),
     Clickable_text("The Spell", font_1, White, Orange, 290, 640),
     Clickable_text("Shuffle", font_1, White, Orange, 290, 660),
     Clickable_text("Reveal", font_1, White, Orange, 290, 680),
@@ -485,7 +487,10 @@ all_text = [*actions_text, *character_text]  # Merge all text together
 
 def create_card_text_objects(player):
     # Get card counts from the player
-    card_counts = player.count_card_occurrences()
+    card_counts = {}
+    for card in player.player_cards:
+        card_name = card.card_name
+        card_counts[card_name] = card_counts.get(card_name, 0) + 1
 
     # Define all possible card names and their positions
     card_definitions = {
@@ -510,16 +515,16 @@ def create_card_text_objects(player):
     }
 
     # Create Clickable_text objects with counts
-    all_text = []
+    text_count = []
     for card_name, (x, y) in card_definitions.items():
         count = card_counts.get(card_name, 0) #card count doesnt exists if its 0
         display_text = f"{card_name} x{count}"
         text_obj = Clickable_text(display_text, font_1,
                                   White if count > 0 else Gray,  # Gray out if count is 0
                                   Orange, x, y)
-        all_text.append(text_obj)
+        text_count.append(text_obj)
 
-    return all_text
+    return text_count
 
 
 text_1 = font_1.render("Press SPACE key to pause", True, Dark_Green)
@@ -539,6 +544,7 @@ start_time_trouble = None
 start_time_cards = None
 current_time = None
 human_player_index = 0
+global user_won
 
 interactivity_enabled = True
 
@@ -576,6 +582,8 @@ def print_trouble_card_no_shield():
 # The function below basically groups all the drawings in one place
 # makes code more organised, better for reuse purpose, and avoid repetition
 # This function will be reused in the main game loop
+
+game = main.GameHandling()
 
 def draw_window():
     # =============== MENU SCREEN =================
@@ -637,7 +645,7 @@ def draw_window():
             window.blit(BOT2_img, (400, -40))
 
             human_player_text = font_2.render("You", True, player_colour[0])
-            bot1_text = font_2.render("BOT 1", True, player_colour[1])
+            bot1_text = font_2.render("BOT", True, player_colour[1])
 
             window.blit(bot1_text, (470, 56))
             window.blit(human_player_text, (470, 400))
@@ -697,6 +705,9 @@ def draw_window():
             action_card_trig = 0
         # Display each card text on screen
         if interactivity_enabled is True:
+            for text in create_card_text_objects(game.players[current_player_id]):
+                text.position()
+                text.draw_text(window)
             for text in actions_text + character_text:
                 text.position()
                 text.draw_text(window)
@@ -721,7 +732,11 @@ def draw_window():
 
     # ============================== WINNER INTERFACE ==========================
     elif game_status == "result":
-        window.blit(result_img, (0, 0))
+        global user_won
+        if user_won is True:
+            window.blit(humanwins_img, (0, 0))
+        elif user_won is False:
+            window.blit(botwins_img, (0,0))
 
 
 # ===================================== DUMMY FUNCTIONS================================================
@@ -751,7 +766,7 @@ def card_to_box():
 # =================================================== MAIN GAME LOOP ====================================================================================================
 
 import time
-game = main.GameHandling()
+
 trigger_for_bot_wait = False
 played_bots_cards = []
 game_running = True
@@ -845,7 +860,7 @@ while game_running:  # start the loop - keep going while the game is on
         elif game_status == "playing":
             current_player = game.players[game.current_player_index]
             current_player_id = game.current_player_index
-            if game.current_player_index == 0:
+            if game.current_player_index == 0 and game.losers.get(current_player) is None:
                 enable_interactivity()
                 if end_turn_button.gets_clicked():  # option 2 to end turn
                     disable_interactivity()
@@ -867,11 +882,21 @@ while game_running:  # start the loop - keep going while the game is on
                 for text in all_text:
                     if text.gets_clicked():
                         text_sf.play()
+                        #text_displayed = text.display_text
+                        #text_displayed = text_displayed[:-3]
                         game.play_selected_card(text.text)
-                        if game.check_winner() is not None:
+                        winner = game.check_winner()
+                        if winner is not None:
                             game_status = "result"
+                            if winner == "Player":
+                                user_won = True
+                            else:
+                                user_won = False
                         if text == "Sick Leave" and current_player != game.players[game.current_player_index]:
                             disable_interactivity()
+
+            elif game.losers.get(current_player) is not None:
+                game.next_player_turn()
 
             else:
                 if trigger_for_bot_wait is False:
@@ -884,8 +909,13 @@ while game_running:  # start the loop - keep going while the game is on
                         game.next_player_turn()
                         action_pile = None
                         trigger_for_bot_wait = False
-                        if game.check_winner() is not None:
+                        winner = game.check_winner()
+                        if winner is not None:
                             game_status = "result"
+                            if winner == "Player":
+                                user_won = True
+                            else:
+                                user_won = False
                     else:
                         if action_pile != all_cards[played_bots_cards[-1].card_name]:
                             action_pile = all_cards[played_bots_cards[-1].card_name]
@@ -906,10 +936,6 @@ while game_running:  # start the loop - keep going while the game is on
                 game_status = "menu"
                 button_sf.play()
                 pygame.time.delay(300)
-
-        # =============== WINNER INTERFACE ====================
-        elif game_status == "result":
-            window.blit(result_img, (0, 0))
 
     draw_window()
     pygame.display.update()
