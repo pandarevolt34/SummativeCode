@@ -691,7 +691,7 @@ def draw_window():
         global action_card_trig
         if action_pile is not None and current_player_id == human_player_index:
             window.blit(action_pile, (560, 250))
-        elif action_pile is not None and current_time - start_time_cards < 3.5 and action_card_trig == 1 and current_player_id != human_player_index:
+        elif action_pile is not None and current_time - start_time_cards < 2.5 and action_card_trig == 1 and current_player_id != human_player_index:
             window.blit(action_pile, (560, 250))
         else:
             action_card_trig = 0
@@ -864,13 +864,6 @@ while game_running:  # start the loop - keep going while the game is on
                 # grouped all cards
                 all_cards = {**main_cards, **action_cards, **character_cards}  # Merge all card dictionaries together **
 
-                # Display each card on the screen
-                current_position = [700, 700]  # fixed position for all cards
-                for name, image in all_cards.items():  # items(), lopping dict
-                    window.blit(image, current_position)
-                    current_position = [current_position[0] + 2, current_position[
-                        1]]  # position of the deck of cards, +2 means the gap between cards
-
                 for text in all_text:
                     if text.gets_clicked():
                         text_sf.play()
@@ -886,7 +879,7 @@ while game_running:  # start the loop - keep going while the game is on
                     game.handle_bot_turn(current_player, played_bots_cards)
                     start_time_cards = current_time
                     continue
-                elif trigger_for_bot_wait is True and current_time - start_time_cards > 3.5:
+                elif trigger_for_bot_wait is True and current_time - start_time_cards > 1:
                     if len(played_bots_cards) == 0:
                         game.next_player_turn()
                         action_pile = None
@@ -899,7 +892,7 @@ while game_running:  # start the loop - keep going while the game is on
                             start_time_cards = current_time
                             action_card_trig = 1
                         else:
-                            if current_time - start_time_cards > 3.5:
+                            if current_time - start_time_cards > 2.5:
                                 played_bots_cards.pop()
 
 
