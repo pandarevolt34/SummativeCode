@@ -219,12 +219,8 @@ class Mirror(ActionCard):
 
         try:
             # create instances of the same card type
-            new_card = type(last_card)(index=-1)  # using -1 as a temporary index
-            result = new_card.perform_action(game, current_player)
-
-            if result:
-                return True
-            return False
+            result = last_card.perform_action(game, current_player)
+            return result
 
         except Exception as e:
             print(f"Mirror failed: {str(e)}")
@@ -622,7 +618,7 @@ class GameHandling:
         for i in bot.player_cards:
             cards_available[i.card_name] = i
 
-        if cards_available.get("U Turn") is not None: # if U Turn is within the bots cards
+        if "U Turn"  in cards_available: # if U Turn is within the bots cards
             card = cards_available["U Turn"]
             if card.perform_action(self, bot): # if action returns True then it was played
                 bot.player_cards.remove(card) # remove the card
@@ -630,7 +626,7 @@ class GameHandling:
                 cards_used.append(card)
 
         revealing_card_used = False
-        if cards_available.get("The Spell") is not None:
+        if "The Spell" in cards_available:
             revealing_card_used = True
             card = cards_available["The Spell"]
             if card.perform_action(self, bot):
@@ -638,14 +634,14 @@ class GameHandling:
                 self.last_played_action_card = card
                 cards_used.append(card)
 
-        if cards_available.get("Beg You") is not None:
+        if "Beg You" in cards_available:
             card = cards_available["Beg You"]
             if card.perform_action(self, bot):
                 bot.player_cards.remove(card)
                 self.last_played_action_card = card
                 cards_used.append(card)
 
-        if cards_available.get("Reveal") is not None:
+        if "Reveal" in cards_available:
             if revealing_card_used is False:
                 revealing_card_used = True
                 card = cards_available["Reveal"]
@@ -654,37 +650,57 @@ class GameHandling:
                     self.last_played_action_card = card
                     cards_used.append(card)
 
-        if cards_available.get("Mirror") is not None:
+        if "Mirror" in cards_available:
             if self.deck.num_of_cards >= 50:
                 if self.last_played_action_card.card_name == "Beat It":
-                    card = cards_available["Mirror"]
+                    card = self.last_played_action_card
                     if card.perform_action(self, bot):
+                        card = cards_available["Mirror"]
                         bot.player_cards.remove(card)
                         self.last_played_action_card = card
                         cards_used.append(card)
+                        self.next_player_turn()
+                        return
             elif self.deck.num_of_cards >= 35:
                 if self.last_played_action_card.card_name == "Beat It" or "Sick Leave":
-                    card = cards_available["Mirror"]
+                    card = self.last_played_action_card
                     if card.perform_action(self, bot):
+                        card = cards_available["Mirror"]
                         bot.player_cards.remove(card)
                         self.last_played_action_card = card
                         cards_used.append(card)
+                        self.next_player_turn()
+                        return
             elif self.deck.num_of_cards >= 20:
                 if self.last_played_action_card.card_name == "Beat It" or "Sick Leave" or "Shuffle":
-                    card = cards_available["Mirror"]
+                    card = self.last_played_action_card
                     if card.perform_action(self, bot):
+                        leave = False
+                        if self.last_played_action_card.card_name == "Beat It" or "Sick Leave":
+                            leave = True
+                        card = cards_available["Mirror"]
                         bot.player_cards.remove(card)
                         self.last_played_action_card = card
                         cards_used.append(card)
+                        if leave is True:
+                            self.next_player_turn()
+                            return
             else:
                 if self.last_played_action_card.card_name != "null":
-                    card = cards_available["Mirror"]
+                    card = self.last_played_action_card
                     if card.perform_action(self, bot):
+                        leave = False
+                        if self.last_played_action_card.card_name == "Beat It" or "Sick Leave":
+                            leave = True
+                        card = cards_available["Mirror"]
                         bot.player_cards.remove(card)
                         self.last_played_action_card = card
                         cards_used.append(card)
+                        if leave is True:
+                            self.next_player_turn()
+                            return
 
-        if cards_available.get("Hacker") is not None:
+        if "Hacker" in cards_available:
             if self.deck.num_of_cards > 20:
                 card = cards_available["Hacker"]
                 if card.perform_action(self, bot):
@@ -692,8 +708,7 @@ class GameHandling:
                     self.last_played_action_card = card
                     cards_used.append(card)
 
-        skip_turn = False
-        if cards_available.get("Sick Leave") is not None:
+        if "Sick Leave" in cards_available:
             # NOTE: DON'T FORGET SCENARIO WITH THE SPELL
             if self.deck.num_of_cards <= 20:
                 card = cards_available["Sick Leave"]
@@ -701,9 +716,10 @@ class GameHandling:
                     bot.player_cards.remove(card)
                     self.last_played_action_card = card
                     cards_used.append(card)
-                    skip_turn = True
+                    self.next_player_turn()
+                    return
 
-        if cards_available.get("Shuffle") is not None:
+        if "Shuffle" in cards_available:
             # DONT FORGET THE SPELL SCENARIO
             chance = random.randint(1, 100)
             if chance <= 20:
@@ -713,7 +729,7 @@ class GameHandling:
                     self.last_played_action_card = card
                     cards_used.append(card)
 
-        if cards_available.get("Beat It") is not None:
+        if "Beat It"  in cards_available:
             chance = random.randint(1, 100)
             if chance <= 20 or self.deck.num_of_cards <= 30:
                 card = cards_available["Beat It"]
@@ -721,8 +737,9 @@ class GameHandling:
                     bot.player_cards.remove(card)
                     self.last_played_action_card = card
                     cards_used.append(card)
-        if skip_turn is False:
-            self.end_turn()
+                    self.next_player_turn()
+                    return
+        self.end_turn()
 
     # 5674312
 
@@ -740,12 +757,14 @@ class GameHandling:
         for i in current_player.player_cards:
             if i.card_name == wanted_card_name:
                 card = i
+        if card is None:
+            return None
         if card.card_type == "Action":
             if card.perform_action(self, current_player):
                 current_player.player_cards.remove(card)
                 self.discard_card_pile.append(card)
                 self.last_played_action_card = card
-                if card.card_name == "Sick Leave":
+                if card.card_name == "Sick Leave" or card.card_name == "Beat It":
                     self.next_player_turn()
 
         elif card.card_type == "Character":
