@@ -397,8 +397,21 @@ def print_trouble_card_no_shield():
     window.blit(overlay, (140, 320))
     window.blit(msg_surface, (150, 350))
 
-#def display_top_3_card:
+def display_top_3_card(top_3_cards):
+    all_cards = {**main_cards, **action_cards, **character_cards}
+    positions = [(250, 100), (420, 100), (500, 100)] #position of top 3 cards
 
+    for i, card in enumerate(top_3_cards):
+        card_name = card.card_name
+
+        if card_name in all_cards:
+            window.blit(all_cards[card_name], positions[i])
+
+show_top3_cards = False
+top3_cards_to_display = []
+
+#In main loop
+#if card_name in ["The Spell", "Reveal"]:
 
 
 # ======================================================= DRAWINGS ON SCREEN ============================================================
@@ -684,7 +697,7 @@ while game_running:  # start the loop - keep going while the game is on
                         winner = game.check_winner()
                         if winner is not None:
                             game_status = "result"
-                            if winner == "Player":
+                            if winner == "Player1":
                                 user_won = True
                             else:
                                 user_won = False

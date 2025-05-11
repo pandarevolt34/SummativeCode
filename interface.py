@@ -1,6 +1,11 @@
 #Student ID: 5676187
+from logging import disable
+
 import pygame
-pygame.init() 
+
+
+
+pygame.init()
 
 #============================================================ GAME VARIABLES I =============================================================================================
 #the font function for interface#Adjust font size
@@ -21,10 +26,10 @@ menu_img = pygame.transform.scale(pygame.image.load("menu image.png"), (1000, 80
 paused_img = pygame.transform.scale(pygame.image.load("paused image.jpg"), (1000, 800))
 option_img = pygame.transform.scale(pygame.image.load("Background Image.png"), (1000, 800))
 
-#Main Gameplay image   
-player_ver_left = pygame.transform.scale(pygame.image.load("vertical left.png").convert_alpha(), (250,200)) #width and height both 200
-player_hori_mid = pygame.transform.scale(pygame.image.load("horizontal.png").convert_alpha(), (250,200)) #width and height both 200
-player_ver_right = pygame.transform.scale(pygame.image.load("vertical right.png").convert_alpha(), (250,200)) #width and height both 200
+#Image for bots player
+BOT1_img = pygame.transform.scale(pygame.image.load("vertical left.png").convert_alpha(), (250,200)) #width and height both 200
+BOT2_img = pygame.transform.scale(pygame.image.load("horizontal.png").convert_alpha(), (250,200)) #width and height both 200
+BOT3_img = pygame.transform.scale(pygame.image.load("vertical right.png").convert_alpha(), (250,200)) #width and height both 200
 
 #Define colours for drawing purpose
 Dark_Green	= (0, 100, 0)
@@ -124,7 +129,6 @@ class Cards:
         window.blit(self.image, self.card_positions)
 
 #========================================================= CLICKABLE TEXT CLASS ====================================================
-
 #action = None means that if no action is provided, it defaults to None
 
 class Clickable_text:
@@ -153,6 +157,10 @@ class Clickable_text:
         #topleft = .. sets the clickable area to match the text's position.
 
     def gets_clicked(self): #make text clickable
+        '''
+        if current_player != human_player_index:
+            return False
+        '''
         if self.hovering and pygame.mouse.get_pressed()[0]: #check if left mouse button is pressed
             global action_pile #read the variable further up
             global all_cards
@@ -161,6 +169,7 @@ class Clickable_text:
             print(self.text)
             action_pile = all_cards.pop(self.text, action_pile) 
             return True
+
             
     def get_text(self):
         return self.text
@@ -198,6 +207,10 @@ class TheButton:
         
     #mouse click detection
     def gets_clicked(self): #make button clickable
+        '''
+        if current_player != human_player_index:
+            return False
+        '''
         mouse_position = pygame.mouse.get_pos() #gets current position of the mouse
         if self.rect.collidepoint(mouse_position): #check if mouse is over the button (rect area)
             if pygame.mouse.get_pressed()[0]: #check if left mouse button is pressed
@@ -209,6 +222,7 @@ class TheButton:
 #Game Buttons
 gameplay_button = TheButton("End turn", 900,  700, True)
 Next_button = TheButton("NEXT", 900, 700, True)
+play_card_button = TheButton("Play Card", 890, 655, True)
 previous_button = TheButton("Previous <", -5, 700, True )
 ready_button = TheButton("Play Game", 430, 450, True)
 other_buttons = {"Start": TheButton("Start Game", 430, 380, True), 
@@ -217,7 +231,7 @@ other_buttons = {"Start": TheButton("Start Game", 430, 380, True),
 option_button ={"2P":  TheButton("2 Players", 390, 300, True), 
                 "3P": TheButton("3 Players", 390, 360, True), 
                 "4P": TheButton("4 Players", 390, 420, True)
-                }
+                               }
 
 
 
@@ -258,8 +272,41 @@ instruction_page = 1
 current_player = 0 #Player1 = 0 ; Player2 = 1, Player3 = 2
 action_pile = None 
 num_players = 0
+human_player_index = 0 #Human is always player 0
 
+interactivity_enabled = True
 
+def enable_interactivity():
+    global interactivity_enabled
+    interactivity_enabled = True
+    print("button enabled")
+
+def disable_interactivity():
+    global interactivity_enabled
+    interactivity_enabled = False
+    print("button disabled")
+
+def print_trouble_card_with_shield():
+    #create an overlay message
+    overlay = pygame.Surface ((1000, 100))
+    overlay.set_alpha(200)
+    overlay.fill(Black)
+    message = "You're in trouble, but you are safe with a shield"
+
+    msg_surface = font_2.render(message, True, White)
+    window.blit(overlay, (0, 350))
+    window.blit(msg_surface, (100, 390))
+
+def print_trouble_card_no_shield():
+    #create an overlay message
+    overlay = pygame.Surface ((1000, 100))
+    overlay.set_alpha(200)
+    overlay.fill(Black)
+    message = "You're in trouble and have no shield. You lose"
+
+    msg_surface = font_2.render(message, True, White)
+    window.blit(overlay, (0, 350))
+    window.blit(msg_surface, (100, 390))
 #======================================================= DRAWINGS ON SCREEN ============================================================
 
 #The function below basically groups all the drawings in one place 
@@ -320,49 +367,67 @@ def draw_window():
         #text_image ---> Press Space Key to Pause
         window.blit(text_1, (780, 20))
 
+        #determine interactivity based on current player
+        if current_player == human_player_index:
+            enable_interactivity()
+        else:
+            disable_interactivity()
 
-        #player's text
+
+        #determine player name colour based on their turn
         player_colour = [Dark_Green if i == current_player else Black for i in range(num_players)]
 
         #display text with their positions on interface
         if num_players == 2:
-            window.blit(player_hori_mid, (400, -40))
-            player1_text = font_2.render("Player 1", Black, player_colour[0]) 
-            window.blit(player1_text, (470, 56)) 
+            window.blit(BOT2_img, (400, -40))
+
+            human_player_text = font_2.render("You", True, player_colour[0])
+            bot1_text = font_2.render("BOT 1", True, player_colour[1])
+
+            window.blit(bot1_text, (470, 56))
+            window.blit(human_player_text, (470, 400))
 
         if num_players == 3:
-            window.blit(player_ver_left, (-50, 260))
-            window.blit(player_ver_right, (800, 260))
-            player1_text = font_2.render("Player 1", True, player_colour[0])
-            player2_text = font_2.render("Player 2", True, player_colour[1])
-            window.blit(player1_text, (40, 350))
-            window.blit(player2_text, (855, 355))
+            window.blit(BOT1_img, (-50, 260))
+            window.blit(BOT3_img, (800, 260))
+
+            human_player_text = font_2.render("You", True, player_colour[0])
+            bot1_text = font_2.render("BOT 1", True, player_colour[1])
+            bot2_text = font_2.render("BOT 2", True, player_colour[2])
+
+            window.blit(human_player_text, (470, 400))
+            window.blit(bot1_text, (40, 350))
+            window.blit(bot2_text, (855, 355))
 
         if num_players == 4:
-            window.blit(player_ver_left, (-50, 260))
-            window.blit(player_hori_mid, (400, -40))
-            window.blit(player_ver_right, (800, 260))
-            player1_text = font_2.render("Player 1", True, player_colour[0])
-            player2_text = font_2.render("Player 2", True, player_colour[1])
-            player3_text = font_2.render("Player 3", True, player_colour[2])
-            window.blit(player1_text, (40, 350))
-            window.blit(player2_text, (470, 55))
-            window.blit(player3_text, (855, 355))
+            window.blit(BOT1_img, (-50, 260))
+            window.blit(BOT2_img, (400, -40))
+            window.blit(BOT3_img, (800, 260))
+
+            human_player_text = font_2.render("You", True, player_colour[0])
+            bot1_text = font_2.render("BOT 1", True, player_colour[1])
+            bot2_text = font_2.render("BOT 2", True, player_colour[2])
+            bot3_text = font_2.render("BOT 3", True, player_colour[3])
+
+            window.blit(human_player_text, (490, 550))
+            window.blit(bot1_text, (40, 350))
+            window.blit(bot2_text, (470, 55))
+            window.blit(bot3_text, (855, 355))
 
         
 
         #shield image
-        window.blit(extra_shield_img, (470, 575) )
+        if current_player == 0:
+            window.blit(extra_shield_img, (470, 575) )
+            gameplay_button.draw()
+            for text in all_text:
+                if text.gets_clicked():
+                    text_sf.play()
 
-        
-        #Drawing "End Turn" button 
-        gameplay_button.draw()
-        
+
 
         #grouped all cards 
         all_cards = {**main_cards, **action_cards, **character_cards} #Merge all card dictionaries together **
-
-
         #Display each card on the screen
         current_position = [330, 250] #fixed position for all cards
         for name, image in all_cards.items(): #items(), lopping dict
@@ -372,10 +437,11 @@ def draw_window():
         if action_pile is not None:
             window.blit(action_pile, (560, 250))
 
-        #Display each card text on screen
-        for text in actions_text + character_text:
-            text.position()
-            text.draw_text(window)
+        #draw clickable text when its human's turn and display each card text on the screen
+        if current_player == human_player_index:
+            for text in all_text:
+                text.position()
+                text.draw_text(window)
 
 
 
@@ -499,29 +565,20 @@ while game_running: #start the loop - keep going while the game is on
                 fade_transition(1000, 800, White, "playing")
                 game_status = "playing"
 
-    
 
     #=============== MAIN GAMEPLAY SCREEN =================
         elif game_status == "playing":
             
             #Switching to next player
             if gameplay_button.gets_clicked():
-                current_player += 1 #increment 1
+                current_player += 1  # increment 1
                 if current_player >= num_players:
-                    current_player = 0 #loops back to fist player so player1 --> player 2 ---> player 3 ----> player 1
+                    current_player = 0  # loops back to fist player so player1 --> player 2 ---> player 3 ----> player 1
+
 
             #grouped all cards 
             all_cards = {**main_cards, **action_cards, **character_cards} #Merge all card dictionaries together **
-
             #Display each card on the screen
-            current_position = [700,700] #fixed position for all cards
-            for name, image in all_cards.items(): #items(), lopping dict
-                window.blit(image, current_position)
-                current_position = [current_position[0] + 2, current_position[1]] #position of the deck of cards, +2 means the gap between cards
-
-            for text in all_text:
-                if text.gets_clicked():
-                    text_sf.play()
 
             if gameplay_button.gets_clicked():
                 print("Click")
