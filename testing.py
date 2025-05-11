@@ -514,7 +514,8 @@ def draw_window():
             window.blit(bot3_text, (855, 355))
 
         # shield image
-        window.blit(extra_shield_img, (470, 575))
+        if game.players[human_player_index].has_shield:
+            window.blit(extra_shield_img, (470, 575))
 
         # Drawing "End Turn" button
         if interactivity_enabled is True:
@@ -718,7 +719,14 @@ while game_running:  # start the loop - keep going while the game is on
                     game.handle_bot_turn(current_player, played_bots_cards)
                     start_time_cards = current_time
                 else:
-                    if len(played_bots_cards) == 0:
+                    if played_bots_cards:
+                        if action_pile != all_cards[played_bots_cards[0].card_name]:
+                            action_pile = all_cards[played_bots_cards[0].card_name]
+                            start_time_cards = current_time
+                        else:
+                            if current_time - start_time_cards > 1:
+                                played_bots_cards.pop(0)
+                    else:
                         if current_time - start_time_cards > 1:
                             game.next_player_turn()
                             trigger_for_bot_wait = False
@@ -729,13 +737,7 @@ while game_running:  # start the loop - keep going while the game is on
                                     user_won = True
                                 else:
                                     user_won = False
-                    else:
-                        if action_pile != all_cards[played_bots_cards[0].card_name]:
-                            action_pile = all_cards[played_bots_cards[0].card_name]
-                            start_time_cards = current_time
-                        else:
-                            if current_time - start_time_cards > 1:
-                                played_bots_cards.pop(0)
+
 
 
         # ================ PAUSING INTERFACE ==================
