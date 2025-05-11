@@ -486,7 +486,7 @@ def draw_window():
         window.blit(text_1, (780, 20))
 
         # player's text
-        player_colour = [Dark_Green if i == current_player_id else Black for i in range(num_players)]
+        player_colour = [Orange if i == current_player_id else Black for i in range(num_players)]
 
         # display text with their positions on interface
         if num_players == 2:
