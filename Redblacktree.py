@@ -137,9 +137,9 @@ class RedBlackTree:
             old.parent.right = new
         new.parent = old.parent # set new node's parent as old node's parent
 
-    def minimum(self, node): # FIXED # find minimum index within subtree with node as its root
-        while node.left != self.nil: # continue down the left path of the subtree
-            node = node.left
+    def minimum(self, node): # RECURSIVE FUNC # find minimum index within subtree with node as its root
+        if node.left != self.nil: # continue down the left path of the subtree
+            node = self.minimum(node.left)
         return node
 
     def find_largest_node(self): # CORRECT
@@ -153,6 +153,8 @@ class RedBlackTree:
         return largest_node
 
     def delete(self, node_to_be_deleted): # CORRECT
+        #print(node_to_be_deleted.index)
+        #self.testing_func_for_traversing_tree()
         y = node_to_be_deleted
         y_original_color = y.red # store color of node
         # case 1
@@ -184,6 +186,8 @@ class RedBlackTree:
             self.delete_fixup(x)
 
     def delete_fixup(self, x): # CORRECT
+        #print(x.index)
+        #self.testing_func_for_traversing_tree()
         while x!= self.root and x.red is False: # while x is black and not the root of the tree
             if x == x.parent.left: # when x is a left child
                 w = x.parent.right # w is x's sibling, AKA the right child of x's parent
