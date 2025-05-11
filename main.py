@@ -63,10 +63,7 @@ class CharacterCard(Card):
         )
         self.character_number = character_number
 
-
-# ID: 5676233
-
-# ID: 5676233
+# ID: 5676233, 5674312
 ''' Class for ActionCard
 initializing class by inheriting from class Card, then creating subclasses for each action card
 by inheriting from ActionCard class...
@@ -86,6 +83,7 @@ class ActionCard(Card):
 
 
 class SickLeave(ActionCard):
+    """Class representing "Sick Leave" card which ends a player's turn without drawing a card"""
     def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("Sick Leave", "Action", "End your turn without drawing a card", index)
@@ -96,6 +94,7 @@ class SickLeave(ActionCard):
 
 
 class UTurn(ActionCard):
+    """Class representing "U Turn" card which reverses the direction of the game"""
     def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("U Turn", "Action", "Reverse the direction of the game", index)
@@ -107,6 +106,7 @@ class UTurn(ActionCard):
 
 
 class Hacker(ActionCard):
+    """Class representing "Hacker" card which draws a card from a random position in the deck"""
     def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("Hacker", "Action", "Take a card from a random position in the deck", index)
@@ -122,6 +122,7 @@ class Hacker(ActionCard):
 
 
 class TheSpell(ActionCard):
+    """Class representing "The Spell" card which allows a player to peek at the top 3 cards in the deck"""
     def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("The Spell", "Action", "Peek at the top 3 cards in the deck", index)
@@ -138,6 +139,7 @@ class TheSpell(ActionCard):
 
 
 class Shuffle(ActionCard):
+    """Class representing "Shuffle" card which shuffles the deck"""
     def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("Shuffle", "Action", "Shuffle the deck", index)
@@ -149,6 +151,7 @@ class Shuffle(ActionCard):
 
 
 class Reveal(ActionCard):
+    """Class representing "Reveal" card which allows all players to see the top 3 cards of the deck"""
     def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("Reveal", "Action", "Reveal the top 3 cards to all players", index)
@@ -166,6 +169,7 @@ class Reveal(ActionCard):
 
 
 class BeatIt(ActionCard):
+    """Class representing "Beat It" card which skips the player's turn and makes the next player play twice"""
     def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("Beat It", "Action",
@@ -190,6 +194,7 @@ class BeatIt(ActionCard):
 
 
 class BegYou(ActionCard):
+    """Class representing "Beg You" card which gives the player a random card in the hand of another player"""
     def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("Beg You", "Action", "A random player will give you a random card of theirs", index)
@@ -214,6 +219,7 @@ class BegYou(ActionCard):
 
 
 class Mirror(ActionCard):
+    """Class representing "The Shield" card which mirrors the last action card if possible"""
     def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("Mirror", "Action", "Copy the last played action card", index)
