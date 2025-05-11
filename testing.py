@@ -2,6 +2,7 @@
 import pygame
 import random
 import main
+
 from main import ActionCard, Card, GameHandling
 
 pygame.init()
@@ -156,17 +157,33 @@ class Cards:
 
 class Clickable_text:
     def __init__(self, text, font, ori_colour, hover_colour, x, y, gets_clicked=None):
-        self.text = text
+        self.text = text.split(' ×')[0]
         self.font = font
         self.ori_colour = ori_colour
         self.hover_colour = hover_colour
         self.x = x
         self.y = y
+        self.active = True
         self.hovering = False
-        self.rect = self.font.render(self.text, True, self.ori_colour).get_rect(topleft=(self.x, self.y))
+        self.rect = None
+        self.update_rect()
+
+
+    def update_rect(self):
+        display_text = self.get_display_text()
         # renders the text as an image using the font and colour, and gets a transparent rectangle that is the size of the rendered text and places it at the position (self.x, self.y)
+        self.rect = self.font.render(display_text, True, self.ori_colour).get_rect(topleft=(self.x, self.y))
+
+    def get_display_text(self):
+        if hasattr(self, "count"):
+            return f"{self.text} ×{self.count}" if self.count > 0 else self.text
+        return self.text
 
     def position(self):
+        if not self.active:
+            self.hovering = False
+            return
+
         mouse_position = pygame.mouse.get_pos()  # gets current position of the mouse
         self.hovering = self.rect.collidepoint(mouse_position)  # check if mouse is over the button (rect area)
 
@@ -174,55 +191,31 @@ class Clickable_text:
 
     # Text for display
     def draw_text(self, window):
-        text_colour = self.hover_colour if self.hovering else self.ori_colour
-        text_surface = self.font.render(self.text, True, text_colour)  # self.font.render turns text into an image
-        rect = text_surface.get_rect(
-            topleft=(self.x, self.y))  # get_rect() creates a transparent rectangle which is the same size as the text
-        window.blit(text_surface, rect)
-        # topleft = .. sets the clickable area to match the text's position.
+        color = Gray if not self.active else (self.hover_colour if self.hovering else self.ori_colour)
+        text_surface = self.font.render(self.get_display_text(), True, color)
+        window.blit(text_surface, (self.x, self.y))
+        self.update_rect()  # Ensure rect stays in sync
 
     def gets_clicked(self):  # make text clickable
-        if self.hovering and pygame.mouse.get_pressed()[0]:  # check if left mouse button is pressed
-            global action_pile  # read the variable further up
-            global all_cards
-            print(action_pile)
-            print(all_cards.get(self.text))  # print the card images associated with the text
-            print(self.text)
-            action_pile = all_cards.pop(self.text, action_pile)
-            return True # COMMENT COME BACK HERE AND UNDERSTAND REST OF THE CODE
-            '''
-            if not interactivity_enable:
-                return False
-            '''
-            card_name = self.text.split(' x')[0]
-            if card_name in card_text_to_class:
-                card_class = card_text_to_class[card_name]
-                new_card = card_class()
-
-                if hasattr(new_card, "perform_action"):
-                    game = main.GameHandling()
-                    initial = game.initialize_game()
-                    game.players.append(main.Player("Player"))
-                    new_card.perform_action(game, game.players[0])
-                    return True
-                print("No action...")
-                return False
-            print("Incorrect card name...")
+        if not self.active:
             return False
 
-            # print(action_pile)
-            # print("hello")   # ADD THE FUNCTIONS OF THE CARDS HERE
-            # game = main.Game()
-            # game.players.append(main.Player("Diana"))
-            # game.initialize_game()
-            # action_card = main.Hacker
-            # print("access this?")
-            # action_card.perform_action(action_card, game, game.players[0])
-            # print("accessed")
-            # print(all_cards.get(self.text))
-            # print(self.text)
-            # action_pile = all_cards.pop(self.text, action_pile)
-            # return True
+        mouse_position = pygame.mouse.get_pos()
+        if self.rect.collidepoint(mouse_position) and pygame.mouse.get_pressed()[0]:
+            # Get the base card name (without the count)
+            card_name = self.text.split(' ×')[0]
+
+            # Get the corresponding card image
+            all_cards = {**main_cards, **action_cards, **character_cards}
+            if card_name in all_cards:
+                global action_pile
+                action_pile = all_cards[card_name]
+                return True
+        return False
+
+    def set_active(self, active):
+        self.active = active
+        self.update_rect()
 
     def get_text(self):
         return self.text
@@ -263,10 +256,6 @@ class TheButton:
 
     # mouse click detection
     def gets_clicked(self):  # make button clickable
-        '''
-        if not interactivity_enable:
-            return False
-        '''
         mouse_position = pygame.mouse.get_pos()  # gets current position of the mouse
         if self.rect.collidepoint(mouse_position):  # check if mouse is over the button (rect area)
             if pygame.mouse.get_pressed()[0]:  # check if left mouse button is pressed
@@ -349,17 +338,14 @@ def create_card_text_objects(player):
     }
 
     # Create Clickable_text objects with counts
-    text_count = []
-    for card_name, (x, y) in card_definitions.items():
-        count = card_counts.get(card_name, 0) #card count doesnt exists if its 0
-        display_text = f"{card_name} x{count}"
-        text_obj = Clickable_text(display_text, font_1,
-                                  White if count > 0 else Gray,  # Gray out if count is 0
-                                  Orange, x, y)
-        text_count.append(text_obj)
+    for text in actions_text + character_text:
+        base_name = text.text
+        count = card_counts.get(base_name, 0)
+        text.count = count
+        text.set_active(count > 0)
+        text.update_rect()
 
-    return text_count
-
+    return actions_text + character_text
 
 text_1 = font_1.render("Press SPACE key to pause", True, Dark_Green)
 text_2 = font_2.render("Select players:", True, Black)
@@ -566,31 +552,6 @@ def draw_window():
         elif user_won is False:
             window.blit(botwins_img, (0,0))
 
-
-# ===================================== DUMMY FUNCTIONS================================================
-
-def draw_cards():
-    print("Drawing card")
-
-
-def end_turn():
-    print("Ending turn")
-    ''
-    ''
-
-
-def use_card():
-    print("Using ")
-
-
-def shuffle_deck():
-    print("Shuffling cards")
-
-
-def card_to_box():
-    print("Haha")
-
-
 # =================================================== MAIN GAME LOOP ====================================================================================================
 
 import time
@@ -705,15 +666,16 @@ while game_running:  # start the loop - keep going while the game is on
                     if game.check_winner() is not None:
                         game_status = "result"
 
-                # grouped all cards
-                all_cards = {**main_cards, **action_cards, **character_cards}  # Merge all card dictionaries together **
-
-                for text in all_text:
+                for text in create_card_text_objects(game.players[current_player_id]):
                     if text.gets_clicked():
                         text_sf.play()
-                        #text_displayed = text.display_text
-                        #text_displayed = text_displayed[:-3]
-                        game.play_selected_card(text.text)
+                        card_name = text.text.split(" ×")[0]
+
+                        all_cards = {**main_cards, **action_cards, **character_cards}  # Merge all card dictionaries together **
+                        if card_name in all_cards:
+                            action_pile = all_cards[card_name]
+
+                        game.play_selected_card(card_name)
                         winner = game.check_winner()
                         if winner is not None:
                             game_status = "result"
