@@ -532,9 +532,9 @@ def draw_window():
                 text.position()
                 text.draw_text(window)
         global youre_in_trouble_trig
-        if youre_in_trouble_trig == 1 and current_time - start_time_trouble < 5:
+        if youre_in_trouble_trig == 1 and current_time - start_time_trouble < 2:
             print_trouble_card_with_shield()
-        elif youre_in_trouble_trig == 2 and current_time - start_time_trouble < 5:
+        elif youre_in_trouble_trig == 2 and current_time - start_time_trouble < 2:
             print_trouble_card_no_shield()
         else:
             youre_in_trouble_trig = 0
