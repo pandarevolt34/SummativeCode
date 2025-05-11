@@ -2,6 +2,7 @@
 import pygame
 import random
 import main
+
 from main import ActionCard, Card, GameHandling
 
 pygame.init()
@@ -44,188 +45,22 @@ Orange = (255, 165, 0)
 Gray = (128, 128, 128)
 Red = (255, 0, 0)
 
-
-# =================================================== FROM MAIN.PY ============================================================================
-class Trouble(Card):
-    """Class representing the "You're in Trouble" card which eliminates a player, given they don't have the shield"""
-
-    def __init__(self, index=-1):
-        super().__init__("You're in Trouble", "Trouble", " ", index)
-        self.image = main_cards["trouble"]
-
-
-class Shield(Card):
-    """Class representing "The Shield" card which protects the player from the trouble card"""
-
-    def __init__(self, index=-1):
-        super().__init__("The Shield", "Shield", " ", index)
-        self.image = main_cards["shield"]
-
-
-class SickLeave(ActionCard):
-    def __init__(self, index=-1):
-        # inheriting attributes from parent class Card
-        super().__init__("Sick Leave", "Action", "End your turn without drawing a card", index)
-        self.image = action_cards["Sick Leave"]
-
-    def perform_action(self, game, current_player):
-        print(f"{current_player.player_name} used Sick Leave")
-        return True
-
-
-class UTurn(ActionCard):
-    def __init__(self, index=-1):
-        # inheriting attributes from parent class Card
-        super().__init__("U Turn", "Action", "Reverse the direction of the game", index)
-        self.image = action_cards["U Turn"]
-
-    def perform_action(self, game, current_player):
-        game.turn_direction *= -1  # turns the game direction to be -1 (anticlockwise)
-        print(f"{current_player.player_name} used U Turn - Direction reversed.")
-        return True
-
-
-class Hacker(ActionCard):
-    def __init__(self, index=-1):
-        # inheriting attributes from parent class Card
-        super().__init__("Hacker", "Action", "Take a card from a random position in the deck", index)
-        self.image = action_cards["Hacker"]
-
-    def perform_action(self, game, current_player):
-        print(f"{current_player.player_name} used Hacker!")
-        card = game.deck.red_black_tree.hacker_action()  # picks a random card from the deck
-        current_player.player_cards.append(card)  # appends the random card to the player's cards
-        return True
-
-
-class TheSpell(ActionCard):
-    def __init__(self, index=-1):
-        # inheriting attributes from parent class Card
-        super().__init__("The Spell", "Action", "Peek at the top 3 cards in the deck", index)
-        self.image = action_cards["The Spell"]
-
-    def perform_action(self, game, current_player):  # NEEDS FIXING TO CONSIDER BOT PLAYERS
-        print(f"{current_player.player_name} used TheSpell")
-        top_cards = game.deck.red_black_tree.the_spell_action()
-        if top_cards is None:
-            return False
-        if game.current_player_index == 0:
-            print("Top 3 cards:")
-            for i in top_cards:
-                print(i.card_name)
-        return True
-
-
-class Shuffle(ActionCard):
-    def __init__(self, index=-1):
-        # inheriting attributes from parent class Card
-        super().__init__("Shuffle", "Action", "Shuffle the deck", index)
-        self.image = action_cards["Shuffle"]
-
-    def perform_action(self, game, current_player):
-        print(f"{current_player.player_name} used Shuffle - The deck is shuffled")
-        game.deck.red_black_tree.shuffle_action()
-        return True
-
-
-class Reveal(ActionCard):
-    def __init__(self, index=-1):
-        # inheriting attributes from parent class Card
-        super().__init__("Reveal", "Action", "Reveal the top 3 cards to all players", index)
-        self.image = action_cards["Reveal"]
-        ### NOTE: THIS SHOULD APPEAR TO ALL PLAYERS; NOT LIKE THE SPELL
-
-    def perform_action(self, game, current_player):  # FIX THIS LIKE THE SPELL
-        print(f"{current_player.player_name} used Reveal!")
-        top_cards = game.deck.red_black_tree.the_spell_action()
-        if top_cards is None:
-            return False
-        print("Top 3 cards:")
-        for i in top_cards:
-            print(i.card_name)
-        return True
-
-
-class BeatIt(ActionCard):
-    def __init__(self, index=-1):
-        # inheriting attributes from parent class Card
-        super().__init__("Beat It", "Action",
-                         "Avoid drawing a card, and force the next player to play two consecutive turns", index)
-        self.image = action_cards["Beat It"]
-
-    def perform_action(self, game, current_player):
-        target_player = game.players[(game.current_player_index + game.turn_direction) % len(game.players)]
-        print(f"{target_player.player_name} has taken an extra card from the deck")
-        game.end_turn(target_player)
-        return True
-
-
-class BegYou(ActionCard):
-    def __init__(self, index=-1):
-        # inheriting attributes from parent class Card
-        super().__init__("Beg You", "Action", "A random player will give you a random card of theirs", index)
-        self.image = action_cards["Beg You"]
-
-    def perform_action(self, game, current_player):
-        print(f"{current_player.player_name} used Beg You!")
-        available_players = []  # picks a random player to perform the card's action on
-        for i in game.players:
-            if game.losers.get(i) is None and i != current_player:
-                available_players.append(i)
-        target_player = random.choice(available_players)
-        if target_player.player_cards:
-            card = random.choice(target_player.player_cards)  # taking a random card from the player's cards
-            target_player.player_cards.remove(card)  # removes that card from the target player's cards
-            current_player.player_cards.append(card)  # adds that card to the player who played the action card
-        else:
-            print(f"{target_player.player_name} has no cards therefore Beg You affect is cancelled!")
-        return True
-
-
-class Mirror(ActionCard):
-    def __init__(self, index=-1):
-        # inheriting attributes from parent class Card
-        super().__init__("Mirror", "Action", "Copy the last played action card", index)
-        self.image = action_cards["Mirror"]
-
-    def perform_action(self, game, current_player):
-        if game.last_played_action_card.card_name == "null":  # error handling
-            print("No action card to mirror.")
-            return False
-        elif game.last_played_action_card.card_name == "Mirror":
-            print("Can't mirror a mirror.")
-            return False
-        last_card = game.last_played_action_card
-        print(f"Mirroring {last_card.card_name}")
-
-        try:
-            # create instances of the same card type
-            new_card = type(last_card)(index=-1)  # using -1 as a temporary index
-            result = new_card.perform_action(game, current_player)
-            if result:
-                return True
-            return False
-        except Exception as e:
-            print(f"Mirror failed: {str(e)}")
-            return False
-
-
 # ======================== TEXT TO CLASS MAPPING =========================================
 card_text_to_class = {
     # action cards
-    "Hacker": Hacker,
-    "Sick Leave": SickLeave,
-    "U Turn": UTurn,
-    "The Spell": TheSpell,
-    "Shuffle": Shuffle,
-    "Reveal": Reveal,
-    "Beat It": BeatIt,
-    "Beg You": BegYou,
-    "Mirror": Mirror,
+    "Hacker": main.Hacker,
+    "Sick Leave": main.SickLeave,
+    "U Turn": main.UTurn,
+    "The Spell": main.TheSpell,
+    "Shuffle": main.Shuffle,
+    "Reveal": main.Reveal,
+    "Beat It": main.BeatIt,
+    "Beg You": main.BegYou,
+    "Mirror": main.Mirror,
 
     # main card
-    "trouble": Trouble,
-    "shield": Shield,
+    "trouble": main.Trouble,
+    "shield": main.Shield,
 
     # character cards
 }
@@ -322,17 +157,33 @@ class Cards:
 
 class Clickable_text:
     def __init__(self, text, font, ori_colour, hover_colour, x, y, gets_clicked=None):
-        self.text = text
+        self.text = text.split(' ×')[0]
         self.font = font
         self.ori_colour = ori_colour
         self.hover_colour = hover_colour
         self.x = x
         self.y = y
+        self.active = True
         self.hovering = False
-        self.rect = self.font.render(self.text, True, self.ori_colour).get_rect(topleft=(self.x, self.y))
+        self.rect = None
+        self.update_rect()
+
+
+    def update_rect(self):
+        display_text = self.get_display_text()
         # renders the text as an image using the font and colour, and gets a transparent rectangle that is the size of the rendered text and places it at the position (self.x, self.y)
+        self.rect = self.font.render(display_text, True, self.ori_colour).get_rect(topleft=(self.x, self.y))
+
+    def get_display_text(self):
+        if hasattr(self, "count"):
+            return f"{self.text} ×{self.count}" if self.count > 0 else self.text
+        return self.text
 
     def position(self):
+        if not self.active:
+            self.hovering = False
+            return
+
         mouse_position = pygame.mouse.get_pos()  # gets current position of the mouse
         self.hovering = self.rect.collidepoint(mouse_position)  # check if mouse is over the button (rect area)
 
@@ -340,55 +191,31 @@ class Clickable_text:
 
     # Text for display
     def draw_text(self, window):
-        text_colour = self.hover_colour if self.hovering else self.ori_colour
-        text_surface = self.font.render(self.text, True, text_colour)  # self.font.render turns text into an image
-        rect = text_surface.get_rect(
-            topleft=(self.x, self.y))  # get_rect() creates a transparent rectangle which is the same size as the text
-        window.blit(text_surface, rect)
-        # topleft = .. sets the clickable area to match the text's position.
+        color = Gray if not self.active else (self.hover_colour if self.hovering else self.ori_colour)
+        text_surface = self.font.render(self.get_display_text(), True, color)
+        window.blit(text_surface, (self.x, self.y))
+        self.update_rect()  # Ensure rect stays in sync
 
     def gets_clicked(self):  # make text clickable
-        if self.hovering and pygame.mouse.get_pressed()[0]:  # check if left mouse button is pressed
-            global action_pile  # read the variable further up
-            global all_cards
-            print(action_pile)
-            print(all_cards.get(self.text))  # print the card images associated with the text
-            print(self.text)
-            action_pile = all_cards.pop(self.text, action_pile)
-            return True # COMMENT COME BACK HERE AND UNDERSTAND REST OF THE CODE
-            '''
-            if not interactivity_enable:
-                return False
-            '''
-            card_name = self.text.split(' x')[0]
-            if card_name in card_text_to_class:
-                card_class = card_text_to_class[card_name]
-                new_card = card_class()
-
-                if hasattr(new_card, "perform_action"):
-                    game = main.GameHandling()
-                    initial = game.initialize_game()
-                    game.players.append(main.Player("Player"))
-                    new_card.perform_action(game, game.players[0])
-                    return True
-                print("No action...")
-                return False
-            print("Incorrect card name...")
+        if not self.active:
             return False
 
-            # print(action_pile)
-            # print("hello")   # ADD THE FUNCTIONS OF THE CARDS HERE
-            # game = main.Game()
-            # game.players.append(main.Player("Diana"))
-            # game.initialize_game()
-            # action_card = main.Hacker
-            # print("access this?")
-            # action_card.perform_action(action_card, game, game.players[0])
-            # print("accessed")
-            # print(all_cards.get(self.text))
-            # print(self.text)
-            # action_pile = all_cards.pop(self.text, action_pile)
-            # return True
+        mouse_position = pygame.mouse.get_pos()
+        if self.rect.collidepoint(mouse_position) and pygame.mouse.get_pressed()[0]:
+            # Get the base card name (without the count)
+            card_name = self.text.split(' ×')[0]
+
+            # Get the corresponding card image
+            all_cards = {**main_cards, **action_cards, **character_cards}
+            if card_name in all_cards:
+                global action_pile
+                action_pile = all_cards[card_name]
+                return True
+        return False
+
+    def set_active(self, active):
+        self.active = active
+        self.update_rect()
 
     def get_text(self):
         return self.text
@@ -429,10 +256,6 @@ class TheButton:
 
     # mouse click detection
     def gets_clicked(self):  # make button clickable
-        '''
-        if not interactivity_enable:
-            return False
-        '''
         mouse_position = pygame.mouse.get_pos()  # gets current position of the mouse
         if self.rect.collidepoint(mouse_position):  # check if mouse is over the button (rect area)
             if pygame.mouse.get_pressed()[0]:  # check if left mouse button is pressed
@@ -515,17 +338,14 @@ def create_card_text_objects(player):
     }
 
     # Create Clickable_text objects with counts
-    text_count = []
-    for card_name, (x, y) in card_definitions.items():
-        count = card_counts.get(card_name, 0) #card count doesnt exists if its 0
-        display_text = f"{card_name} x{count}"
-        text_obj = Clickable_text(display_text, font_1,
-                                  White if count > 0 else Gray,  # Gray out if count is 0
-                                  Orange, x, y)
-        text_count.append(text_obj)
+    for text in actions_text + character_text:
+        base_name = text.text
+        count = card_counts.get(base_name, 0)
+        text.count = count
+        text.set_active(count > 0)
+        text.update_rect()
 
-    return text_count
-
+    return actions_text + character_text
 
 text_1 = font_1.render("Press SPACE key to pause", True, Dark_Green)
 text_2 = font_2.render("Select players:", True, Black)
@@ -539,7 +359,6 @@ current_player_id = 0  # Player1 = 0 ; Player2 = 1, Player3 = 2
 action_pile = None
 num_players = 0
 youre_in_trouble_trig = 0
-action_card_trig = 0
 start_time_trouble = None
 start_time_cards = None
 current_time = None
@@ -696,11 +515,9 @@ def draw_window():
             current_position = [current_position[0] + 2,
                                 current_position[1]]  # position of the deck of cards, +2 means the gap between cards
 
-        global action_card_trig
         if action_pile is not None: #and current_player_id == human_player_index:
             window.blit(action_pile, (560, 250))
-        else:
-            action_card_trig = 0
+
         # Display each card text on screen
         if interactivity_enabled is True:
             for text in create_card_text_objects(game.players[current_player_id]):
@@ -734,31 +551,6 @@ def draw_window():
             window.blit(humanwins_img, (0, 0))
         elif user_won is False:
             window.blit(botwins_img, (0,0))
-
-
-# ===================================== DUMMY FUNCTIONS================================================
-
-def draw_cards():
-    print("Drawing card")
-
-
-def end_turn():
-    print("Ending turn")
-    ''
-    ''
-
-
-def use_card():
-    print("Using ")
-
-
-def shuffle_deck():
-    print("Shuffling cards")
-
-
-def card_to_box():
-    print("Haha")
-
 
 # =================================================== MAIN GAME LOOP ====================================================================================================
 
@@ -854,6 +646,7 @@ while game_running:  # start the loop - keep going while the game is on
                 game.initialize_game()
                 game_status = "playing"
 
+        # ================ PLAYING SCREEN =================
         elif game_status == "playing":
             current_player = game.players[game.current_player_index]
             current_player_id = game.current_player_index
@@ -862,7 +655,8 @@ while game_running:  # start the loop - keep going while the game is on
                 if end_turn_button.gets_clicked():  # option 2 to end turn
                     disable_interactivity()
                     game.end_turn()
-                    if game.discard_card_pile[-1].card_name == "The Shield" and game.discard_card_pile[-2].card_name == "You're in Trouble":
+                    if (len (game.discard_card_pile) > 1 and game.discard_card_pile[-1].card_name == "The Shield"
+                            and game.discard_card_pile[-2].card_name == "You're in Trouble"):
                         start_time_trouble = current_time
                         youre_in_trouble_trig = 1
                     if game.discard_card_pile[-1].card_name == "You're in Trouble":
@@ -872,15 +666,16 @@ while game_running:  # start the loop - keep going while the game is on
                     if game.check_winner() is not None:
                         game_status = "result"
 
-                # grouped all cards
-                all_cards = {**main_cards, **action_cards, **character_cards}  # Merge all card dictionaries together **
-
-                for text in all_text:
+                for text in create_card_text_objects(game.players[current_player_id]):
                     if text.gets_clicked():
                         text_sf.play()
-                        #text_displayed = text.display_text
-                        #text_displayed = text_displayed[:-3]
-                        game.play_selected_card(text.text)
+                        card_name = text.text.split(" ×")[0]
+
+                        all_cards = {**main_cards, **action_cards, **character_cards}  # Merge all card dictionaries together **
+                        if card_name in all_cards:
+                            action_pile = all_cards[card_name]
+
+                        game.play_selected_card(card_name)
                         winner = game.check_winner()
                         if winner is not None:
                             game_status = "result"
@@ -899,8 +694,7 @@ while game_running:  # start the loop - keep going while the game is on
                     trigger_for_bot_wait = True
                     game.handle_bot_turn(current_player, played_bots_cards)
                     start_time_cards = current_time
-                    continue
-                elif trigger_for_bot_wait is True and current_time - start_time_cards > 1:
+                else:
                     if len(played_bots_cards) == 0:
                         game.next_player_turn()
                         trigger_for_bot_wait = False
@@ -912,13 +706,12 @@ while game_running:  # start the loop - keep going while the game is on
                             else:
                                 user_won = False
                     else:
-                        if action_pile != all_cards[played_bots_cards[-1].card_name]:
-                            action_pile = all_cards[played_bots_cards[-1].card_name]
+                        if action_pile != all_cards[played_bots_cards[0].card_name]:
+                            action_pile = all_cards[played_bots_cards[0].card_name]
                             start_time_cards = current_time
-                            action_card_trig = 1
                         else:
-                            if current_time - start_time_cards > 2.5:
-                                played_bots_cards.pop()
+                            #if current_time - start_time_cards > 0.2:
+                            played_bots_cards.pop(0)
 
 
         # ================ PAUSING INTERFACE ==================
