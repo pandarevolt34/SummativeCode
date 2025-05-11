@@ -245,7 +245,7 @@ class Mirror(ActionCard):
             return False
 
 
-# ID: 5676233
+# ID: 5676233, 5674312
 
 # ID: 5676233
 ''' Player class description:
@@ -275,7 +275,8 @@ class Player:
 this class represents the deck that plays the role between the players and the red black tree which stores the cards
 initializing class; variable instances:
     red_black_tree: stores the cards in the red black tree structure
-    counter: keeps track of how many cards have been removed so far
+    counter: increases as trouble cards and shields are added to the deck
+    num_of_cards: keeps track of how many cards are left in the deck
     '''
 
 
@@ -409,7 +410,6 @@ class CardDeck:
         card = node.card
         # delete node
         self.red_black_tree.delete(node)
-        self.counter += 1
         self.num_of_cards -= 1
         return card
 
@@ -546,7 +546,6 @@ class GameHandling:
                             node_of_chosen_card = self.deck.red_black_tree.find_node(chosen_card)
                             self.deck.red_black_tree.delete(node_of_chosen_card)
                             self.deck.num_of_cards -= 1
-                            self.deck.counter += 1
                             player.player_cards.append(chosen_card)
                             print(f"Player 1 took a took a card using combo 3")
                             break
@@ -560,7 +559,6 @@ class GameHandling:
                 node_of_chosen_card = self.deck.red_black_tree.find_node(chosen_card)
                 self.deck.red_black_tree.delete(node_of_chosen_card)
                 self.deck.num_of_cards -= 1
-                self.deck.counter += 1
                 player.player_cards.append(chosen_card)
                 print(f"{player.player_name} took a took a card using combo 3")
 
