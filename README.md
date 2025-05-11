@@ -16,7 +16,6 @@ A strategic card game combining luck and tactics, built with Python and Pygame.
   pip install pygame
   
 ### Hardware
-
 - 
 
 
