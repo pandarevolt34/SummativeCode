@@ -353,6 +353,7 @@ text_2 = font_2.render("Select players:", True, Black)
 # ====================================================== INTIALISE GAME MODE ==========================================================
 
 # current game mode
+game = main.GameHandling()
 game_status = "menu"
 instruction_page = 1
 current_player_id = 0  # Player1 = 0 ; Player2 = 1, Player3 = 2
@@ -406,8 +407,6 @@ def print_trouble_card_no_shield():
 # The function below basically groups all the drawings in one place
 # makes code more organised, better for reuse purpose, and avoid repetition
 # This function will be reused in the main game loop
-
-game = main.GameHandling()
 
 def draw_window():
     # =============== MENU SCREEN =================
@@ -627,6 +626,8 @@ while game_running:  # start the loop - keep going while the game is on
             if option_button["2P"].gets_clicked():
                 button_sf.play()
                 pygame.time.delay(300)
+                game = main.GameHandling()
+                action_pile = None
                 game.players_setup(2, "Player1")
                 num_players = 2
                 fade_transition(1000, 800, White, "playing")
@@ -636,6 +637,8 @@ while game_running:  # start the loop - keep going while the game is on
             elif option_button["3P"].gets_clicked():
                 button_sf.play()
                 pygame.time.delay(300)
+                game = main.GameHandling()
+                action_pile = None
                 game.players_setup(3, "Player1")
                 num_players = 3
                 fade_transition(1000, 800, White, "playing")
@@ -645,6 +648,8 @@ while game_running:  # start the loop - keep going while the game is on
             elif option_button["4P"].gets_clicked():
                 button_sf.play()
                 pygame.time.delay(300)
+                game = main.GameHandling()
+                action_pile = None
                 game.players_setup(4, "Player1")
                 num_players = 4
                 fade_transition(1000, 800, White, "playing")
