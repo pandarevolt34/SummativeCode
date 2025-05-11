@@ -107,8 +107,11 @@ class Hacker(ActionCard):
     def perform_action(self, game, current_player):
         print(f"{current_player.player_name} used Hacker!")
         card = game.deck.red_black_tree.hacker_action()  # picks a random card from the deck
-        current_player.player_cards.append(card)  # appends the random card to the player's cards
-        return True
+        if card:
+            game.deck.num_of_cards -= 1
+            current_player.player_cards.append(card)  # appends the random card to the player's cards
+            return True
+        return False
 
 
 class TheSpell(ActionCard):
@@ -769,7 +772,9 @@ class GameHandling:
                 current_player.player_cards.remove(card)
                 self.discard_card_pile.append(card)
                 self.last_played_action_card = card
-                if card.card_name == "Sick Leave" or card.card_name == "Beat It":
+                if (card.card_name == "Sick Leave" or card.card_name == "Beat It" or
+                        (card.card_name == "Mirror" and (self.discard_card_pile[-2].card_name == "Sick Leave"
+                            or self.discard_card_pile[-2].card_name == "Beat It"))):
                     self.next_player_turn()
 
         elif card.card_type == "Character":
