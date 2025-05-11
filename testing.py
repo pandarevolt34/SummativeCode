@@ -358,8 +358,9 @@ instruction_page = 1
 current_player_id = 0  # Player1 = 0 ; Player2 = 1, Player3 = 2
 action_pile = None
 num_players = 0
-youre_in_trouble_trig = 0
+previous_shield_value = 0
 start_time_trouble_with_shield = 0
+youre_in_trouble_trig = 0
 start_time_trouble_no_shield = 0
 top_3_cards = []
 start_time_top_3_cards = 0
@@ -526,9 +527,10 @@ def draw_window():
             window.blit(bot3_text, (855, 355))
 
         # shield image
-        if game.players[human_player_index].has_shield:
+        num_of_shields = len(game.players[human_player_index].has_shield)
+        if num_of_shields != 0:
             window.blit(extra_shield_img, (470, 575))
-            shield_message = f"x {len(game.players[human_player_index].has_shield)}"
+            shield_message = f"x {num_of_shields}"
             rendered_shield_message = font_2.render(shield_message, True, Orange)
             window.blit(rendered_shield_message, (500, 745))
 
@@ -560,6 +562,17 @@ def draw_window():
             for text in actions_text + character_text:
                 text.position()
                 text.draw_text(window)
+
+        global previous_shield_value, start_time_trouble_with_shield, start_time_trouble_no_shield, youre_in_trouble_trig
+        if previous_shield_value == num_of_shields + 1:
+            previous_shield_value = num_of_shields
+            start_time_trouble_with_shield = current_time
+        else:
+            previous_shield_value = num_of_shields
+
+        if game.players[human_player_index] in game.losers and youre_in_trouble_trig == 0:
+            start_time_trouble_no_shield = current_time
+            youre_in_trouble_trig = 1
 
         if current_time - start_time_trouble_with_shield < 2:
             print_trouble_card_with_shield()
@@ -695,11 +708,6 @@ while game_running:  # start the loop - keep going while the game is on
                 if end_turn_button.gets_clicked():  # option 2 to end turn
                     disable_interactivity()
                     game.end_turn()
-                    if (len (game.discard_card_pile) > 1 and game.discard_card_pile[-1].card_name == "The Shield"
-                            and game.discard_card_pile[-2].card_name == "You're in Trouble"):
-                        start_time_trouble_with_shield = current_time
-                    if game.discard_card_pile[-1].card_name == "You're in Trouble":
-                        start_time_trouble_no_shield = current_time
                     game.next_player_turn()
                     if game.check_winner() is not None:
                         game_status = "result"
