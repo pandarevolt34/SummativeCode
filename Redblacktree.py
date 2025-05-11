@@ -36,10 +36,9 @@ class RedBlackTree:
 
     #insert
 
-    def insert_card(self, card):
+    def insert_card(self, card): # CORRECT
         red_black_node = RedBlackNode(card) # create new node
         red_black_node.index = card.index
-        red_black_node.parent = None
         red_black_node.left = self.nil
         red_black_node.right = self.nil
         red_black_node.red = True
@@ -64,8 +63,8 @@ class RedBlackTree:
 
         self.fix_tree_insert(red_black_node)
 
-    def fix_tree_insert(self, new_node):
-        while new_node != self.root and new_node.parent.red is True:
+    def fix_tree_insert(self, new_node): # CORRECT
+        while new_node.parent != self.root and new_node.parent.red is True:
             if new_node.parent == new_node.parent.parent.right: # check if new node's parent is to the right of new node's parent-parent
                 u = new_node.parent.parent.left # parent is to the right and u is to the left of the subtree of the parent-parent
                 if u.red is True: # if u.red is True then it has a value, if not, it is nil
@@ -97,7 +96,7 @@ class RedBlackTree:
                     self.rotate_right(new_node.parent.parent)
         self.root.red = False
 
-    def rotate_left(self, u):
+    def rotate_left(self, u): # CORRECT
         v = u.right # right child of u, to be shifted closer to root, u will be shifted further away from root
         u.right = v.left # assign left child of v to right child of u
         if v.left != self.nil:
@@ -112,7 +111,7 @@ class RedBlackTree:
         v.left = u
         u.parent = v
 
-    def rotate_right(self, u):
+    def rotate_right(self, u): # CORRECT
         v = u.left # left child of u, to be shifted closer to the root, u will be shifted further away from root
         u.left = v.right # assign right child of v
         if v.right != self.nil:
@@ -129,7 +128,7 @@ class RedBlackTree:
 
     # delete
 
-    def shift_nodes(self, old, new):
+    def shift_nodes(self, old, new): # CORRECT
         if old.parent is None: # if old node was root, set new node as root
             self.root = new
         elif old.parent.left == old: # if old node was left child, set new node as left child instead
@@ -138,15 +137,12 @@ class RedBlackTree:
             old.parent.right = new
         new.parent = old.parent # set new node's parent as old node's parent
 
-    def minimum(self, node): # find minimum index within subtree with node as its root
-        current_node = node
-        minimum_node = node
-        while current_node != self.nil: # continue down the left path of the subtree
-            minimum_node = current_node
-            current_node = current_node.left
-        return minimum_node
+    def minimum(self, node): # FIXED # find minimum index within subtree with node as its root
+        while node.left != self.nil: # continue down the left path of the subtree
+            node = node.left
+        return node
 
-    def find_largest_node(self):
+    def find_largest_node(self): # CORRECT
         # we only delete a node when we remove the top card from the deck, so we search for the card with the largest index
         node = self.root
         largest_node = self.root
@@ -156,15 +152,18 @@ class RedBlackTree:
             node = node.right
         return largest_node
 
-    def delete(self, node_to_be_deleted):
+    def delete(self, node_to_be_deleted): # CORRECT
         y = node_to_be_deleted
-        y_original_color = node_to_be_deleted.red # store color of node
+        y_original_color = y.red # store color of node
+        # case 1
         if node_to_be_deleted.left == self.nil: # if left child is nil, shift right child in place of node
             x = node_to_be_deleted.right
             self.shift_nodes(node_to_be_deleted, node_to_be_deleted.right)
+        # case 2
         elif node_to_be_deleted.right == self.nil: # if right child is nil, shift left child in place of node
             x = node_to_be_deleted.left
             self.shift_nodes(node_to_be_deleted, node_to_be_deleted.left)
+        # case 3
         else:
             y = self.minimum(node_to_be_deleted.right) # y is the minimum node from right subtree of node_to_be_deleted
             y_original_color = y.red # keep track of y's color
@@ -175,6 +174,7 @@ class RedBlackTree:
                 self.shift_nodes(y, y.right) # replace minimum node with nil
                 y.right = node_to_be_deleted.right # set y's right child as the right child of node_to_be_deleted
                 y.right.parent = y # set parent of right child of node_to_be_deleted to y
+
             self.shift_nodes(node_to_be_deleted, y) # replacing deleted node with y
             y.left = node_to_be_deleted.left
             y.left.parent = y
@@ -183,7 +183,7 @@ class RedBlackTree:
         if y_original_color is False: # bring balance back to tree
             self.delete_fixup(x)
 
-    def delete_fixup(self, x):
+    def delete_fixup(self, x): # CORRECT
         while x!= self.root and x.red is False: # while x is black and not the root of the tree
             if x == x.parent.left: # when x is a left child
                 w = x.parent.right # w is x's sibling, AKA the right child of x's parent
