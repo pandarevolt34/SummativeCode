@@ -711,8 +711,6 @@ while game_running:  # start the loop - keep going while the game is on
                 for text in all_text:
                     if text.gets_clicked():
                         text_sf.play()
-                        #text_displayed = text.display_text
-                        #text_displayed = text_displayed[:-3]
                         game.play_selected_card(text.text)
                         winner = game.check_winner()
                         if winner is not None:
