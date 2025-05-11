@@ -137,9 +137,9 @@ class RedBlackTree:
             old.parent.right = new
         new.parent = old.parent # set new node's parent as old node's parent
 
-    def minimum(self, node): # FIXED # find minimum index within subtree with node as its root
-        while node.left != self.nil: # continue down the left path of the subtree
-            node = node.left
+    def minimum(self, node): # RECURSIVE FUNC # find minimum index within subtree with node as its root
+        if node.left != self.nil: # continue down the left path of the subtree
+            node = self.minimum(node.left)
         return node
 
     def find_largest_node(self): # CORRECT
@@ -153,6 +153,8 @@ class RedBlackTree:
         return largest_node
 
     def delete(self, node_to_be_deleted): # CORRECT
+        #print(node_to_be_deleted.index)
+        #self.testing_func_for_traversing_tree()
         y = node_to_be_deleted
         y_original_color = y.red # store color of node
         # case 1
@@ -184,6 +186,8 @@ class RedBlackTree:
             self.delete_fixup(x)
 
     def delete_fixup(self, x): # CORRECT
+        #print(x.index)
+        #self.testing_func_for_traversing_tree()
         while x!= self.root and x.red is False: # while x is black and not the root of the tree
             if x == x.parent.left: # when x is a left child
                 w = x.parent.right # w is x's sibling, AKA the right child of x's parent
@@ -194,7 +198,9 @@ class RedBlackTree:
                     self.rotate_left(x.parent)
                     w = x.parent.right # set w to x's new sibling
                 # case 2, when w, and its children are black
-                if w.left.red is False and w.right.red is False:
+                if w == self.nil:
+                    x = x.parent
+                elif w.left.red is False and w.right.red is False:
                     w.red = True
                     x = x.parent # preparation for next iteration
                 else:
@@ -220,7 +226,9 @@ class RedBlackTree:
                     self.rotate_right(x.parent)
                     w = x.parent.left # set w to x's new sibling
                 #case 2
-                if w.left.red is False and w.right.red is False:
+                if w == self.nil:
+                    x = x.parent
+                elif w.left.red is False and w.right.red is False:
                     w.red = True
                     x = x.parent
                 else:
@@ -237,6 +245,15 @@ class RedBlackTree:
                     self.rotate_right(x.parent)
                     x = self.root
         x.red = False
+
+    def find_node(self, card):
+        current_node = self.root # start from root
+        while current_node.card != card and current_node != self.nil: #loop terminates when card is found or node is nil
+            if current_node.index < card.index:
+                current_node = current_node.right
+            elif current_node.index > card.index:
+                current_node = current_node.left
+        return current_node
 
     def testing_func_for_traversing_tree(self):
         node = self.root

@@ -59,8 +59,8 @@ card_text_to_class = {
     "Mirror": main.Mirror,
 
     # main card
-    "trouble": main.Trouble,
-    "shield": main.Shield,
+    "You're in Trouble": main.Trouble,
+    "The Shield": main.Shield,
 
     # character cards
 }
@@ -69,8 +69,8 @@ card_text_to_class = {
 # e.g. image size (150, 240)
 # 1. Main Cards
 main_cards = {
-    "shield": pygame.transform.scale(pygame.image.load("shield.png").convert_alpha(), (150, 240)),
-    "trouble": pygame.transform.scale(pygame.image.load("trouble.png").convert_alpha(), (150, 240)),
+    "The Shield": pygame.transform.scale(pygame.image.load("shield.png").convert_alpha(), (150, 240)),
+    "You're in Trouble": pygame.transform.scale(pygame.image.load("trouble.png").convert_alpha(), (150, 240)),
 }
 
 # an extra shield that will be displayed next to the screen
@@ -359,10 +359,14 @@ current_player_id = 0  # Player1 = 0 ; Player2 = 1, Player3 = 2
 action_pile = None
 num_players = 0
 youre_in_trouble_trig = 0
-start_time_trouble = None
-start_time_cards = None
-current_time = None
+start_time_trouble_with_shield = 0
+start_time_trouble_no_shield = 0
+top_3_cards = []
+start_time_top_3_cards = 0
+start_time_cards = 0
+current_time = 0
 human_player_index = 0
+global user_won
 user_won = False
 
 interactivity_enabled = True
@@ -397,9 +401,18 @@ def print_trouble_card_no_shield():
     window.blit(overlay, (140, 320))
     window.blit(msg_surface, (150, 350))
 
-def display_top_3_card(top_3_cards):
+def display_top_3_cards(top_3_cards):
     all_cards = {**main_cards, **action_cards, **character_cards}
-    positions = [(250, 100), (420, 100), (500, 100)] #position of top 3 cards
+
+    positions = [(250, 100), (420, 100), (590, 100)] #position of top 3 cards
+    overlay = pygame.Surface ((510, 320))
+    overlay.set_alpha(200)
+    overlay.fill(Black)
+    message = "TOP 3 CARDS:"
+
+    msg_surface = font_2.render(message, True, White)
+    window.blit(overlay, (240, 50))
+    window.blit(msg_surface, (245, 60))
 
     for i, card in enumerate(top_3_cards):
         card_name = card.card_name
@@ -513,7 +526,8 @@ def draw_window():
             window.blit(bot3_text, (855, 355))
 
         # shield image
-        window.blit(extra_shield_img, (470, 575))
+        if game.players[human_player_index].has_shield:
+            window.blit(extra_shield_img, (470, 575))
 
         # Drawing "End Turn" button
         if interactivity_enabled is True:
@@ -542,14 +556,14 @@ def draw_window():
             for text in actions_text + character_text:
                 text.position()
                 text.draw_text(window)
-        global youre_in_trouble_trig
-        if youre_in_trouble_trig == 1 and current_time - start_time_trouble < 2:
-            print_trouble_card_with_shield()
-        elif youre_in_trouble_trig == 2 and current_time - start_time_trouble < 2:
-            print_trouble_card_no_shield()
-        else:
-            youre_in_trouble_trig = 0
 
+        if current_time - start_time_trouble_with_shield < 2:
+            print_trouble_card_with_shield()
+        elif current_time - start_time_trouble_no_shield < 2:
+            print_trouble_card_no_shield()
+
+        if current_time - start_time_top_3_cards < 2:
+            display_top_3_cards(top_3_cards)
 
 
 
@@ -562,7 +576,6 @@ def draw_window():
 
     # ============================== WINNER INTERFACE ==========================
     elif game_status == "result":
-        global user_won
         if user_won is True:
             window.blit(humanwins_img, (0, 0))
         elif user_won is False:
@@ -680,11 +693,9 @@ while game_running:  # start the loop - keep going while the game is on
                     game.end_turn()
                     if (len (game.discard_card_pile) > 1 and game.discard_card_pile[-1].card_name == "The Shield"
                             and game.discard_card_pile[-2].card_name == "You're in Trouble"):
-                        start_time_trouble = current_time
-                        youre_in_trouble_trig = 1
+                        start_time_trouble_with_shield = current_time
                     if game.discard_card_pile[-1].card_name == "You're in Trouble":
-                        start_time_trouble = current_time
-                        youre_in_trouble_trig = 2
+                        start_time_trouble_no_shield = current_time
                     game.next_player_turn()
                     if game.check_winner() is not None:
                         game_status = "result"
@@ -698,6 +709,15 @@ while game_running:  # start the loop - keep going while the game is on
                             action_pile = all_cards[card_name]
 
                         game.play_selected_card(card_name)
+                        if game.last_played_action_card.card_name == "The Spell"\
+                            or game.last_played_action_card.card_name == "Reveal"\
+                            or (len(game.discard_card_pile) > 1
+                                and (game.discard_card_pile[-2].card_name == "The Spell"
+                                    or game.discard_card_pile[-2].card_name == "Reveal")
+                                and game.last_played_action_card.card_name == "Mirror"):
+                            top_3_cards = game.deck.red_black_tree.the_spell_action()
+                            if top_3_cards:
+                                start_time_top_3_cards = current_time
                         winner = game.check_winner()
                         if winner is not None:
                             game_status = "result"
@@ -717,7 +737,14 @@ while game_running:  # start the loop - keep going while the game is on
                     game.handle_bot_turn(current_player, played_bots_cards)
                     start_time_cards = current_time
                 else:
-                    if len(played_bots_cards) == 0:
+                    if played_bots_cards:
+                        if action_pile != all_cards[played_bots_cards[0].card_name]:
+                            action_pile = all_cards[played_bots_cards[0].card_name]
+                            start_time_cards = current_time
+                        else:
+                            if current_time - start_time_cards > 1:
+                                played_bots_cards.pop(0)
+                    else:
                         if current_time - start_time_cards > 1:
                             game.next_player_turn()
                             trigger_for_bot_wait = False
@@ -728,13 +755,7 @@ while game_running:  # start the loop - keep going while the game is on
                                     user_won = True
                                 else:
                                     user_won = False
-                    else:
-                        if action_pile != all_cards[played_bots_cards[0].card_name]:
-                            action_pile = all_cards[played_bots_cards[0].card_name]
-                            start_time_cards = current_time
-                        else:
-                            if current_time - start_time_cards > 1:
-                                played_bots_cards.pop(0)
+
 
 
         # ================ PAUSING INTERFACE ==================

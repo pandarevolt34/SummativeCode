@@ -525,7 +525,10 @@ class GameHandling:
                         card_choice = int(input("Which card do you want to take: "))
                         if 1 <= card_choice <= len(top_cards):
                             chosen_card = top_cards[card_choice - 1]
-                            self.deck.red_black_tree.delete(chosen_card.index)
+                            node_of_chosen_card = self.deck.red_black_tree.find_node(chosen_card)
+                            self.deck.red_black_tree.delete(node_of_chosen_card)
+                            self.deck.num_of_cards -= 1
+                            self.deck.counter += 1
                             player.player_cards.append(chosen_card)
                             print(f"Player 1 took a took a card using combo 3")
                             break
@@ -536,7 +539,10 @@ class GameHandling:
 
             else: # handling bot player
                 chosen_card = random.choice(top_cards)
-                self.deck.red_black_tree.delete(chosen_card.index)
+                node_of_chosen_card = self.deck.red_black_tree.find_node(chosen_card)
+                self.deck.red_black_tree.delete(node_of_chosen_card)
+                self.deck.num_of_cards -= 1
+                self.deck.counter += 1
                 player.player_cards.append(chosen_card)
                 print(f"{player.player_name} took a took a card using combo 3")
 
