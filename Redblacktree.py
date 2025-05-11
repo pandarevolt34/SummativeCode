@@ -64,7 +64,7 @@ class RedBlackTree:
         self.fix_tree_insert(red_black_node)
 
     def fix_tree_insert(self, new_node): # CORRECT
-        while new_node.parent != self.root and new_node.parent.red is True:
+        while new_node != self.root and new_node.parent.red is True:
             if new_node.parent == new_node.parent.parent.right: # check if new node's parent is to the right of new node's parent-parent
                 u = new_node.parent.parent.left # parent is to the right and u is to the left of the subtree of the parent-parent
                 if u.red is True: # if u.red is True then it has a value, if not, it is nil
