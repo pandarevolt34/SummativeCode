@@ -691,7 +691,7 @@ while game_running:  # start the loop - keep going while the game is on
                         if current_player != game.players[game.current_player_index]:
                             disable_interactivity()
 
-            elif game.losers.get(current_player) is not None:
+            elif current_player in game.losers:
                 game.next_player_turn()
 
             else:

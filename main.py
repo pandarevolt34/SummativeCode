@@ -668,7 +668,7 @@ class GameHandling:
                         self.last_played_action_card = card
                         self.discard_card_pile.append(card)
                         cards_used.append(card)
-                        self.next_player_turn()
+                        #self.next_player_turn()
                         return
             elif self.deck.num_of_cards >= 35:
                 if (self.last_played_action_card.card_name == "Beat It"
@@ -680,7 +680,7 @@ class GameHandling:
                         self.last_played_action_card = card
                         self.discard_card_pile.append(card)
                         cards_used.append(card)
-                        self.next_player_turn()
+                        #self.next_player_turn()
                         return
             elif self.deck.num_of_cards >= 20:
                 if (self.last_played_action_card.card_name == "Beat It"
@@ -698,7 +698,7 @@ class GameHandling:
                         self.discard_card_pile.append(card)
                         cards_used.append(card)
                         if leave is True:
-                            self.next_player_turn()
+                            #self.next_player_turn()
                             return
             else:
                 if self.last_played_action_card.card_name != "null":
@@ -714,7 +714,7 @@ class GameHandling:
                         self.discard_card_pile.append(card)
                         cards_used.append(card)
                         if leave is True:
-                            self.next_player_turn()
+                            #self.next_player_turn()
                             return
 
         if "Hacker" in cards_available:
@@ -735,7 +735,7 @@ class GameHandling:
                     self.last_played_action_card = card
                     self.discard_card_pile.append(card)
                     cards_used.append(card)
-                    self.next_player_turn()
+                    #self.next_player_turn()
                     return
 
         if "Shuffle" in cards_available:
@@ -758,7 +758,7 @@ class GameHandling:
                     self.last_played_action_card = card
                     self.discard_card_pile.append(card)
                     cards_used.append(card)
-                    self.next_player_turn()
+                    #self.next_player_turn()
                     return
         self.end_turn()
 
