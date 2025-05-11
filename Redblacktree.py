@@ -199,7 +199,8 @@ class RedBlackTree:
                     w = x.parent.right # set w to x's new sibling
                 # case 2, when w, and its children are black
                 if w == self.nil or (w.left.red is False and w.right.red is False):
-                    w.red = True
+                    if w != self.nil:
+                        w.red = True
                     x = x.parent # preparation for next iteration
                 else:
                     # case 3, when w is black, w left child is red, and w right child is black
