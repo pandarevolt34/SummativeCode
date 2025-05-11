@@ -261,6 +261,37 @@ class TheButton:
                 print("Click")
                 return True
 
+# ===================================================== COMBO BUTTON CLASS ==================================================================
+class ComboButton:
+    def __init__(self, text, x, y):
+        self.text = text
+        self.x = x
+        self.y = y
+        self.visible = False
+        self.activated = False
+        self.rect = pygame.Rect((self.x, self.y), (23, 23))
+        self.hover_rect = pygame.Rect((self.x, self.y), (23, 23))
+
+    def draw(self):
+        if not self.visible:
+            return
+
+        mouse_pos = pygame.mouse.get_pos()
+        button_hover = self.rect.collidepoint(mouse_pos)
+
+        button_color = Light_Green if (self.activated and button_hover) else (
+            Gray if not self.activated else (29, 45, 10))
+        text_color = Black if (self.activated and button_hover) else White
+
+        button_rect = pygame.Rect((self.x, self.y), (25, 25))
+        pygame.draw.rect(window, button_color, button_rect, border_radius=5)
+        button_text = font_1.render(self.text, True, text_color)
+        window.blit(button_text, (self.x + 2, self.y + 2))
+
+    def gets_clicked(self):
+        if not self.visible or not self.activated:
+            return False
+        return self.rect.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]
 
 # ============================================= GAME VARIABLES II =================================================
 # Game Buttons
@@ -277,10 +308,24 @@ option_button = {"2P": TheButton("2 Players", 390, 300, True),
                  "4P": TheButton("4 Players", 390, 420, True)
                  }
 
+# combo buttons
+combo_buttons = {
+    "iceking_2": ComboButton("T2", 640, 600),
+    "iceking_3": ComboButton("T3", 610, 600),
+    "bmo_2": ComboButton("T2", 640, 620),
+    "bmo_3": ComboButton("T3", 610, 620),
+    "finn_2": ComboButton("T2", 640, 640),
+    "finn_3": ComboButton("T3", 610, 640),
+    "jake_2": ComboButton("T2", 640, 660),
+    "jake_3": ComboButton("T3", 610, 660),
+    "bubblegum_2": ComboButton("T2", 640, 680),
+    "bubblegum_3": ComboButton("T3", 610, 680),
+    "lumpy_2": ComboButton("T2", 640, 700),
+    "lumpy_3": ComboButton("T3", 610, 700),
+    "full_set": ComboButton("Set", 650, 750)
+}
+
 # Action cards text for display
-
-
-
 actions_text = [
     Clickable_text("Hacker", font_1, White, Orange, 290, 580),
     Clickable_text("Sick Leave", font_1, White, Orange, 290, 600),
@@ -325,8 +370,8 @@ def create_card_text_objects(player):
         "Reveal": (290, 680),
         "Beat It": (290, 700),
         "Beg You": (290, 720),
-        ###"No Chance": (290, 740),
         "Mirror": (290, 740),
+
         # Character cards
         "Ice King": (670, 600),
         "BMO": (670, 620),
@@ -346,10 +391,100 @@ def create_card_text_objects(player):
 
     return actions_text + character_text
 
+def update_combo_button(player):
+    # counting how many of each character the player has
+    char_count = {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+        6: 0
+    }
+
+    for card in player.player_cards:
+        if card.card_name == "Ice King":
+            char_count[1] += 1
+        elif card.card_name == "BMO":
+            char_count[2] += 1
+        elif card.card_name == "Finn":
+            char_count[3] += 1
+        elif card.card_name == "Jake":
+            char_count[4] += 1
+        elif card.card_name == "Bubblegum":
+            char_count[5] += 1
+        elif card.card_name == "Lumpy":
+            char_count[6] += 1
+
+    # reset all buttons at first
+    for button in combo_buttons.values():
+        button.activated = False
+        button.visible = False
+
+    if game.current_player_index == 0 and interactivity_enabled:
+        # positioning each button next to it's respective card
+        y = {
+            1: 600,
+            2: 620,
+            3: 640,
+            4: 660,
+            5: 680,
+            6: 700
+        }
+
+        for char_num in range(1, 7):
+            count = char_count[char_num]
+            prefix = ["iceking", "bmo", "finn", "jake", "bubblegum", "lumpy"][char_num - 1]
+
+            if count >= 2:
+                button = combo_buttons[f"{prefix}_2"]
+                button.activated = True
+                button.visible = True
+                button.y = y[char_num]
+
+                if count >= 3:
+                    button = combo_buttons[f"{prefix}_3"]
+                    button.activated = True
+                    button.visible = True
+                    button.y = y[char_num] + 20
+
+            if all(count >= 1 for count in char_count.values()):
+                combo_buttons["full_set"].activated = True
+                combo_buttons["full_set"].visible = True
+
+def handle_combo_button_click():
+    current_player = game.players[game.current_player_index]
+
+    for button_id, button in combo_buttons.items():
+        if button.gets_clicked():
+            # mapping button prefixes to char numbers
+            char_mapping = {
+                "iceking": 1,
+                "bmo": 2,
+                "finn": 3,
+                "jake": 4,
+                "bubblegum": 5,
+                "lumpy": 6
+            }
+
+            if button_id.endswith("_2"):
+                # extract character prefix; e.g. "finn" from "finn_2"
+                char_prefix = button_id.split("_")[0]
+                char_num = char_mapping[char_prefix]
+                game.activate_char_combo(current_player, char_num, 2)
+
+            elif button_id.endswith("_3"):
+                char_prefix = button_id.split("_")[0]
+                char_num = char_mapping[char_prefix]
+                game.activate_char_combo(current_player, char_num, 3)
+
+            elif button_id == "full_set":
+                game.activate_full_set_combo(current_player)
+
 text_1 = font_1.render("Press SPACE key to pause", True, Dark_Green)
 text_2 = font_2.render("Select players:", True, Black)
 
-# ====================================================== INTIALISE GAME MODE ==========================================================
+# ====================================================== INITIALISE GAME MODE ==========================================================
 
 # current game mode
 game = main.GameHandling()
@@ -368,7 +503,6 @@ current_time = 0
 human_player_index = 0
 global user_won
 user_won = False
-
 interactivity_enabled = True
 
 def enable_interactivity():
@@ -468,25 +602,25 @@ def draw_window():
     # ================ OPTION SCREEN =================
     elif game_status == "select player":
         window.blit(option_img, (0, 0))
-
         window.blit(text_2, (355, 250))
 
         for button in option_button.values():
             button.draw()
 
-
-
     # ================ GAMEPLAY SCREEN ===============
     elif game_status == "playing":
-
-        # background image
-        window.blit(background_img, (0, 0))
-
-        # text_image ---> Press Space Key to Pause
-        window.blit(text_1, (780, 20))
+        window.blit(background_img, (0, 0)) # background image
+        window.blit(text_1, (780, 20)) # text_image ---> Press Space Key to Pause
 
         # player's text
         player_colour = [Orange if i == current_player_id else Black for i in range(num_players)]
+
+        # displaying combo buttons when appropriate
+        if interactivity_enabled:
+            update_combo_button(game.players[current_player_id])
+            for button in combo_buttons.values():
+                if button.visible:
+                    button.draw()
 
         # display text with their positions on interface
         if num_players == 2:
@@ -532,22 +666,17 @@ def draw_window():
             rendered_shield_message = font_2.render(shield_message, True, Orange)
             window.blit(rendered_shield_message, (500, 745))
 
-
         # Drawing "End Turn" button
         if interactivity_enabled is True:
             end_turn_button.draw()
 
-
-
         # grouped all cards
         all_cards = {**main_cards, **action_cards, **character_cards}  # Merge all card dictionaries together **
-
-        # Display each card on the screen
         current_position = [330, 250]  # fixed position for all cards
+
         for name, image in all_cards.items():  # items(), lopping dict
             window.blit(image, current_position)
-            current_position = [current_position[0] + 2,
-                                current_position[1]]  # position of the deck of cards, +2 means the gap between cards
+            current_position = [current_position[0] + 2, current_position[1]]  # position of the deck of cards, +2 means the gap between cards
 
         if action_pile is not None: #and current_player_id == human_player_index:
             window.blit(action_pile, (560, 250))
@@ -561,6 +690,10 @@ def draw_window():
                 text.position()
                 text.draw_text(window)
 
+            # drawing all combo buttons; they handle their own visibility
+            for button in combo_buttons.values():
+                button.draw()
+
         if current_time - start_time_trouble_with_shield < 2:
             print_trouble_card_with_shield()
         elif current_time - start_time_trouble_no_shield < 2:
@@ -569,14 +702,11 @@ def draw_window():
         if current_time - start_time_top_3_cards < 2:
             display_top_3_cards(top_3_cards)
 
-
-
     # ============================== PAUSING INTERFACE ==========================
     elif game_status == "paused":
         window.blit(paused_img, (0, 0))  # add background image when pausing
         other_buttons["resume"].draw()
         other_buttons["Menu"].draw()
-
 
     # ============================== WINNER INTERFACE ==========================
     elif game_status == "result":
@@ -586,16 +716,16 @@ def draw_window():
             window.blit(botwins_img, (0,0))
 
 # =================================================== MAIN GAME LOOP ====================================================================================================
-
 import time
 
 trigger_for_bot_wait = False
 played_bots_cards = []
 game_running = True
+
 while game_running:  # start the loop - keep going while the game is on
     current_time = pygame.time.get_ticks() / 1000
-    for event in pygame.event.get():  # event handler
 
+    for event in pygame.event.get():  # event handler
         if event.type == pygame.QUIT:  # quit game
             game_running = False  # if player click close button, the loop stops   if event.type == pygame.KEYDOWN:
 
@@ -690,6 +820,7 @@ while game_running:  # start the loop - keep going while the game is on
             current_player = game.players[game.current_player_index]
             current_player_id = game.current_player_index
             all_cards = {**main_cards, **action_cards, **character_cards}  # Merge all card dictionaries together **
+
             if game.current_player_index == 0 and game.losers.get(current_player) is None:
                 enable_interactivity()
                 if end_turn_button.gets_clicked():  # option 2 to end turn
@@ -731,6 +862,9 @@ while game_running:  # start the loop - keep going while the game is on
                                 user_won = False
                         if current_player != game.players[game.current_player_index]:
                             disable_interactivity()
+
+                # handling combo button clicks
+                handle_combo_button_click()
 
             elif current_player in game.losers:
                 game.next_player_turn()
@@ -781,3 +915,4 @@ while game_running:  # start the loop - keep going while the game is on
     draw_window()
     pygame.display.update()
 # pygame.quit()
+
