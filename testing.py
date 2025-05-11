@@ -684,7 +684,7 @@ while game_running:  # start the loop - keep going while the game is on
                         winner = game.check_winner()
                         if winner is not None:
                             game_status = "result"
-                            if winner == "Player":
+                            if winner == "Player1":
                                 user_won = True
                             else:
                                 user_won = False

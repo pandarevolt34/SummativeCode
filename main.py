@@ -662,7 +662,8 @@ class GameHandling:
                         self.next_player_turn()
                         return
             elif self.deck.num_of_cards >= 35:
-                if self.last_played_action_card.card_name == "Beat It" or "Sick Leave":
+                if (self.last_played_action_card.card_name == "Beat It"
+                        or self.last_played_action_card.card_name == "Sick Leave"):
                     card = self.last_played_action_card
                     if card.perform_action(self, bot):
                         card = cards_available["Mirror"]
@@ -672,11 +673,14 @@ class GameHandling:
                         self.next_player_turn()
                         return
             elif self.deck.num_of_cards >= 20:
-                if self.last_played_action_card.card_name == "Beat It" or "Sick Leave" or "Shuffle":
+                if (self.last_played_action_card.card_name == "Beat It"
+                        or self.last_played_action_card.card_name == "Sick Leave"
+                        or self.last_played_action_card.card_name == "Shuffle"):
                     card = self.last_played_action_card
                     if card.perform_action(self, bot):
                         leave = False
-                        if self.last_played_action_card.card_name == "Beat It" or "Sick Leave":
+                        if (self.last_played_action_card.card_name == "Beat It"
+                                or self.last_played_action_card.card_name == "Sick Leave"):
                             leave = True
                         card = cards_available["Mirror"]
                         bot.player_cards.remove(card)
@@ -690,7 +694,8 @@ class GameHandling:
                     card = self.last_played_action_card
                     if card.perform_action(self, bot):
                         leave = False
-                        if self.last_played_action_card.card_name == "Beat It" or "Sick Leave":
+                        if (self.last_played_action_card.card_name == "Beat It" or
+                                self.last_played_action_card.card_name == "Sick Leave"):
                             leave = True
                         card = cards_available["Mirror"]
                         bot.player_cards.remove(card)
