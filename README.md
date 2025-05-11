@@ -49,6 +49,12 @@ or navigate to 'package' and search for Pygame through IDE settings and install 
 
 
 
+## References
+- ... Note: Add image references
+
+
+
+
 ## 💻 Contribution Statement
 
 
