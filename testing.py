@@ -396,6 +396,11 @@ def print_trouble_card_no_shield():
     msg_surface = font_2.render(message, True, Red)
     window.blit(overlay, (140, 320))
     window.blit(msg_surface, (150, 350))
+
+#def display_top_3_card:
+
+
+
 # ======================================================= DRAWINGS ON SCREEN ============================================================
 
 # The function below basically groups all the drawings in one place
@@ -650,6 +655,7 @@ while game_running:  # start the loop - keep going while the game is on
         elif game_status == "playing":
             current_player = game.players[game.current_player_index]
             current_player_id = game.current_player_index
+            all_cards = {**main_cards, **action_cards, **character_cards}  # Merge all card dictionaries together **
             if game.current_player_index == 0 and game.losers.get(current_player) is None:
                 enable_interactivity()
                 if end_turn_button.gets_clicked():  # option 2 to end turn
@@ -671,7 +677,6 @@ while game_running:  # start the loop - keep going while the game is on
                         text_sf.play()
                         card_name = text.text.split(" ×")[0]
 
-                        all_cards = {**main_cards, **action_cards, **character_cards}  # Merge all card dictionaries together **
                         if card_name in all_cards:
                             action_pile = all_cards[card_name]
 
@@ -701,7 +706,7 @@ while game_running:  # start the loop - keep going while the game is on
                         winner = game.check_winner()
                         if winner is not None:
                             game_status = "result"
-                            if winner == "Player":
+                            if winner == "Player1":
                                 user_won = True
                             else:
                                 user_won = False
