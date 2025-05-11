@@ -701,22 +701,23 @@ while game_running:  # start the loop - keep going while the game is on
                     start_time_cards = current_time
                 else:
                     if len(played_bots_cards) == 0:
-                        game.next_player_turn()
-                        trigger_for_bot_wait = False
-                        winner = game.check_winner()
-                        if winner is not None:
-                            game_status = "result"
-                            if winner == "Player1":
-                                user_won = True
-                            else:
-                                user_won = False
+                        if current_time - start_time_cards > 1:
+                            game.next_player_turn()
+                            trigger_for_bot_wait = False
+                            winner = game.check_winner()
+                            if winner is not None:
+                                game_status = "result"
+                                if winner == "Player1":
+                                    user_won = True
+                                else:
+                                    user_won = False
                     else:
                         if action_pile != all_cards[played_bots_cards[0].card_name]:
                             action_pile = all_cards[played_bots_cards[0].card_name]
                             start_time_cards = current_time
                         else:
-                            #if current_time - start_time_cards > 0.2:
-                            played_bots_cards.pop(0)
+                            if current_time - start_time_cards > 1:
+                                played_bots_cards.pop(0)
 
 
         # ================ PAUSING INTERFACE ==================
