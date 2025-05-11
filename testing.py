@@ -44,188 +44,22 @@ Orange = (255, 165, 0)
 Gray = (128, 128, 128)
 Red = (255, 0, 0)
 
-
-# =================================================== FROM MAIN.PY ============================================================================
-class Trouble(Card):
-    """Class representing the "You're in Trouble" card which eliminates a player, given they don't have the shield"""
-
-    def __init__(self, index=-1):
-        super().__init__("You're in Trouble", "Trouble", " ", index)
-        self.image = main_cards["trouble"]
-
-
-class Shield(Card):
-    """Class representing "The Shield" card which protects the player from the trouble card"""
-
-    def __init__(self, index=-1):
-        super().__init__("The Shield", "Shield", " ", index)
-        self.image = main_cards["shield"]
-
-
-class SickLeave(ActionCard):
-    def __init__(self, index=-1):
-        # inheriting attributes from parent class Card
-        super().__init__("Sick Leave", "Action", "End your turn without drawing a card", index)
-        self.image = action_cards["Sick Leave"]
-
-    def perform_action(self, game, current_player):
-        print(f"{current_player.player_name} used Sick Leave")
-        return True
-
-
-class UTurn(ActionCard):
-    def __init__(self, index=-1):
-        # inheriting attributes from parent class Card
-        super().__init__("U Turn", "Action", "Reverse the direction of the game", index)
-        self.image = action_cards["U Turn"]
-
-    def perform_action(self, game, current_player):
-        game.turn_direction *= -1  # turns the game direction to be -1 (anticlockwise)
-        print(f"{current_player.player_name} used U Turn - Direction reversed.")
-        return True
-
-
-class Hacker(ActionCard):
-    def __init__(self, index=-1):
-        # inheriting attributes from parent class Card
-        super().__init__("Hacker", "Action", "Take a card from a random position in the deck", index)
-        self.image = action_cards["Hacker"]
-
-    def perform_action(self, game, current_player):
-        print(f"{current_player.player_name} used Hacker!")
-        card = game.deck.red_black_tree.hacker_action()  # picks a random card from the deck
-        current_player.player_cards.append(card)  # appends the random card to the player's cards
-        return True
-
-
-class TheSpell(ActionCard):
-    def __init__(self, index=-1):
-        # inheriting attributes from parent class Card
-        super().__init__("The Spell", "Action", "Peek at the top 3 cards in the deck", index)
-        self.image = action_cards["The Spell"]
-
-    def perform_action(self, game, current_player):  # NEEDS FIXING TO CONSIDER BOT PLAYERS
-        print(f"{current_player.player_name} used TheSpell")
-        top_cards = game.deck.red_black_tree.the_spell_action()
-        if top_cards is None:
-            return False
-        if game.current_player_index == 0:
-            print("Top 3 cards:")
-            for i in top_cards:
-                print(i.card_name)
-        return True
-
-
-class Shuffle(ActionCard):
-    def __init__(self, index=-1):
-        # inheriting attributes from parent class Card
-        super().__init__("Shuffle", "Action", "Shuffle the deck", index)
-        self.image = action_cards["Shuffle"]
-
-    def perform_action(self, game, current_player):
-        print(f"{current_player.player_name} used Shuffle - The deck is shuffled")
-        game.deck.red_black_tree.shuffle_action()
-        return True
-
-
-class Reveal(ActionCard):
-    def __init__(self, index=-1):
-        # inheriting attributes from parent class Card
-        super().__init__("Reveal", "Action", "Reveal the top 3 cards to all players", index)
-        self.image = action_cards["Reveal"]
-        ### NOTE: THIS SHOULD APPEAR TO ALL PLAYERS; NOT LIKE THE SPELL
-
-    def perform_action(self, game, current_player):  # FIX THIS LIKE THE SPELL
-        print(f"{current_player.player_name} used Reveal!")
-        top_cards = game.deck.red_black_tree.the_spell_action()
-        if top_cards is None:
-            return False
-        print("Top 3 cards:")
-        for i in top_cards:
-            print(i.card_name)
-        return True
-
-
-class BeatIt(ActionCard):
-    def __init__(self, index=-1):
-        # inheriting attributes from parent class Card
-        super().__init__("Beat It", "Action",
-                         "Avoid drawing a card, and force the next player to play two consecutive turns", index)
-        self.image = action_cards["Beat It"]
-
-    def perform_action(self, game, current_player):
-        target_player = game.players[(game.current_player_index + game.turn_direction) % len(game.players)]
-        print(f"{target_player.player_name} has taken an extra card from the deck")
-        game.end_turn(target_player)
-        return True
-
-
-class BegYou(ActionCard):
-    def __init__(self, index=-1):
-        # inheriting attributes from parent class Card
-        super().__init__("Beg You", "Action", "A random player will give you a random card of theirs", index)
-        self.image = action_cards["Beg You"]
-
-    def perform_action(self, game, current_player):
-        print(f"{current_player.player_name} used Beg You!")
-        available_players = []  # picks a random player to perform the card's action on
-        for i in game.players:
-            if game.losers.get(i) is None and i != current_player:
-                available_players.append(i)
-        target_player = random.choice(available_players)
-        if target_player.player_cards:
-            card = random.choice(target_player.player_cards)  # taking a random card from the player's cards
-            target_player.player_cards.remove(card)  # removes that card from the target player's cards
-            current_player.player_cards.append(card)  # adds that card to the player who played the action card
-        else:
-            print(f"{target_player.player_name} has no cards therefore Beg You affect is cancelled!")
-        return True
-
-
-class Mirror(ActionCard):
-    def __init__(self, index=-1):
-        # inheriting attributes from parent class Card
-        super().__init__("Mirror", "Action", "Copy the last played action card", index)
-        self.image = action_cards["Mirror"]
-
-    def perform_action(self, game, current_player):
-        if game.last_played_action_card.card_name == "null":  # error handling
-            print("No action card to mirror.")
-            return False
-        elif game.last_played_action_card.card_name == "Mirror":
-            print("Can't mirror a mirror.")
-            return False
-        last_card = game.last_played_action_card
-        print(f"Mirroring {last_card.card_name}")
-
-        try:
-            # create instances of the same card type
-            new_card = type(last_card)(index=-1)  # using -1 as a temporary index
-            result = new_card.perform_action(game, current_player)
-            if result:
-                return True
-            return False
-        except Exception as e:
-            print(f"Mirror failed: {str(e)}")
-            return False
-
-
 # ======================== TEXT TO CLASS MAPPING =========================================
 card_text_to_class = {
     # action cards
-    "Hacker": Hacker,
-    "Sick Leave": SickLeave,
-    "U Turn": UTurn,
-    "The Spell": TheSpell,
-    "Shuffle": Shuffle,
-    "Reveal": Reveal,
-    "Beat It": BeatIt,
-    "Beg You": BegYou,
-    "Mirror": Mirror,
+    "Hacker": main.Hacker,
+    "Sick Leave": main.SickLeave,
+    "U Turn": main.UTurn,
+    "The Spell": main.TheSpell,
+    "Shuffle": main.Shuffle,
+    "Reveal": main.Reveal,
+    "Beat It": main.BeatIt,
+    "Beg You": main.BegYou,
+    "Mirror": main.Mirror,
 
     # main card
-    "trouble": Trouble,
-    "shield": Shield,
+    "trouble": main.Trouble,
+    "shield": main.Shield,
 
     # character cards
 }
@@ -539,7 +373,6 @@ current_player_id = 0  # Player1 = 0 ; Player2 = 1, Player3 = 2
 action_pile = None
 num_players = 0
 youre_in_trouble_trig = 0
-action_card_trig = 0
 start_time_trouble = None
 start_time_cards = None
 current_time = None
@@ -696,11 +529,9 @@ def draw_window():
             current_position = [current_position[0] + 2,
                                 current_position[1]]  # position of the deck of cards, +2 means the gap between cards
 
-        global action_card_trig
         if action_pile is not None: #and current_player_id == human_player_index:
             window.blit(action_pile, (560, 250))
-        else:
-            action_card_trig = 0
+
         # Display each card text on screen
         if interactivity_enabled is True:
             for text in create_card_text_objects(game.players[current_player_id]):
@@ -854,6 +685,7 @@ while game_running:  # start the loop - keep going while the game is on
                 game.initialize_game()
                 game_status = "playing"
 
+        # ================ PLAYING SCREEN =================
         elif game_status == "playing":
             current_player = game.players[game.current_player_index]
             current_player_id = game.current_player_index
@@ -862,7 +694,8 @@ while game_running:  # start the loop - keep going while the game is on
                 if end_turn_button.gets_clicked():  # option 2 to end turn
                     disable_interactivity()
                     game.end_turn()
-                    if game.discard_card_pile[-1].card_name == "The Shield" and game.discard_card_pile[-2].card_name == "You're in Trouble":
+                    if (len (game.discard_card_pile) > 1 and game.discard_card_pile[-1].card_name == "The Shield"
+                            and game.discard_card_pile[-2].card_name == "You're in Trouble"):
                         start_time_trouble = current_time
                         youre_in_trouble_trig = 1
                     if game.discard_card_pile[-1].card_name == "You're in Trouble":
@@ -899,8 +732,7 @@ while game_running:  # start the loop - keep going while the game is on
                     trigger_for_bot_wait = True
                     game.handle_bot_turn(current_player, played_bots_cards)
                     start_time_cards = current_time
-                    continue
-                elif trigger_for_bot_wait is True and current_time - start_time_cards > 1:
+                else:
                     if len(played_bots_cards) == 0:
                         game.next_player_turn()
                         trigger_for_bot_wait = False
@@ -912,13 +744,12 @@ while game_running:  # start the loop - keep going while the game is on
                             else:
                                 user_won = False
                     else:
-                        if action_pile != all_cards[played_bots_cards[-1].card_name]:
-                            action_pile = all_cards[played_bots_cards[-1].card_name]
+                        if action_pile != all_cards[played_bots_cards[0].card_name]:
+                            action_pile = all_cards[played_bots_cards[0].card_name]
                             start_time_cards = current_time
-                            action_card_trig = 1
                         else:
-                            if current_time - start_time_cards > 2.5:
-                                played_bots_cards.pop()
+                            #if current_time - start_time_cards > 0.2:
+                            played_bots_cards.pop(0)
 
 
         # ================ PAUSING INTERFACE ==================

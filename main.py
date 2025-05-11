@@ -121,10 +121,9 @@ class TheSpell(ActionCard):
         top_cards = game.deck.red_black_tree.the_spell_action()
         if top_cards is None:
             return False
-        if game.current_player_index == 0:
-            print("Top 3 cards:")
-            for i in top_cards:
-                print(i.card_name)
+        print("Top 3 cards:")
+        for i in top_cards:
+            print(i.card_name)
         return True
 
 
@@ -163,19 +162,21 @@ class BeatIt(ActionCard):
                          "Avoid drawing a card, and force the next player to play two consecutive turns", index)
 
     def perform_action(self, game, current_player):
-        target_player = game.players[(game.current_player_index + game.turn_direction) % len(game.players)]
-        while game.losers.get(target_player) is not None:
-            target_player = game.players[(game.current_player_index + game.turn_direction) % len(game.players)]
-        print(f"{target_player.player_name} has taken an extra card from the deck")
+        temporary_index = (game.current_player_index + game.turn_direction) % len(game.players)
+        target_player = game.players[temporary_index]
+        while target_player in game.losers or target_player is current_player:
+            temporary_index = (temporary_index + game.turn_direction) % len(game.players)
+            target_player = game.players[temporary_index]
         card = game.deck.draw_a_card()
         if card:
+            print(f"{target_player.player_name} has taken an extra card from the deck")
             if card.card_name == "You're in Trouble":  # handles drawing a trouble card case from manage_trouble_card function
                 game.manage_trouble_card(target_player)
             else:
                 target_player.player_cards.append(card)  # adds the card to the player's cards
                 if card.card_name == "The Shield":
                     target_player.has_shield.append(card)
-        return True
+            return True
 
 
 class BegYou(ActionCard):
@@ -187,30 +188,19 @@ class BegYou(ActionCard):
         print(f"{current_player.player_name} used Beg You!")
         available_players = [] # picks a random player to perform the card's action on
         for i in game.players:
-            if game.losers.get(i) is None and i != current_player:
+            if i not in game.losers and i is not current_player:
                 available_players.append(i)
         target_player = random.choice(available_players)
         if target_player.player_cards:
             card = random.choice(target_player.player_cards)  # taking a random card from the player's cards
             target_player.player_cards.remove(card)  # removes that card from the target player's cards
+            current_player.player_cards.append(card)  # adds that card to the player who played the action card
             if card.card_name == "The Shield":
                 target_player.has_shield.remove(card)
-            current_player.player_cards.append(card)  # adds that card to the player who played the action card
+                current_player.has_shield.append(card)
         else:
             print(f"{target_player.player_name} has no cards therefore Beg You affect is cancelled!")
         return True
-
-""""
-class NoChance(ActionCard):
-    def __init__(self, index=-1):
-        # inheriting attributes from parent class Card
-        super().__init__("No Chance", "Action", "Block action cards from other players", index)
-
-    def perform_action(self, game, current_player):
-        print(f"{current_player.player_name} played No Chance")
-        current_player.has_block = True  # indicates that the player has a ready block response
-        return True
-"""
 
 class Mirror(ActionCard):
     def __init__(self, index=-1):
@@ -746,7 +736,7 @@ class GameHandling:
 
     def play_selected_card(self, wanted_card_name):
         current_player = self.players[self.current_player_index]
-        card = Card("null", "null", "null")
+        card = None
         for i in current_player.player_cards:
             if i.card_name == wanted_card_name:
                 card = i
@@ -779,16 +769,13 @@ class GameHandling:
                     player.has_shield.append(card)
 
     def check_winner(self):
-        number_of_losers = 0
         winner = None  # will store a player who is still in the game
-        for i in self.players:  # iterate over the 2 to 4 players
-            if self.losers.get(i) is not None:  # if player is a loser
-                number_of_losers += 1
-            else:
-                winner = i  # player isn't a loser, if player is alone then the player is the winner
-        if number_of_losers == len(self.players) - 1:  # player is alone
-            self.game_over = True
-            return winner.player_name
+        if len(self.losers) == len(self.players) - 1:
+            for i in self.players:
+                if i not in self.losers:
+                    winner = i # player isn't a loser, if player is alone then the player is the winner
+                    self.game_over = True
+                    return winner.player_name
         return None
 
     def main_loop(self):
@@ -798,7 +785,7 @@ class GameHandling:
 
         while not self.game_over:
             # 5674312
-            if self.losers.get(current_player) is not None: # current player is not playing
+            if current_player in self.losers: # current player is not playing
                 number_of_losers = 0
                 winner = None # will store a player who is still in the game
                 for i in self.players: # iterate over the 2 to 4 players
