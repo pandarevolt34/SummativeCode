@@ -24,8 +24,8 @@ ready2play_img = pygame.transform.scale(pygame.image.load("press to start.png"),
 menu_img = pygame.transform.scale(pygame.image.load("menu image.png"), (1000, 800))
 paused_img = pygame.transform.scale(pygame.image.load("paused image.jpg"), (1000, 800))
 option_img = pygame.transform.scale(pygame.image.load("Background Image.png"), (1000, 800))
-humanwins_img = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/human wins.png"), (1000, 800))
-botwins_img = pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/bot wins.png"), (1000, 800))
+humanwins_img = pygame.transform.scale(pygame.image.load("human wins.png"), (1000, 800))
+botwins_img = pygame.transform.scale(pygame.image.load("bot wins.png"), (1000, 800))
 
 # Main Gameplay image
 BOT1_img = pygame.transform.scale(pygame.image.load("vertical left.png").convert_alpha(), (250,200)) #width and height both 200
@@ -544,7 +544,7 @@ start_time_trouble = None
 start_time_cards = None
 current_time = None
 human_player_index = 0
-global user_won
+user_won = False
 
 interactivity_enabled = True
 
@@ -697,9 +697,7 @@ def draw_window():
                                 current_position[1]]  # position of the deck of cards, +2 means the gap between cards
 
         global action_card_trig
-        if action_pile is not None and current_player_id == human_player_index:
-            window.blit(action_pile, (560, 250))
-        elif action_pile is not None and current_time - start_time_cards < 2.5 and action_card_trig == 1 and current_player_id != human_player_index:
+        if action_pile is not None: #and current_player_id == human_player_index:
             window.blit(action_pile, (560, 250))
         else:
             action_card_trig = 0
@@ -711,7 +709,6 @@ def draw_window():
             for text in actions_text + character_text:
                 text.position()
                 text.draw_text(window)
-
         global youre_in_trouble_trig
         if youre_in_trouble_trig == 1 and current_time - start_time_trouble < 5:
             print_trouble_card_with_shield()
@@ -865,8 +862,7 @@ while game_running:  # start the loop - keep going while the game is on
                 if end_turn_button.gets_clicked():  # option 2 to end turn
                     disable_interactivity()
                     game.end_turn()
-                    action_pile = None
-                    if game.discard_card_pile[-1].card_name == "The Shield":
+                    if game.discard_card_pile[-1].card_name == "The Shield" and game.discard_card_pile[-2].card_name == "You're in Trouble":
                         start_time_trouble = current_time
                         youre_in_trouble_trig = 1
                     if game.discard_card_pile[-1].card_name == "You're in Trouble":
@@ -907,7 +903,6 @@ while game_running:  # start the loop - keep going while the game is on
                 elif trigger_for_bot_wait is True and current_time - start_time_cards > 1:
                     if len(played_bots_cards) == 0:
                         game.next_player_turn()
-                        action_pile = None
                         trigger_for_bot_wait = False
                         winner = game.check_winner()
                         if winner is not None:

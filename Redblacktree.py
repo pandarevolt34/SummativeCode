@@ -157,6 +157,8 @@ class RedBlackTree:
         return largest_node
 
     def delete(self, node_to_be_deleted):
+        #print(node_to_be_deleted.index)
+        #self.testing_func_for_traversing_tree()
         y = node_to_be_deleted
         y_original_color = node_to_be_deleted.red # store color of node
         if node_to_be_deleted.left == self.nil: # if left child is nil, shift right child in place of node
