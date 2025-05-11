@@ -1,5 +1,6 @@
 # CS Python Project
 
+from Redblacktree import RedBlackTree
 import random
 
 # ID: 5676233
@@ -263,7 +264,6 @@ class Player:
 # ID: 5676233
 
 # ID: 5674312
-from Redblacktree import RedBlackTree
 
 ''' Class for CardDeck:
 this class represents the deck that plays the role between the players and the red black tree which stores the cards
