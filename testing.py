@@ -688,7 +688,7 @@ while game_running:  # start the loop - keep going while the game is on
                                 user_won = True
                             else:
                                 user_won = False
-                        if text == "Sick Leave" and current_player != game.players[game.current_player_index]:
+                        if (text.text == "Sick Leave" or text.text == "Beat It")  and current_player != game.players[game.current_player_index]:
                             disable_interactivity()
 
             elif game.losers.get(current_player) is not None:
