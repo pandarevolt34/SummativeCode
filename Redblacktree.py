@@ -246,6 +246,15 @@ class RedBlackTree:
                     x = self.root
         x.red = False
 
+    def find_node(self, card):
+        current_node = self.root # start from root
+        while current_node.card != card and current_node != self.nil: #loop terminates when card is found or node is nil
+            if current_node.index < card.index:
+                current_node = current_node.right
+            elif current_node.index > card.index:
+                current_node = current_node.left
+        return current_node
+
     def testing_func_for_traversing_tree(self):
         node = self.root
         q = Queue()
