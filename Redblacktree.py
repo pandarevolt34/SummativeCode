@@ -226,7 +226,9 @@ class RedBlackTree:
                     self.rotate_right(x.parent)
                     w = x.parent.left # set w to x's new sibling
                 #case 2
-                if w.left.red is False and w.right.red is False:
+                if w == self.nil:
+                    x = x.parent
+                elif w.left.red is False and w.right.red is False:
                     w.red = True
                     x = x.parent
                 else:
