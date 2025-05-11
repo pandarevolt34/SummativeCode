@@ -331,7 +331,7 @@ def create_card_text_objects(player):
         # Action cards
         "Hacker": (290, 580),
         "Sick Leave": (290, 600),
-        "U turn": (290, 620),
+        "U Turn": (290, 620),
         "The Spell": (290, 640),
         "Shuffle": (290, 660),
         "Reveal": (290, 680),

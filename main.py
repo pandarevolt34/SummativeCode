@@ -219,12 +219,8 @@ class Mirror(ActionCard):
 
         try:
             # create instances of the same card type
-            new_card = type(last_card)(index=-1)  # using -1 as a temporary index
-            result = new_card.perform_action(game, current_player)
-
-            if result:
-                return True
-            return False
+            result = last_card.perform_action(game, current_player)
+            return result
 
         except Exception as e:
             print(f"Mirror failed: {str(e)}")
@@ -740,6 +736,8 @@ class GameHandling:
         for i in current_player.player_cards:
             if i.card_name == wanted_card_name:
                 card = i
+        if card is None:
+            return None
         if card.card_type == "Action":
             if card.perform_action(self, current_player):
                 current_player.player_cards.remove(card)
