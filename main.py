@@ -107,8 +107,11 @@ class Hacker(ActionCard):
     def perform_action(self, game, current_player):
         print(f"{current_player.player_name} used Hacker!")
         card = game.deck.red_black_tree.hacker_action()  # picks a random card from the deck
-        current_player.player_cards.append(card)  # appends the random card to the player's cards
-        return True
+        if card:
+            game.deck.num_of_cards -= 1
+            current_player.player_cards.append(card)  # appends the random card to the player's cards
+            return True
+        return False
 
 
 class TheSpell(ActionCard):
@@ -220,6 +223,7 @@ class Mirror(ActionCard):
         try:
             # create instances of the same card type
             result = last_card.perform_action(game, current_player)
+            game.discard_card_pile.append(last_card)
             return result
 
         except Exception as e:
@@ -419,7 +423,7 @@ class GameHandling:
         self.turn_direction = 1 # sets the direction to 1 for clockwise and -1 for anticlockwise
         self.game_over = False
 
-    def players_setup(self, num_players, human_name = "Player"):
+    def players_setup(self, num_players, human_name = "Player1"):
         """Sets the players with a human player and a chosen number of bots"""
         '''while True:
             try:
@@ -623,6 +627,7 @@ class GameHandling:
             if card.perform_action(self, bot): # if action returns True then it was played
                 bot.player_cards.remove(card) # remove the card
                 self.last_played_action_card = card # set as last action card
+                self.discard_card_pile.append(card)
                 cards_used.append(card)
 
         revealing_card_used = False
@@ -632,6 +637,7 @@ class GameHandling:
             if card.perform_action(self, bot):
                 bot.player_cards.remove(card)
                 self.last_played_action_card = card
+                self.discard_card_pile.append(card)
                 cards_used.append(card)
 
         if "Beg You" in cards_available:
@@ -639,6 +645,7 @@ class GameHandling:
             if card.perform_action(self, bot):
                 bot.player_cards.remove(card)
                 self.last_played_action_card = card
+                self.discard_card_pile.append(card)
                 cards_used.append(card)
 
         if "Reveal" in cards_available:
@@ -648,6 +655,7 @@ class GameHandling:
                 if card.perform_action(self, bot):
                     bot.player_cards.remove(card)
                     self.last_played_action_card = card
+                    self.discard_card_pile.append(card)
                     cards_used.append(card)
 
         if "Mirror" in cards_available:
@@ -658,46 +666,55 @@ class GameHandling:
                         card = cards_available["Mirror"]
                         bot.player_cards.remove(card)
                         self.last_played_action_card = card
+                        self.discard_card_pile.append(card)
                         cards_used.append(card)
-                        self.next_player_turn()
+                        #self.next_player_turn()
                         return
             elif self.deck.num_of_cards >= 35:
-                if self.last_played_action_card.card_name == "Beat It" or "Sick Leave":
+                if (self.last_played_action_card.card_name == "Beat It"
+                        or self.last_played_action_card.card_name == "Sick Leave"):
                     card = self.last_played_action_card
                     if card.perform_action(self, bot):
                         card = cards_available["Mirror"]
                         bot.player_cards.remove(card)
                         self.last_played_action_card = card
+                        self.discard_card_pile.append(card)
                         cards_used.append(card)
-                        self.next_player_turn()
+                        #self.next_player_turn()
                         return
             elif self.deck.num_of_cards >= 20:
-                if self.last_played_action_card.card_name == "Beat It" or "Sick Leave" or "Shuffle":
+                if (self.last_played_action_card.card_name == "Beat It"
+                        or self.last_played_action_card.card_name == "Sick Leave"
+                        or self.last_played_action_card.card_name == "Shuffle"):
                     card = self.last_played_action_card
                     if card.perform_action(self, bot):
                         leave = False
-                        if self.last_played_action_card.card_name == "Beat It" or "Sick Leave":
+                        if (self.last_played_action_card.card_name == "Beat It"
+                                or self.last_played_action_card.card_name == "Sick Leave"):
                             leave = True
                         card = cards_available["Mirror"]
                         bot.player_cards.remove(card)
                         self.last_played_action_card = card
+                        self.discard_card_pile.append(card)
                         cards_used.append(card)
                         if leave is True:
-                            self.next_player_turn()
+                            #self.next_player_turn()
                             return
             else:
                 if self.last_played_action_card.card_name != "null":
                     card = self.last_played_action_card
                     if card.perform_action(self, bot):
                         leave = False
-                        if self.last_played_action_card.card_name == "Beat It" or "Sick Leave":
+                        if (self.last_played_action_card.card_name == "Beat It" or
+                                self.last_played_action_card.card_name == "Sick Leave"):
                             leave = True
                         card = cards_available["Mirror"]
                         bot.player_cards.remove(card)
                         self.last_played_action_card = card
+                        self.discard_card_pile.append(card)
                         cards_used.append(card)
                         if leave is True:
-                            self.next_player_turn()
+                            #self.next_player_turn()
                             return
 
         if "Hacker" in cards_available:
@@ -706,6 +723,7 @@ class GameHandling:
                 if card.perform_action(self, bot):
                     bot.player_cards.remove(card)
                     self.last_played_action_card = card
+                    self.discard_card_pile.append(card)
                     cards_used.append(card)
 
         if "Sick Leave" in cards_available:
@@ -715,8 +733,9 @@ class GameHandling:
                 if card.perform_action(self, bot):
                     bot.player_cards.remove(card)
                     self.last_played_action_card = card
+                    self.discard_card_pile.append(card)
                     cards_used.append(card)
-                    self.next_player_turn()
+                    #self.next_player_turn()
                     return
 
         if "Shuffle" in cards_available:
@@ -727,6 +746,7 @@ class GameHandling:
                 if card.perform_action(self, bot):
                     bot.player_cards.remove(card)
                     self.last_played_action_card = card
+                    self.discard_card_pile.append(card)
                     cards_used.append(card)
 
         if "Beat It"  in cards_available:
@@ -736,8 +756,9 @@ class GameHandling:
                 if card.perform_action(self, bot):
                     bot.player_cards.remove(card)
                     self.last_played_action_card = card
+                    self.discard_card_pile.append(card)
                     cards_used.append(card)
-                    self.next_player_turn()
+                    #self.next_player_turn()
                     return
         self.end_turn()
 
@@ -764,7 +785,9 @@ class GameHandling:
                 current_player.player_cards.remove(card)
                 self.discard_card_pile.append(card)
                 self.last_played_action_card = card
-                if card.card_name == "Sick Leave" or card.card_name == "Beat It":
+                if (card.card_name == "Sick Leave" or card.card_name == "Beat It" or
+                        (card.card_name == "Mirror" and (self.discard_card_pile[-2].card_name == "Sick Leave"
+                            or self.discard_card_pile[-2].card_name == "Beat It"))):
                     self.next_player_turn()
 
         elif card.card_type == "Character":

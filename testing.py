@@ -353,6 +353,7 @@ text_2 = font_2.render("Select players:", True, Black)
 # ====================================================== INTIALISE GAME MODE ==========================================================
 
 # current game mode
+game = main.GameHandling()
 game_status = "menu"
 instruction_page = 1
 current_player_id = 0  # Player1 = 0 ; Player2 = 1, Player3 = 2
@@ -419,8 +420,6 @@ top3_cards_to_display = []
 # The function below basically groups all the drawings in one place
 # makes code more organised, better for reuse purpose, and avoid repetition
 # This function will be reused in the main game loop
-
-game = main.GameHandling()
 
 def draw_window():
     # =============== MENU SCREEN =================
@@ -545,9 +544,9 @@ def draw_window():
                 text.position()
                 text.draw_text(window)
         global youre_in_trouble_trig
-        if youre_in_trouble_trig == 1 and current_time - start_time_trouble < 5:
+        if youre_in_trouble_trig == 1 and current_time - start_time_trouble < 2:
             print_trouble_card_with_shield()
-        elif youre_in_trouble_trig == 2 and current_time - start_time_trouble < 5:
+        elif youre_in_trouble_trig == 2 and current_time - start_time_trouble < 2:
             print_trouble_card_no_shield()
         else:
             youre_in_trouble_trig = 0
@@ -640,6 +639,8 @@ while game_running:  # start the loop - keep going while the game is on
             if option_button["2P"].gets_clicked():
                 button_sf.play()
                 pygame.time.delay(300)
+                game = main.GameHandling()
+                action_pile = None
                 game.players_setup(2, "Player1")
                 num_players = 2
                 fade_transition(1000, 800, White, "playing")
@@ -649,6 +650,8 @@ while game_running:  # start the loop - keep going while the game is on
             elif option_button["3P"].gets_clicked():
                 button_sf.play()
                 pygame.time.delay(300)
+                game = main.GameHandling()
+                action_pile = None
                 game.players_setup(3, "Player1")
                 num_players = 3
                 fade_transition(1000, 800, White, "playing")
@@ -658,6 +661,8 @@ while game_running:  # start the loop - keep going while the game is on
             elif option_button["4P"].gets_clicked():
                 button_sf.play()
                 pygame.time.delay(300)
+                game = main.GameHandling()
+                action_pile = None
                 game.players_setup(4, "Player1")
                 num_players = 4
                 fade_transition(1000, 800, White, "playing")
@@ -701,10 +706,10 @@ while game_running:  # start the loop - keep going while the game is on
                                 user_won = True
                             else:
                                 user_won = False
-                        if text == "Sick Leave" and current_player != game.players[game.current_player_index]:
+                        if current_player != game.players[game.current_player_index]:
                             disable_interactivity()
 
-            elif game.losers.get(current_player) is not None:
+            elif current_player in game.losers:
                 game.next_player_turn()
 
             else:
@@ -714,22 +719,23 @@ while game_running:  # start the loop - keep going while the game is on
                     start_time_cards = current_time
                 else:
                     if len(played_bots_cards) == 0:
-                        game.next_player_turn()
-                        trigger_for_bot_wait = False
-                        winner = game.check_winner()
-                        if winner is not None:
-                            game_status = "result"
-                            if winner == "Player1":
-                                user_won = True
-                            else:
-                                user_won = False
+                        if current_time - start_time_cards > 1:
+                            game.next_player_turn()
+                            trigger_for_bot_wait = False
+                            winner = game.check_winner()
+                            if winner is not None:
+                                game_status = "result"
+                                if winner == "Player1":
+                                    user_won = True
+                                else:
+                                    user_won = False
                     else:
                         if action_pile != all_cards[played_bots_cards[0].card_name]:
                             action_pile = all_cards[played_bots_cards[0].card_name]
                             start_time_cards = current_time
                         else:
-                            #if current_time - start_time_cards > 0.2:
-                            played_bots_cards.pop(0)
+                            if current_time - start_time_cards > 1:
+                                played_bots_cards.pop(0)
 
 
         # ================ PAUSING INTERFACE ==================
