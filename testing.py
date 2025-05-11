@@ -528,6 +528,10 @@ def draw_window():
         # shield image
         if game.players[human_player_index].has_shield:
             window.blit(extra_shield_img, (470, 575))
+            shield_message = f"x {len(game.players[human_player_index].has_shield)}"
+            rendered_shield_message = font_2.render(shield_message, True, Orange)
+            window.blit(rendered_shield_message, (500, 745))
+
 
         # Drawing "End Turn" button
         if interactivity_enabled is True:
