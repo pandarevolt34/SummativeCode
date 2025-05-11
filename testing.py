@@ -81,16 +81,15 @@ shield_rect = extra_shield_img.get_rect(topleft=(470, 575))
 action_cards = {
     "Sick Leave": pygame.transform.scale(pygame.image.load("sickleave.png").convert_alpha(), (150, 240)),
     "U Turn": pygame.transform.scale(pygame.image.load("uturn.png").convert_alpha(), (150, 240)),
-    "Hacker": pygame.transform.scale(pygame.image.load("hacker.png").convert_alpha(), (150, 240)),
+    "Hacker": pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/Hacker.png").convert_alpha(), (150, 240)),
     "The Spell": pygame.transform.scale(pygame.image.load("spell.png").convert_alpha(), (150, 240)),
     "Shuffle": pygame.transform.scale(pygame.image.load("shuffle.png").convert_alpha(), (150, 240)),
     "Reveal": pygame.transform.scale(pygame.image.load("reveal.png").convert_alpha(), (150, 240)),
     "Beat It": pygame.transform.scale(pygame.image.load("Beat.png").convert_alpha(), (150, 240)),
-    "Beg You": pygame.transform.scale(pygame.image.load("Beg.png").convert_alpha(), (150, 240)),
+    "Beg You": pygame.transform.scale(pygame.image.load("c:/Users/Braden Chin Jia Shen/OneDrive/Documents/Warwick/Compsci/Crash Course/Python image/Beg.png").convert_alpha(), (150, 240)),
     ###"No Chance" : pygame.transform.scale(pygame.image.load("nochance.png").convert_alpha(), (150, 240)),
     "Mirror": pygame.transform.scale(pygame.image.load("Mirror.png").convert_alpha(), (150, 240))
 }
-
 # 3. Character Cards
 character_cards = {
     "Ice King": pygame.transform.scale(pygame.image.load("char1.png").convert_alpha(), (150, 240)),
