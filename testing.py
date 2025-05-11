@@ -915,4 +915,3 @@ while game_running:  # start the loop - keep going while the game is on
     draw_window()
     pygame.display.update()
 # pygame.quit()
-
