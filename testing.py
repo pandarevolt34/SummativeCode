@@ -743,13 +743,18 @@ while game_running:  # start the loop - keep going while the game is on
                 else:
                     if played_bots_cards:
                         if action_pile != all_cards[played_bots_cards[0].card_name]:
+                            if played_bots_cards[0].card_name == "Reveal"\
+                                    or (played_bots_cards[0].card_name == "Mirror" and action_pile == all_cards["Reveal"]):
+                                top_3_cards = game.deck.red_black_tree.the_spell_action()
+                                if top_3_cards:
+                                    start_time_top_3_cards = current_time
                             action_pile = all_cards[played_bots_cards[0].card_name]
                             start_time_cards = current_time
                         else:
-                            if current_time - start_time_cards > 1:
+                            if current_time - start_time_cards > 1.5:
                                 played_bots_cards.pop(0)
                     else:
-                        if current_time - start_time_cards > 1:
+                        if current_time - start_time_cards > 1.5:
                             game.next_player_turn()
                             trigger_for_bot_wait = False
                             winner = game.check_winner()
