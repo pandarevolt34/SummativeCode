@@ -534,6 +534,9 @@ class GameHandling:
                     target.player_cards)  # NOTE: will change random choice to target player choice; target chooses a card to give (later in interface)
                 target.player_cards.remove(given_card)  # removing card from target player's cards
                 player.player_cards.append(given_card)  # adding card to player's cards
+                if given_card.card_name == "The Shield":
+                    target.has_shield.remove(given_card)
+                    player.has_shield.append(given_card)
                 print(f"{player.player_name} took a random card from {target.player_name}!")
 
         elif combo_type == 3:  # 3 of the same character card
