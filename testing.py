@@ -681,23 +681,6 @@ def draw_window():
         window.blit(background_img, (0, 0)) # background image
         window.blit(text_1, (780, 20)) # text_image ---> Press Space Key to Pause
 
-        # drawing from top 3 cards if combo 3 is active
-        if show_top3_selection and top3_cards_to_select:
-            # Dark overlay
-            overlay = pygame.Surface((1000, 800), pygame.SRCALPHA)
-            overlay.fill((0, 0, 0, 180))
-            window.blit(overlay, (0, 0))
-
-            # Instruction
-            text = font_2.render("Select a card to add to your hand:", True, White)
-            window.blit(text, (300, 150))
-
-            # Draw the cards
-            all_cards = {**main_cards, **action_cards, **character_cards}
-            for i, card in enumerate(top3_cards_to_select):
-                if card.card_name in all_cards:
-                    window.blit(all_cards[card.card_name], top3_card_positions[i])
-
         # player's text
         player_colour = [Orange if i == current_player_id else Black for i in range(num_players)]
 
@@ -810,6 +793,23 @@ def draw_window():
 
         if current_time - start_time_top_3_cards < 2:
             display_top_3_cards(top_3_cards)
+
+        # drawing from top 3 cards if combo 3 is active
+        if show_top3_selection and top3_cards_to_select:
+            # Dark overlay
+            overlay = pygame.Surface((1000, 800), pygame.SRCALPHA)
+            overlay.fill((0, 0, 0, 180))
+            window.blit(overlay, (0, 0))
+
+            # Instruction
+            text = font_2.render("Select a card to add to your hand:", True, White)
+            window.blit(text, (300, 150))
+
+            # Draw the cards
+            all_cards = {**main_cards, **action_cards, **character_cards}
+            for i, card in enumerate(top3_cards_to_select):
+                if card.card_name in all_cards:
+                    window.blit(all_cards[card.card_name], top3_card_positions[i])
 
     # ============================== PAUSING INTERFACE ==========================
     elif game_status == "paused":
