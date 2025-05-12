@@ -419,7 +419,7 @@ class CardDeck:
 
 # ID 5674312
 
-# ID: 5676233
+# ID: 5676233, 5674312
 '''Class for Game:
 this class manages the game state and includes the main loop. Variable instances:
     player_names: stores player names 
@@ -508,7 +508,6 @@ class GameHandling:
 
     def activate_char_combo(self, player, char_num, combo_type):
         """Activates character cards combinations effects"""
-
         if combo_type == 2:  # 2 of the same character card
             target = next((p for p in self.players if p != player and p.player_cards and p not in self.losers),
                           None)  # NOTE: will change to letting the player chose the target (later in interface)
@@ -631,6 +630,7 @@ class GameHandling:
     # ID: 5676233
 
     # 5674312
+
     def handle_bot_turn(self, bot, cards_used=[]):
         """ function allowing the bot to make decisions in the game """
         """
@@ -688,7 +688,6 @@ class GameHandling:
                         self.last_played_action_card = card
                         self.discard_card_pile.append(card)
                         cards_used.append(card)
-                        # self.next_player_turn()
                         return
             elif self.deck.num_of_cards >= 35:
                 if (self.last_played_action_card.card_name == "Beat It"
@@ -700,7 +699,6 @@ class GameHandling:
                         self.last_played_action_card = card
                         self.discard_card_pile.append(card)
                         cards_used.append(card)
-                        # self.next_player_turn()
                         return
             elif self.deck.num_of_cards >= 20:
                 if (self.last_played_action_card.card_name == "Beat It"
@@ -718,7 +716,6 @@ class GameHandling:
                         self.discard_card_pile.append(card)
                         cards_used.append(card)
                         if leave is True:
-                            # self.next_player_turn()
                             return
             else:
                 if self.last_played_action_card.card_name != "null":
@@ -734,7 +731,6 @@ class GameHandling:
                         self.discard_card_pile.append(card)
                         cards_used.append(card)
                         if leave is True:
-                            # self.next_player_turn()
                             return
 
         if "Hacker" in cards_available:
@@ -747,7 +743,6 @@ class GameHandling:
                     cards_used.append(card)
 
         if "Sick Leave" in cards_available:
-            # NOTE: DON'T FORGET SCENARIO WITH THE SPELL
             if self.deck.num_of_cards <= 20:
                 card = cards_available["Sick Leave"]
                 if card.perform_action(self, bot):
@@ -755,11 +750,9 @@ class GameHandling:
                     self.last_played_action_card = card
                     self.discard_card_pile.append(card)
                     cards_used.append(card)
-                    # self.next_player_turn()
                     return
 
         if "Shuffle" in cards_available:
-            # DONT FORGET THE SPELL SCENARIO
             chance = random.randint(1, 100)
             if chance <= 20:
                 card = cards_available["Shuffle"]
@@ -778,11 +771,8 @@ class GameHandling:
                     self.last_played_action_card = card
                     self.discard_card_pile.append(card)
                     cards_used.append(card)
-                    # self.next_player_turn()
                     return
         self.end_turn()
-
-    # 5674312
 
     def next_player_turn(self):
         """Move on to the next player's turn"""
@@ -812,9 +802,8 @@ class GameHandling:
                                                          or self.discard_card_pile[-2].card_name == "Beat It"))):
                     self.next_player_turn()
 
-    def end_turn(self):  ### NOTE TO GROUP: changed draw_card to be 'End Turn' functionality
+    def end_turn(self):
         """Draw a card from the deck to end turn and progress to next player"""
-        # player.has_block = False  # Reset unused 'no chance' block states
         print(self.deck.num_of_cards)
         player = self.players[self.current_player_index]
         card = self.deck.draw_a_card()
@@ -834,13 +823,16 @@ class GameHandling:
                     return i.player_name
         return None
 
+    # 5674312
+
+    # 5676233, main loop was used before merging - now outdated
+
     def main_loop(self):
         """Main loop of the game which controls the flow of the game"""
         self.game_over = False
         current_player = self.players[self.current_player_index]
 
         while not self.game_over:
-            # 5674312
             if current_player in self.losers:  # current player is not playing
                 number_of_losers = 0
                 winner = None  # will store a player who is still in the game
@@ -855,7 +847,6 @@ class GameHandling:
                 self.next_player_turn()
                 current_player = self.players[self.current_player_index]  # update current player
                 continue
-            # 5674312
             # start the game
             print(f"{current_player.player_name}'s turn!")
             if self.current_player_index == 0:
@@ -928,7 +919,6 @@ class GameHandling:
 
 
 # ID: 5676233
-##### NOTE TO GROUP: Add docstrings + fix docstring format
 
 '''
 game = GameHandling()
