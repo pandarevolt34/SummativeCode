@@ -44,7 +44,6 @@ class RedBlackTree:
 
     def insert_card(self, card):  # CORRECT
         """inserts card into the tree"""
-
         red_black_node = RedBlackNode(card)  # create new node
         red_black_node.index = card.index
         red_black_node.left = self.nil
@@ -73,7 +72,6 @@ class RedBlackTree:
 
     def fix_tree_insert(self, new_node):  # CORRECT
         """restores the requirements of the tree after insertion"""
-
         while new_node != self.root and new_node.parent.red is True:
             if new_node.parent == new_node.parent.parent.right:  # check if new node's parent is to the right of new node's parent-parent
                 u = new_node.parent.parent.left  # parent is to the right and u is to the left of the subtree of the parent-parent
@@ -108,7 +106,6 @@ class RedBlackTree:
 
     def rotate_left(self, u):  # CORRECT
         """perform a left rotation on a node"""
-
         v = u.right  # right child of u, to be shifted closer to root, u will be shifted further away from root
         u.right = v.left  # assign left child of v to right child of u
         if v.left != self.nil:
@@ -125,7 +122,6 @@ class RedBlackTree:
 
     def rotate_right(self, u):  # CORRECT
         """perform a right rotation on a node"""
-
         v = u.left  # left child of u, to be shifted closer to the root, u will be shifted further away from root
         u.left = v.right  # assign right child of v
         if v.right != self.nil:
@@ -144,7 +140,6 @@ class RedBlackTree:
 
     def shift_nodes(self, old, new):  # CORRECT
         """emplace new node in old node's position"""
-
         if old.parent is None:  # if old node was root, set new node as root
             self.root = new
         elif old.parent.left == old:  # if old node was left child, set new node as left child instead
@@ -155,14 +150,12 @@ class RedBlackTree:
 
     def minimum(self, node):  # RECURSIVE FUNC
         """find the node with the smallest index within the subtree with node as its root"""
-
         if node.left != self.nil:  # continue down the left path of the subtree
             node = self.minimum(node.left)
         return node
 
     def find_largest_node(self):  # CORRECT
         """find the node with the largest index in the tree"""
-
         node = self.root
         largest_node = self.root
         while node != self.nil:
@@ -172,7 +165,6 @@ class RedBlackTree:
 
     def delete(self, node_to_be_deleted):  # CORRECT
         """deletes node from the tree"""
-
         y = node_to_be_deleted
         y_original_color = y.red  # store color of node
         # case 1
@@ -205,7 +197,6 @@ class RedBlackTree:
 
     def delete_fixup(self, x):  # CORRECT
         """restores the requirements of the tree after deletion"""
-
         while x != self.root and x.red is False:  # while x is black and not the root of the tree
             if x == x.parent.left:  # when x is a left child
                 w = x.parent.right  # w is x's sibling, AKA the right child of x's parent
@@ -266,7 +257,6 @@ class RedBlackTree:
 
     def find_node(self, card):
         """finds the node that contains the card"""
-
         current_node = self.root  # start from root
         while current_node.card != card and current_node != self.nil:  # loop terminates when card is found or node is nil
             if current_node.index < card.index:
@@ -277,7 +267,6 @@ class RedBlackTree:
 
     def testing_func_for_traversing_tree(self):
         """performs breadth-first-search on the tree and outputs the details of each node - used for testing"""
-
         node = self.root
         q = Queue()
         q.put(node)
@@ -297,7 +286,6 @@ class RedBlackTree:
     # FUNCTIONS FOR ACTION CARDS:
     def hacker_action(self):
         """finds a random card from the deck"""
-
         node = self.root
         while node != self.nil:
             left_or_right = randint(0, 2)
@@ -316,7 +304,6 @@ class RedBlackTree:
 
     def the_spell_action(self):
         """finds the 3 cards at the top of the deck"""
-
         node = self.find_largest_node()
         cards = []
         if node == self.root:  # if largest node is the root, then there aren't 3 cards left
@@ -357,7 +344,6 @@ class RedBlackTree:
 
     def shuffle_action(self):
         """ shuffles the deck by swapping content between two nodes"""
-
         node = self.root
         while node != self.nil:
             if node.left != self.nil and node.right != self.nil:
