@@ -635,6 +635,7 @@ def display_top_3_cards(top_3_cards):
         if card_name in all_cards:
             window.blit(all_cards[card_name], positions[i])
 
+
 # ======================================================= DRAWINGS ON SCREEN ============================================================
 
 # The function below basically groups all the drawings in one place
@@ -707,9 +708,9 @@ def draw_window():
             window.blit(human_player_text, (470, 400))
 
         if num_players == 3:
-            if game.players[1] not in game.losers: # if a bot loses, don't display it
+            if game.players[1] not in game.losers:  # if a bot loses, don't display it
                 window.blit(BOT1_img, (-50, 260))
-            if game.players[2] not in game.losers: # if a bot loses, don't display it
+            if game.players[2] not in game.losers:  # if a bot loses, don't display it
                 window.blit(BOT3_img, (800, 260))
 
             human_player_text = font_2.render("You", True, player_colour[0])
@@ -719,15 +720,15 @@ def draw_window():
             window.blit(human_player_text, (470, 400))
             if game.players[1] not in game.losers:  # if a bot loses, don't display it
                 window.blit(bot1_text, (40, 350))
-            if game.players[2] not in game.losers: # if a bot loses, don't display it
+            if game.players[2] not in game.losers:  # if a bot loses, don't display it
                 window.blit(bot2_text, (855, 355))
 
         if num_players == 4:
-            if game.players[1] not in game.losers: # if a bot loses, don't display it
+            if game.players[1] not in game.losers:  # if a bot loses, don't display it
                 window.blit(BOT1_img, (-50, 260))
-            if game.players[2] not in game.losers: # if a bot loses, don't display it
+            if game.players[2] not in game.losers:  # if a bot loses, don't display it
                 window.blit(BOT2_img, (400, -40))
-            if game.players[3] not in game.losers: # if a bot loses, don't display it
+            if game.players[3] not in game.losers:  # if a bot loses, don't display it
                 window.blit(BOT3_img, (800, 260))
 
             human_player_text = font_2.render("You", True, player_colour[0])
@@ -736,15 +737,15 @@ def draw_window():
             bot3_text = font_2.render("BOT 3", True, player_colour[3])
 
             window.blit(human_player_text, (490, 550))
-            if game.players[1] not in game.losers: # if a bot loses, don't display it
+            if game.players[1] not in game.losers:  # if a bot loses, don't display it
                 window.blit(bot1_text, (40, 350))
-            if game.players[2] not in game.losers: # if a bot loses, don't display it
+            if game.players[2] not in game.losers:  # if a bot loses, don't display it
                 window.blit(bot2_text, (470, 55))
-            if game.players[3] not in game.losers: # if a bot loses, don't display it
+            if game.players[3] not in game.losers:  # if a bot loses, don't display it
                 window.blit(bot3_text, (855, 355))
 
         # shield image
-        num_of_shields = len(game.players[human_player_index].has_shield) # current number of shields with user
+        num_of_shields = len(game.players[human_player_index].has_shield)  # current number of shields with user
         if num_of_shields != 0:
             window.blit(extra_shield_img, (470, 575))
             shield_message = f"x {num_of_shields}"
@@ -781,20 +782,20 @@ def draw_window():
                 button.draw()
 
         global previous_shield_value, start_time_trouble_with_shield, start_time_trouble_no_shield, youre_in_trouble_trig
-        if previous_shield_value == num_of_shields + 1: # user received a Trouble card and lost a Shield
-            start_time_trouble_with_shield = current_time # preparation to display message
+        if previous_shield_value == num_of_shields + 1:  # user received a Trouble card and lost a Shield
+            start_time_trouble_with_shield = current_time  # preparation to display message
         previous_shield_value = num_of_shields
 
-        if game.players[human_player_index] in game.losers and youre_in_trouble_trig == 0: # user lost this moment
-            start_time_trouble_no_shield = current_time # preparation to display message
-            youre_in_trouble_trig = 1 # triggered
+        if game.players[human_player_index] in game.losers and youre_in_trouble_trig == 0:  # user lost this moment
+            start_time_trouble_no_shield = current_time  # preparation to display message
+            youre_in_trouble_trig = 1  # triggered
 
-        if current_time - start_time_trouble_with_shield < 2: # display message for 2 seconds
+        if current_time - start_time_trouble_with_shield < 2:  # display message for 2 seconds
             print_trouble_card_with_shield()
-        elif current_time - start_time_trouble_no_shield < 2: # display message for 2 seconds
+        elif current_time - start_time_trouble_no_shield < 2:  # display message for 2 seconds
             print_trouble_card_no_shield()
 
-        if current_time - start_time_top_3_cards < 2: # display top 3 cards for 2 seconds
+        if current_time - start_time_top_3_cards < 2:  # display top 3 cards for 2 seconds
             display_top_3_cards(top_3_cards)
 
         # drawing from top 3 cards if combo 3 is active
@@ -830,8 +831,8 @@ def draw_window():
 
 # =================================================== MAIN GAME LOOP ====================================================================================================
 
-trigger_for_bot_wait = False # allows pause between bot plays
-played_bots_cards = [] # stores cards used in bot's turn
+trigger_for_bot_wait = False  # allows pause between bot plays
+played_bots_cards = []  # stores cards used in bot's turn
 game_running = True
 
 while game_running:  # start the loop - keep going while the game is on
@@ -902,7 +903,7 @@ while game_running:  # start the loop - keep going while the game is on
             if option_button["2P"].gets_clicked():
                 button_sf.play()
                 pygame.time.delay(300)
-                game = main.GameHandling() # resets game
+                game = main.GameHandling()  # resets game
                 action_pile = None
                 game.players_setup(2, "Player1")
                 num_players = 2
@@ -913,7 +914,7 @@ while game_running:  # start the loop - keep going while the game is on
             elif option_button["3P"].gets_clicked():
                 button_sf.play()
                 pygame.time.delay(300)
-                game = main.GameHandling() # resets game
+                game = main.GameHandling()  # resets game
                 action_pile = None
                 game.players_setup(3, "Player1")
                 num_players = 3
@@ -924,7 +925,7 @@ while game_running:  # start the loop - keep going while the game is on
             elif option_button["4P"].gets_clicked():
                 button_sf.play()
                 pygame.time.delay(300)
-                game = main.GameHandling() # resets game
+                game = main.GameHandling()  # resets game
                 action_pile = None
                 game.players_setup(4, "Player1")
                 num_players = 4
@@ -934,33 +935,33 @@ while game_running:  # start the loop - keep going while the game is on
 
         # ================ PLAYING SCREEN =================
         elif game_status == "playing":
-            current_player = game.players[game.current_player_index] # current_player object from main
-            current_player_id = game.current_player_index # current index of player
+            current_player = game.players[game.current_player_index]  # current_player object from main
+            current_player_id = game.current_player_index  # current index of player
             all_cards = {**main_cards, **action_cards, **character_cards}  # Merge all card dictionaries together **
 
-            if game.current_player_index == 0 and current_player not in game.losers: # if currently user's turn and hasn't been eliminated
-                enable_interactivity() # allow user to interact with cards in their hand
+            if game.current_player_index == 0 and current_player not in game.losers:  # if currently user's turn and hasn't been eliminated
+                enable_interactivity()  # allow user to interact with cards in their hand
                 if end_turn_button.gets_clicked():  # end turn was selected
                     disable_interactivity()
-                    game.end_turn() # draws card for user
-                    game.next_player_turn() # shifts to next player
-                    winner = game.check_winner() # check for winner
+                    game.end_turn()  # draws card for user
+                    game.next_player_turn()  # shifts to next player
+                    winner = game.check_winner()  # check for winner
                     if winner is not None:
-                        game_status = "result" # winner is found
-                        if winner == "Player1": # user is the winner
+                        game_status = "result"  # winner is found
+                        if winner == "Player1":  # user is the winner
                             user_won = True
                         else:
                             user_won = False
 
                 for text in create_card_text_objects(game.players[current_player_id]):
-                    if text.gets_clicked(): # a card is selected
+                    if text.gets_clicked():  # a card is selected
                         text_sf.play()
                         card_name = text.text.split(" ×")[0]
 
                         if card_name in all_cards:
-                            action_pile = all_cards[card_name] # preparation to display selected card
+                            action_pile = all_cards[card_name]  # preparation to display selected card
 
-                        game.play_selected_card(card_name) # check if player has card and use it if possible
+                        game.play_selected_card(card_name)  # check if player has card and use it if possible
                         if card_name == game.last_played_action_card.card_name == "The Spell" \
                                 or card_name == game.last_played_action_card.card_name == "Reveal" \
                                 or (len(game.discard_card_pile) > 1
@@ -969,8 +970,8 @@ while game_running:  # start the loop - keep going while the game is on
                                     and card_name == game.last_played_action_card.card_name == "Mirror"):
                             top_3_cards = game.deck.red_black_tree.the_spell_action()
                             if top_3_cards:
-                                start_time_top_3_cards = current_time # preparation to display top 3 cards
-                        winner = game.check_winner() # check if there is a winner
+                                start_time_top_3_cards = current_time  # preparation to display top 3 cards
+                        winner = game.check_winner()  # check if there is a winner
                         if winner is not None:
                             game_status = "result"
                             if winner == "Player1":
@@ -978,7 +979,7 @@ while game_running:  # start the loop - keep going while the game is on
                             else:
                                 user_won = False
                         if current_player != game.players[game.current_player_index]:
-                            disable_interactivity() # transitioned to player other than user so we disable interactivity
+                            disable_interactivity()  # transitioned to player other than user so we disable interactivity
 
                 # handling combo button clicks
                 handle_combo_button_click()
@@ -988,11 +989,11 @@ while game_running:  # start the loop - keep going while the game is on
 
             else:
                 if trigger_for_bot_wait is False:
-                    trigger_for_bot_wait = True # collect bot's decisions and prepare to pause for 1.5 seconds
+                    trigger_for_bot_wait = True  # collect bot's decisions and prepare to pause for 1.5 seconds
                     game.handle_bot_turn(current_player, played_bots_cards)
                     start_time_cards = current_time
                 else:
-                    if played_bots_cards: # remove and display a card for 1.5 seconds one at a time
+                    if played_bots_cards:  # remove and display a card for 1.5 seconds one at a time
                         if action_pile != all_cards[played_bots_cards[0].card_name]:
                             if played_bots_cards[0].card_name == "Reveal" \
                                     or (
@@ -1001,15 +1002,15 @@ while game_running:  # start the loop - keep going while the game is on
                                 if top_3_cards:
                                     start_time_top_3_cards = current_time
                             action_pile = all_cards[played_bots_cards[0].card_name]
-                            start_time_cards = current_time # preparation to prepare top 3 cards
+                            start_time_cards = current_time  # preparation to prepare top 3 cards
                         else:
-                            if current_time - start_time_cards > 1.5: # if card has been displayed for over 1.5 seconds
-                                played_bots_cards.pop(0) # remove card from list
-                    else: # no more cards to display
-                        if current_time - start_time_cards > 1.5: # in case no cards were found, prevents instant transition
+                            if current_time - start_time_cards > 1.5:  # if card has been displayed for over 1.5 seconds
+                                played_bots_cards.pop(0)  # remove card from list
+                    else:  # no more cards to display
+                        if current_time - start_time_cards > 1.5:  # in case no cards were found, prevents instant transition
                             game.next_player_turn()
                             trigger_for_bot_wait = False
-                            winner = game.check_winner() # check for winner
+                            winner = game.check_winner()  # check for winner
                             if winner is not None:
                                 game_status = "result"
                                 if winner == "Player1":
