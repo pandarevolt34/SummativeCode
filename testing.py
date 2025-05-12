@@ -571,7 +571,7 @@ def handle_top3_card_click():
                 game.players[game.current_player_index].has_shield.append(selected_card)
             # remove that card from the deck
             node = game.deck.red_black_tree.find_node(selected_card)
-            if node != game.deck.red_black_tree.nil:
+            if node:
                 game.deck.red_black_tree.delete(node)
                 game.deck.num_of_cards -= 1
 
