@@ -451,15 +451,6 @@ class GameHandling:
 
     def players_setup(self, num_players, human_name="Player1"):
         """Sets the players with a human player and a chosen number of bots"""
-        '''while True:
-            try:
-                # asking the user for number of players
-                num_players = int(input("Enter the number of players between 2-4: "))
-                if 2 <= num_players <= 4:
-                    break
-                print("Invalid number of players! Enter a number between 2-4")
-            except ValueError:
-                print("Please enter a number!")'''
 
         # getting player names
         self.players = [Player(human_name)]
@@ -525,7 +516,7 @@ class GameHandling:
         """Activates character cards combinations effects"""
 
         if combo_type == 2:  # 2 of the same character card
-            target = next((p for p in self.players if p != player and p.player_cards),
+            target = next((p for p in self.players if p != player and p.player_cards and p not in self.losers),
                           None)  # NOTE: will change to letting the player chose the target (later in interface)
             if not target:
                 return
