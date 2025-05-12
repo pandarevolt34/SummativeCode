@@ -567,10 +567,11 @@ def handle_top3_card_click():
             # add the selected card to player's hand
             selected_card = top3_cards_to_select[i]
             game.players[game.current_player_index].player_cards.append(selected_card)
-
+            if selected_card.card_name == "The Shield":
+                game.players[game.current_player_index].has_shield.append(selected_card)
             # remove that card from the deck
             node = game.deck.red_black_tree.find_node(selected_card)
-            if node:
+            if node != game.deck.red_black_tree.nil:
                 game.deck.red_black_tree.delete(node)
                 game.deck.num_of_cards -= 1
 

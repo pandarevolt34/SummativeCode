@@ -177,7 +177,10 @@ class RedBlackTree:
             self.shift_nodes(node_to_be_deleted, node_to_be_deleted.left)
         # case 3
         else:
-            y = self.minimum(node_to_be_deleted.right)  # y is the minimum node from right subtree of node_to_be_deleted
+            if node_to_be_deleted.right != self.nil:
+                y = self.minimum(node_to_be_deleted.right)  # y is the minimum node from right subtree of node_to_be_deleted
+            else:
+                y = node_to_be_deleted.right
             y_original_color = y.red  # keep track of y's color
             x = y.right
             if y.parent == node_to_be_deleted:
