@@ -455,6 +455,7 @@ def update_combo_button(player):
                 combo_buttons["full_set"].visible = True
 
 def handle_combo_button_click():
+    global show_top3_selection, top3_cards_to_select, show_combo_selection, combo_top_cards
     current_player = game.players[game.current_player_index]
 
     for button_id, button in combo_buttons.items():
@@ -500,7 +501,11 @@ def handle_combo_button_click():
                         removed += 1
                         if removed == 3:
                             break
-                game.activate_char_combo(current_player, char_num, 3)
+
+                top3_cards_to_select = game.deck.red_black_tree.the_spell_action()
+                if top3_cards_to_select:
+                    show_top3_selection = True
+                    show_combo_selection = False  # Ensure we're not showing both at once
 
             elif button_id == "full_set":
                 # removing 1 of each character from player's hand; effect of full set combo
