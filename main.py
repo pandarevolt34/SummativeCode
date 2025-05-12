@@ -120,9 +120,12 @@ class Hacker(ActionCard):
         card = game.deck.red_black_tree.hacker_action()  # picks a random card from the deck
         if card:
             game.deck.num_of_cards -= 1
-            current_player.player_cards.append(card)  # appends the random card to the player's cards
-            if card.card_name == "The Shield":
-                current_player.has_shield.append(card)
+            if card.card_name == "You're in Trouble":
+                game.manage_trouble_card(current_player)
+            else:
+                current_player.player_cards.append(card)  # appends the random card to the player's cards
+                if card.card_name == "The Shield":
+                    current_player.has_shield.append(card)
             return True
         return False
 
@@ -784,7 +787,8 @@ class GameHandling:
                                            6: 0}  # reset character counter at the start of turn
         # NOTE: character counter tracker needs modification
 
-    def play_selected_card(self, wanted_card_name):
+    def play_selected_card(self, wanted_card_name: str) -> None:  # implemented validation and annotation
+        """checks if card is in a players hand and plays it"""
         current_player = self.players[self.current_player_index]
         card = None
         for i in current_player.player_cards:
@@ -817,6 +821,7 @@ class GameHandling:
                     player.has_shield.append(card)
 
     def check_winner(self):
+        """identifies winner if available"""
         if len(self.losers) == len(self.players) - 1:
             for i in self.players:
                 if i not in self.losers:
@@ -897,7 +902,7 @@ class GameHandling:
                                     else:  # for other card types; like the shield
                                         print("This card cannot be played directly")
                                 else:
-                                    print("Card does not exist!")
+                                    print("Card does not exist!")  # validation checks
                             except ValueError:
                                 print("Enter a valid number.")
 

@@ -110,7 +110,10 @@ shield_sf = pygame.mixer.Sound("shield.mp3")
 
 
 # 2. Fade transition effect between screens
-def fade_transition(width, height, colour, next_screen):
+def fade_transition(width, height, colour, next_screen, **timing):  # Function arbitrary requirements
+    fade_in_speed = timing.get("fade_in_speed", 1)
+    fade_out_speed = timing.get("fade_out_speed", 1)
+
     fade = pygame.Surface((width, height))
     fade.fill(colour)
     # alpha means opacity of the window
@@ -121,7 +124,7 @@ def fade_transition(width, height, colour, next_screen):
         draw_window()
         window.blit(fade, (0, 0))
         pygame.display.update()
-        pygame.time.delay(3)
+        pygame.time.delay(fade_in_speed)
 
     # transitioning to next screen [mid-fade] (from chatgpt)
     global game_status
@@ -133,7 +136,7 @@ def fade_transition(width, height, colour, next_screen):
         draw_window()
         window.blit(fade, (0, 0))
         pygame.display.update()
-        pygame.time.delay(3)
+        pygame.time.delay(fade_out_speed)
 
 
 # ======================================================== CARD CLASS ===========================================================
@@ -380,6 +383,7 @@ full_set_card_positions = {
     "Lumpy": (550, 300)
 }
 
+
 def create_card_text_objects(player):
     # Get card counts from the player
     card_counts = {}
@@ -543,7 +547,7 @@ def handle_combo_button_click():
                             current_player.player_cards.remove(card)
                             current_player.character_counts[char_num] -= 1
                             break
-                #game.activate_full_set_combo(current_player)
+                # game.activate_full_set_combo(current_player)
                 # show full set selection on screen
                 show_full_set_selection = True
                 show_top3_selection = False
@@ -575,6 +579,7 @@ def handle_top3_card_click():
             top3_cards_to_select = []
             return True
     return False
+
 
 def handle_full_set_card_click():
     global show_full_set_selection
@@ -688,6 +693,7 @@ def display_top_3_cards(top_3_cards):
         if card_name in all_cards:
             window.blit(all_cards[card_name], positions[i])
 
+
 def display_full_set_selection():
     # Dark overlay
     overlay = pygame.Surface((1000, 800), pygame.SRCALPHA)
@@ -703,6 +709,7 @@ def display_full_set_selection():
     for card_name, pos in full_set_card_positions.items():
         if card_name in all_cards:
             window.blit(all_cards[card_name], pos)
+
 
 # ======================================================= DRAWINGS ON SCREEN ============================================================
 
