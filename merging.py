@@ -29,10 +29,12 @@ humanwins_img = pygame.transform.scale(pygame.image.load("human wins.png"), (100
 botwins_img = pygame.transform.scale(pygame.image.load("bot wins.png"), (1000, 800))
 
 # Main Gameplay image
-BOT1_img = pygame.transform.scale(pygame.image.load("vertical left.png").convert_alpha(), (250,200)) #width and height both 200
-BOT2_img = pygame.transform.scale(pygame.image.load("horizontal.png").convert_alpha(), (250,200)) #width and height both 200
-BOT3_img = pygame.transform.scale(pygame.image.load("vertical right.png").convert_alpha(), (250,200)) #width and height both 200
-
+BOT1_img = pygame.transform.scale(pygame.image.load("vertical left.png").convert_alpha(),
+                                  (250, 200))  # width and height both 200
+BOT2_img = pygame.transform.scale(pygame.image.load("horizontal.png").convert_alpha(),
+                                  (250, 200))  # width and height both 200
+BOT3_img = pygame.transform.scale(pygame.image.load("vertical right.png").convert_alpha(),
+                                  (250, 200))  # width and height both 200
 
 # Define colours for drawing purpose
 Dark_Green = (0, 100, 0)
@@ -103,7 +105,6 @@ character_cards = {
 
 card_list = []
 
-
 # ======================================================== GAME EFFECTS =============================================================
 
 # 1. Sound effects
@@ -167,7 +168,6 @@ class Clickable_text:
         self.hovering = False
         self.rect = None
         self.update_rect()
-
 
     def update_rect(self):
         display_text = self.get_display_text()
@@ -279,9 +279,6 @@ option_button = {"2P": TheButton("2 Players", 390, 300, True),
                  }
 
 # Action cards text for display
-
-
-
 actions_text = [
     Clickable_text("Hacker", font_1, White, Orange, 290, 580),
     Clickable_text("Sick Leave", font_1, White, Orange, 290, 600),
@@ -291,7 +288,6 @@ actions_text = [
     Clickable_text("Reveal", font_1, White, Orange, 290, 680),
     Clickable_text("Beat It", font_1, White, Orange, 290, 700),
     Clickable_text("Beg You", font_1, White, Orange, 290, 720),
-    ###Clickable_text("No Chance", font_1, White, Orange, 290, 740),
     Clickable_text("Mirror", font_1, White, Orange, 290, 740)
 ]
 
@@ -306,6 +302,8 @@ character_text = [
 ]
 all_text = [*actions_text, *character_text]  # Merge all text together
 
+# Combo buttons
+combo_buttons = []
 
 
 def create_card_text_objects(player):
@@ -326,7 +324,6 @@ def create_card_text_objects(player):
         "Reveal": (290, 680),
         "Beat It": (290, 700),
         "Beg You": (290, 720),
-        ###"No Chance": (290, 740),
         "Mirror": (290, 740),
         # Character cards
         "Ice King": (670, 600),
@@ -346,6 +343,58 @@ def create_card_text_objects(player):
         text.update_rect()
 
     return actions_text + character_text
+
+
+def create_combo_buttons(player):
+    global combo_buttons
+    combo_buttons = []
+
+    if not interactivity_enabled:
+        return
+
+    if game.current_player_index != 0:
+        return
+
+    # Check for character combos
+    char_names = {
+        1: "Ice King",
+        2: "BMO",
+        3: "Finn",
+        4: "Jake",
+        5: "Bubblegum",
+        6: "Lumpy"
+    }
+
+    char_y_positions = {
+        "Ice King": 600,
+        "BMO": 620,
+        "Finn": 640,
+        "Jake": 660,
+        "Bubblegum": 680,
+        "Lumpy": 700
+    }
+
+    # Check for 2 of same character
+    for char_num, count in player.character_counts.items():
+        if count >= 2:
+            char_name = char_names[char_num]
+            # Position button next to the character text
+            x = 680  # Right of character text
+            y = char_y_positions[char_name]
+
+
+            # Create "Activate 2" button
+            combo_buttons.append(TheButton("Activate 2", x, y, True))
+
+            # If we have 3 of same character, add "Activate 3" button
+            if count >= 3:
+                combo_buttons.append(TheButton("Activate 3", x + 90, y, True))
+
+    # Check for full set (1 of each character)
+    if all(count >= 1 for count in player.character_counts.values()):
+        # Position button below character cards
+        combo_buttons.append(TheButton("Activate Full Set", 670, 730, True))
+
 
 text_1 = font_1.render("Press SPACE key to pause", True, Dark_Green)
 text_2 = font_2.render("Select players:", True, Black)
@@ -368,17 +417,20 @@ user_won = False
 
 interactivity_enabled = True
 
+
 def enable_interactivity():
     global interactivity_enabled
     interactivity_enabled = True
+
 
 def disable_interactivity():
     global interactivity_enabled
     interactivity_enabled = False
 
+
 def print_trouble_card_with_shield():
-    #create an overlay message
-    overlay = pygame.Surface ((725, 100))
+    # create an overlay message
+    overlay = pygame.Surface((725, 100))
     overlay.set_alpha(300)
     overlay.fill(Black)
     message = "YOU'RE IN TROUBLE, but you are safe with a shield!"
@@ -387,9 +439,10 @@ def print_trouble_card_with_shield():
     window.blit(overlay, (140, 320))
     window.blit(msg_surface, (150, 350))
 
+
 def print_trouble_card_no_shield():
-    #create an overlay message
-    overlay = pygame.Surface ((800, 100))
+    # create an overlay message
+    overlay = pygame.Surface((800, 100))
     overlay.set_alpha(300)
     overlay.fill(Black)
     message = "YOU'RE IN TROUBLE AND HAVE NO SHIELD. YOU LOSE!"
@@ -398,9 +451,10 @@ def print_trouble_card_no_shield():
     window.blit(overlay, (140, 320))
     window.blit(msg_surface, (150, 350))
 
+
 def display_top_3_card(top_3_cards):
     all_cards = {**main_cards, **action_cards, **character_cards}
-    positions = [(250, 100), (420, 100), (500, 100)] #position of top 3 cards
+    positions = [(250, 100), (420, 100), (500, 100)]  # position of top 3 cards
 
     for i, card in enumerate(top_3_cards):
         card_name = card.card_name
@@ -408,18 +462,12 @@ def display_top_3_card(top_3_cards):
         if card_name in all_cards:
             window.blit(all_cards[card_name], positions[i])
 
+
 show_top3_cards = False
 top3_cards_to_display = []
 
-#In main loop
-#if card_name in ["The Spell", "Reveal"]:
-
 
 # ======================================================= DRAWINGS ON SCREEN ============================================================
-
-# The function below basically groups all the drawings in one place
-# makes code more organised, better for reuse purpose, and avoid repetition
-# This function will be reused in the main game loop
 
 def draw_window():
     # =============== MENU SCREEN =================
@@ -462,12 +510,9 @@ def draw_window():
         for button in option_button.values():
             button.draw()
 
-
-
     # ================ GAMEPLAY SCREEN ===============
     elif game_status == "playing":
-
-        # background image
+    # background image
         window.blit(background_img, (0, 0))
 
         # text_image ---> Press Space Key to Pause
@@ -518,9 +563,18 @@ def draw_window():
 
         # Drawing "End Turn" button
         if interactivity_enabled is True:
+            for text in create_card_text_objects(game.players[current_player_id]):
+                text.position()
+                text.draw_text(window)
+            for text in actions_text + character_text:
+                text.position()
+                text.draw_text(window)
+
+                # Draw combo buttons (NEW CODE)
+            create_combo_buttons(game.players[current_player_id])  # Update buttons first
+            for button in combo_buttons:
+                button.draw()
             end_turn_button.draw()
-
-
 
         # grouped all cards
         all_cards = {**main_cards, **action_cards, **character_cards}  # Merge all card dictionaries together **
@@ -532,7 +586,7 @@ def draw_window():
             current_position = [current_position[0] + 2,
                                 current_position[1]]  # position of the deck of cards, +2 means the gap between cards
 
-        if action_pile is not None: #and current_player_id == human_player_index:
+        if action_pile is not None:  # and current_player_id == human_player_index:
             window.blit(action_pile, (560, 250))
 
         # Display each card text on screen
@@ -543,6 +597,12 @@ def draw_window():
             for text in actions_text + character_text:
                 text.position()
                 text.draw_text(window)
+
+            # Create and draw combo buttons
+            create_combo_buttons(game.players[current_player_id])
+            for button in combo_buttons:
+                button.draw()
+
         global youre_in_trouble_trig
         if youre_in_trouble_trig == 1 and current_time - start_time_trouble < 2:
             print_trouble_card_with_shield()
@@ -550,9 +610,6 @@ def draw_window():
             print_trouble_card_no_shield()
         else:
             youre_in_trouble_trig = 0
-
-
-
 
     # ============================== PAUSING INTERFACE ==========================
     elif game_status == "paused":
@@ -567,7 +624,8 @@ def draw_window():
         if user_won is True:
             window.blit(humanwins_img, (0, 0))
         elif user_won is False:
-            window.blit(botwins_img, (0,0))
+            window.blit(botwins_img, (0, 0))
+
 
 # =================================================== MAIN GAME LOOP ====================================================================================================
 
@@ -679,7 +737,7 @@ while game_running:  # start the loop - keep going while the game is on
                 if end_turn_button.gets_clicked():  # option 2 to end turn
                     disable_interactivity()
                     game.end_turn()
-                    if (len (game.discard_card_pile) > 1 and game.discard_card_pile[-1].card_name == "The Shield"
+                    if (len(game.discard_card_pile) > 1 and game.discard_card_pile[-1].card_name == "The Shield"
                             and game.discard_card_pile[-2].card_name == "You're in Trouble"):
                         start_time_trouble = current_time
                         youre_in_trouble_trig = 1
@@ -708,6 +766,24 @@ while game_running:  # start the loop - keep going while the game is on
                                 user_won = False
                         if current_player != game.players[game.current_player_index]:
                             disable_interactivity()
+
+                # Handle combo button clicks
+                for button in combo_buttons:
+                    if button.gets_clicked():
+                        if button.text == "Activate 2":
+                            # Find which character has at least 2 cards
+                            for char_num, count in current_player.character_counts.items():
+                                if count >= 2:
+                                    game.activate_char_combo(current_player, char_num, 2)
+                                    break
+                        elif button.text == "Activate 3":
+                            # Find which character has at least 3 cards
+                            for char_num, count in current_player.character_counts.items():
+                                if count >= 3:
+                                    game.activate_char_combo(current_player, char_num, 3)
+                                    break
+                        elif button.text == "Activate Full Set":
+                            game.activate_full_set_combo(current_player)
 
             elif current_player in game.losers:
                 game.next_player_turn()
@@ -751,4 +827,4 @@ while game_running:  # start the loop - keep going while the game is on
 
     draw_window()
     pygame.display.update()
-# pygame.quit()
+    # pygame.quit()
