@@ -676,9 +676,12 @@ def draw_window():
             window.blit(bot2_text, (855, 355))
 
         if num_players == 4:
-            window.blit(BOT1_img, (-50, 260))
-            window.blit(BOT2_img, (400, -40))
-            window.blit(BOT3_img, (800, 260))
+            if game.players[1] not in game.losers:
+                window.blit(BOT1_img, (-50, 260))
+            if game.players[2] not in game.losers:
+                window.blit(BOT2_img, (400, -40))
+            if game.players[3] not in game.losers:
+                window.blit(BOT3_img, (800, 260))
 
             human_player_text = font_2.render("You", True, player_colour[0])
             bot1_text = font_2.render("BOT 1", True, player_colour[1])
@@ -686,9 +689,12 @@ def draw_window():
             bot3_text = font_2.render("BOT 3", True, player_colour[3])
 
             window.blit(human_player_text, (490, 550))
-            window.blit(bot1_text, (40, 350))
-            window.blit(bot2_text, (470, 55))
-            window.blit(bot3_text, (855, 355))
+            if game.players[1] not in game.losers:
+                window.blit(bot1_text, (40, 350))
+            if game.players[2] not in game.losers:
+                window.blit(bot2_text, (470, 55))
+            if game.players[3] not in game.losers:
+                window.blit(bot3_text, (855, 355))
 
         # shield image
         num_of_shields = len(game.players[human_player_index].has_shield)
@@ -865,14 +871,19 @@ while game_running:  # start the loop - keep going while the game is on
             current_player_id = game.current_player_index
             all_cards = {**main_cards, **action_cards, **character_cards}  # Merge all card dictionaries together **
 
-            if game.current_player_index == 0 and game.losers.get(current_player) is None:
+            if game.current_player_index == 0 and current_player not in game.losers:
                 enable_interactivity()
                 if end_turn_button.gets_clicked():  # option 2 to end turn
                     disable_interactivity()
                     game.end_turn()
                     game.next_player_turn()
-                    if game.check_winner() is not None:
+                    winner = game.check_winner()
+                    if winner is not None:
                         game_status = "result"
+                        if winner == "Player1":
+                            user_won = True
+                        else:
+                            user_won = False
 
                 for text in create_card_text_objects(game.players[current_player_id]):
                     if text.gets_clicked():

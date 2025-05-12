@@ -840,13 +840,10 @@ class GameHandling:
                     player.has_shield.append(card)
 
     def check_winner(self):
-        winner = None  # will store a player who is still in the game
         if len(self.losers) == len(self.players) - 1:
             for i in self.players:
                 if i not in self.losers:
-                    winner = i  # player isn't a loser, if player is alone then the player is the winner
-                    self.game_over = True
-                    return winner.player_name
+                    return i.player_name
         return None
 
     def main_loop(self):
