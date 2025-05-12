@@ -1,9 +1,6 @@
 # Student ID: 5676187
 import pygame
-import random
 import main
-
-from main import ActionCard, Card, GameHandling
 
 pygame.init()
 
