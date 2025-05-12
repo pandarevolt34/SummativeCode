@@ -664,16 +664,20 @@ def draw_window():
             window.blit(human_player_text, (470, 400))
 
         if num_players == 3:
-            window.blit(BOT1_img, (-50, 260))
-            window.blit(BOT3_img, (800, 260))
+            if game.players[1] not in game.losers:
+                window.blit(BOT1_img, (-50, 260))
+            if game.players[2] not in game.losers:
+                window.blit(BOT3_img, (800, 260))
 
             human_player_text = font_2.render("You", True, player_colour[0])
             bot1_text = font_2.render("BOT 1", True, player_colour[1])
             bot2_text = font_2.render("BOT 2", True, player_colour[2])
 
             window.blit(human_player_text, (470, 400))
-            window.blit(bot1_text, (40, 350))
-            window.blit(bot2_text, (855, 355))
+            if game.players[1] not in game.losers:
+                window.blit(bot1_text, (40, 350))
+            if game.players[2] not in game.losers:
+                window.blit(bot2_text, (855, 355))
 
         if num_players == 4:
             if game.players[1] not in game.losers:
