@@ -471,14 +471,44 @@ def handle_combo_button_click():
                 # extract character prefix; e.g. "finn" from "finn_2"
                 char_prefix = button_id.split("_")[0]
                 char_num = char_mapping[char_prefix]
+                char_name = ["Ice King", "BMO", "Finn", "Jake", "Bubblegum", "Lumpy"][char_num - 1]
+
+                # removing 2 of the played char from player's hand; effect of type 2 combo
+                removed = 0
+                for card in current_player.player_cards[:]:
+                    if card.card_name == char_name and removed < 2:
+                        current_player.player_cards.remove(card)
+                        current_player.character_counts[char_num] -= 1
+                        removed += 1
+                        if removed == 2:
+                            break
                 game.activate_char_combo(current_player, char_num, 2)
 
             elif button_id.endswith("_3"):
                 char_prefix = button_id.split("_")[0]
                 char_num = char_mapping[char_prefix]
+                char_name = ["Ice King", "BMO", "Finn", "Jake", "Bubblegum", "Lumpy"][char_num - 1]
+
+                # removing 3 of the played char from player's hand; effect of type 3 combo
+                removed = 0
+                for card in current_player.player_cards[:]:
+                    if card.card_name == char_name and removed < 3:
+                        current_player.player_cards.remove(card)
+                        current_player.character_counts[char_num] -= 1
+                        removed += 1
+                        if removed == 3:
+                            break
                 game.activate_char_combo(current_player, char_num, 3)
 
             elif button_id == "full_set":
+                # removing 1 of each character from player's hand; effect of full set combo
+                for char_num in range(1, 7):
+                    for card in current_player.player_cards[:]:
+                        if card.card_name == ["Ice King", "BMO", "Finn", "Jake", "Bubblegum", "Lumpy"][char_num - 1]:
+                            current_player.player_cards.remove(card)
+                            current_player.character_counts[char_num] -= 1
+                            break
+
                 game.activate_full_set_combo(current_player)
 
 text_1 = font_1.render("Press SPACE key to pause", True, Dark_Green)
@@ -898,8 +928,6 @@ while game_running:  # start the loop - keep going while the game is on
                                     user_won = True
                                 else:
                                     user_won = False
-
-
 
         # ================ PAUSING INTERFACE ==================
         elif game_status == "paused":
