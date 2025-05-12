@@ -534,7 +534,7 @@ class GameHandling:
                     target.player_cards)  # NOTE: will change random choice to target player choice; target chooses a card to give (later in interface)
                 target.player_cards.remove(given_card)  # removing card from target player's cards
                 player.player_cards.append(given_card)  # adding card to player's cards
-                print(f"{player.name} took a random card from {target.player_name}!")
+                print(f"{player.player_name} took a random card from {target.player_name}!")
 
         elif combo_type == 3:  # 3 of the same character card
             top_cards = self.deck.red_black_tree.the_spell_action()
