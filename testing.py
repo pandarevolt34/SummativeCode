@@ -746,6 +746,7 @@ def display_full_set_selection():
 # This function will be reused in the main game loop
 
 def draw_window():
+    """centralised all drawing operations for better organisation, reusable purposes, and avoid repetition"""
     # =============== MENU SCREEN =================
     if game_status == "menu":
         window.blit(menu_img, (0, 0))  # add background image for menu
