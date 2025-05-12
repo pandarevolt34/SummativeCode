@@ -121,6 +121,8 @@ class Hacker(ActionCard):
         if card:
             game.deck.num_of_cards -= 1
             current_player.player_cards.append(card)  # appends the random card to the player's cards
+            if card.card_name == "The Shield":
+                current_player.has_shield.append(card)
             return True
         return False
 
