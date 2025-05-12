@@ -120,9 +120,12 @@ class Hacker(ActionCard):
         card = game.deck.red_black_tree.hacker_action()  # picks a random card from the deck
         if card:
             game.deck.num_of_cards -= 1
-            current_player.player_cards.append(card)  # appends the random card to the player's cards
-            if card.card_name == "The Shield":
-                current_player.has_shield.append(card)
+            if card.card_name == "You're in Trouble":
+                game.manage_trouble_card(current_player)
+            else:
+                current_player.player_cards.append(card)  # appends the random card to the player's cards
+                if card.card_name == "The Shield":
+                    current_player.has_shield.append(card)
             return True
         return False
 
