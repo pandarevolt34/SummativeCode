@@ -544,7 +544,12 @@ class GameHandling:
                             node_of_chosen_card = self.deck.red_black_tree.find_node(chosen_card)
                             self.deck.red_black_tree.delete(node_of_chosen_card)
                             self.deck.num_of_cards -= 1
+                            if chosen_card.card_name == "You're in Trouble":
+                                self.manage_trouble_card(player)
+                                break
                             player.player_cards.append(chosen_card)
+                            if chosen_card.card_name == "The Shield":
+                                player.has_shield.append(chosen_card)
                             print(f"Player 1 took a took a card using combo 3")
                             break
                         else:
