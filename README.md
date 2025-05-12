@@ -223,4 +223,21 @@ Effect - Chose any action card or 'The Shield' to add to your hand.
 
 
 ## 💻 Contribution Statement
+After discussing various card game ideas, the group selected Diana's idea as the best fit for the project requirements.
+  - Task distributions and responsibilities:
+Following the selection of the game concept, the group collaboratively assigned specific roles based on their strength points to ensure an efficient development.
+* Rayan: 
+Took charge of the backend development, focusing on implementing the core data structure for the card deck using a Red_Black Tree; a self_balancing binary search tree was chosen 
+to maintain efficient operations such as insertion, deletion, and searching, ensuring optimal performance even as the deck changes in size. Additionally, Rayan developed bot players
+integrating human logic to simulate human-like gameplay
 
+* Diana: 
+Contributed significantly by implementing the card classes, encapsulating the properties and behaviours of individual cards. She also developed the main game loop, managing
+the flow of the game and ensuring seamless interactions between various components
+
+* Braden:
+Focused on the user interface (UI) development, creating an engaging experience for players. He also implemented dummy functions to facilitate the merging process, allowing
+for smoother integration of the frontend and backend components 
+
+All group members participated in merging the UI with the backend ensuring that the game logic was accurately reflected in the UI.
+To assist users in understanding and navigating the game, Diana authored a comprehensive user guide. 
