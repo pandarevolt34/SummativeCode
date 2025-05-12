@@ -154,7 +154,16 @@ class Cards:
 # ========================================================= CLICKABLE TEXT CLASS ====================================================
 
 # action = None means that if no action is provided, it defaults to None
-
+''' Class for Clickable_text:
+this class represents all texts in the gameplay screen that are clickable
+    text: any clickable text that is displayed on the screen
+    font: the font of the text
+    ori_colour: the colour of the text when the mouse is not placed on the  text (without hovering effect)
+    hover_colour = the colour of the text when the mouse is hovered on the text (with hovering effect)
+    x: x_positions (in horizontal direction)
+    y: y_positions (in vertical direction)
+    gets_clicked: when the text gets_clicked
+    '''
 class Clickable_text:
     def __init__(self, text, font, ori_colour, hover_colour, x, y, gets_clicked=None):
         self.text = text.split(' ×')[0]
@@ -227,7 +236,13 @@ class Player:
         self.action = action
 
     # ===================================================== BUTTON CLASS ========================================================================
-
+""" Class for TheButton:
+this class represents all the buttons with Dark Green rectangle across the game,
+text: this represents text displayed in the Dark Green reactangle in the button
+x: the x position of the button (horizontal direction)
+y: the y position of the button (vertical direction)
+activated: this detects whether button is activated using Boolean logic
+    """
 
 class TheButton:
     def __init__(self, text, x, y, activated):
@@ -263,6 +278,12 @@ class TheButton:
 
 
 # ===================================================== COMBO BUTTON CLASS ==================================================================
+""" Class for ComboButton:
+this class represents all the buttons with Dark Green rectangle across the game,
+text: 
+x: x-coordinate of the buttons
+y: y-coordinate of the y-buttons
+    """
 class ComboButton:
     def __init__(self, text, x, y):
         self.text = text
@@ -425,6 +446,7 @@ def create_card_text_objects(player):
 
 
 def update_combo_button(player):
+    """shows character activations buttons when combinations are ready"""
     # counting how many of each character the player has
     char_count = {
         1: 0,
@@ -607,7 +629,7 @@ def handle_full_set_card_click():
                 return True
     return False
 
-
+#text on screen 
 text_1 = font_1.render("Press SPACE key to pause", True, Dark_Green)
 text_2 = font_2.render("Select players:", True, Black)
 
@@ -640,18 +662,20 @@ combo_card_positions = [(300, 200), (450, 200), (600, 200)]
 
 
 def enable_interactivity():
-    """enables ability to interact"""
+    """enable input controls for the current player after "end_turn" button is clicked"""
     global interactivity_enabled
     interactivity_enabled = True
 
 
 def disable_interactivity():
-    """disables ability to interact"""
+    """disable input controls for the current player when bots/other players are playing"""
     global interactivity_enabled
     interactivity_enabled = False
 
 
 def print_trouble_card_with_shield():
+    """when trouble card appears, if they player is holding a shield card, then player can continue the game"""
+    
     # create an overlay message
     overlay = pygame.Surface((725, 100))
     overlay.set_alpha(300)
@@ -664,6 +688,8 @@ def print_trouble_card_with_shield():
 
 
 def print_trouble_card_no_shield():
+    """when trouble card appears, if they player is not holding a shield card, then players is out of the game"""
+    
     # create an overlay message
     overlay = pygame.Surface((800, 100))
     overlay.set_alpha(300)
@@ -676,6 +702,7 @@ def print_trouble_card_no_shield():
 
 
 def display_top_3_cards(top_3_cards):
+    """display the top 3 cards when spell or reveal is clicked"""
     all_cards = {**main_cards, **action_cards, **character_cards}
 
     positions = [(250, 100), (420, 100), (590, 100)]  # position of top 3 cards
