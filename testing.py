@@ -235,8 +235,7 @@ class TheButton:
         self.x = x  # position x
         self.y = y  # position y
         self.activated = activated  # to see whether button is enabled
-        self.rect = pygame.Rect((self.x, self.y),
-                                (80, 37))  # pygame.Rect object that shows the clicklable area of the button
+        self.rect = pygame.Rect((self.x, self.y), (80, 37))  # pygame.Rect object that shows the clicklable area of the button
         self.hover_rect = pygame.Rect((self.x, self.y), (80, 37))
 
     # draw button
@@ -350,7 +349,10 @@ character_text = [
 ]
 all_text = [*actions_text, *character_text]  # Merge all text together
 
-
+# char combo 3; top 3 cards selection variables
+show_top3_selection = False
+top3_cards_to_select = []
+top3_card_positions = [(300, 200), (450, 200), (600, 200)]  # adjusting the positions for the 3 cards
 
 def create_card_text_objects(player):
     # Get card counts from the player
@@ -508,8 +510,34 @@ def handle_combo_button_click():
                             current_player.player_cards.remove(card)
                             current_player.character_counts[char_num] -= 1
                             break
-
                 game.activate_full_set_combo(current_player)
+
+def handle_top3_card_click():
+    global show_top3_selection, top3_cards_to_select
+
+    if not show_top3_selection or not top3_cards_to_select:
+        return False
+
+    mouse_position = pygame.mouse.get_pos()
+
+    for i, pos in enumerate(top3_card_positions):
+        card_rect = pygame.Rect(pos, (150, 240))  # size of the cards
+        if card_rect.collidepoint(mouse_position) and pygame.mouse.get_pressed()[0]:
+            # add the selected card to player's hand
+            selected_card = top3_cards_to_select[i]
+            game.players[game.current_player_index].player_cards.append(selected_card)
+
+            # remove that card from the deck
+            node = game.deck.red_black_tree.find_node(selected_card)
+            if node:
+                game.deck.red_black_tree.delete(node)
+                game.deck.num_of_cards -= 1
+
+            # reset selection
+            show_top3_selection = False
+            top3_cards_to_select = []
+            return True
+    return False
 
 text_1 = font_1.render("Press SPACE key to pause", True, Dark_Green)
 text_2 = font_2.render("Select players:", True, Black)
@@ -535,6 +563,11 @@ human_player_index = 0
 global user_won
 user_won = False
 interactivity_enabled = True
+
+# variables for char combo 3
+show_combo_selection = False
+combo_top_cards = []
+combo_card_positions = [(300, 200), (450, 200), (600, 200)]
 
 def enable_interactivity():
     global interactivity_enabled
@@ -642,6 +675,23 @@ def draw_window():
     elif game_status == "playing":
         window.blit(background_img, (0, 0)) # background image
         window.blit(text_1, (780, 20)) # text_image ---> Press Space Key to Pause
+
+        # drawing from top 3 cards if combo 3 is active
+        if show_top3_selection and top3_cards_to_select:
+            # Dark overlay
+            overlay = pygame.Surface((1000, 800), pygame.SRCALPHA)
+            overlay.fill((0, 0, 0, 180))
+            window.blit(overlay, (0, 0))
+
+            # Instruction
+            text = font_2.render("Select a card to add to your hand:", True, White)
+            window.blit(text, (300, 150))
+
+            # Draw the cards
+            all_cards = {**main_cards, **action_cards, **character_cards}
+            for i, card in enumerate(top3_cards_to_select):
+                if card.card_name in all_cards:
+                    window.blit(all_cards[card.card_name], top3_card_positions[i])
 
         # player's text
         player_colour = [Orange if i == current_player_id else Black for i in range(num_players)]
@@ -778,6 +828,11 @@ game_running = True
 
 while game_running:  # start the loop - keep going while the game is on
     current_time = pygame.time.get_ticks() / 1000
+
+    # handle top 3 card for char 3 combo
+    if show_top3_selection:
+        if handle_top3_card_click():
+            continue
 
     for event in pygame.event.get():  # event handler
         if event.type == pygame.QUIT:  # quit game
