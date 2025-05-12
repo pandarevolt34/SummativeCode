@@ -241,4 +241,3 @@ for smoother integration of the frontend and backend components
 
 All group members participated in merging the UI with the backend ensuring that the game logic was accurately reflected in the UI.
 To assist users in understanding and navigating the game, Diana authored a comprehensive user guide. 
-
