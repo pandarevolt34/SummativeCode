@@ -121,6 +121,8 @@ class Hacker(ActionCard):
         if card:
             game.deck.num_of_cards -= 1
             current_player.player_cards.append(card)  # appends the random card to the player's cards
+            if card.card_name == "The Shield":
+                current_player.has_shield.append(card)
             return True
         return False
 
@@ -299,7 +301,6 @@ class CardDeck:
 
     def fisher_yates_shuffle(self):
         """shuffles an array with numbers from 1 to 61 using fisher_yates_algorithm"""
-
         arr = []
         for i in range(61):  # originally 66 but now 61
             # multiply by 100 so that we can insert more cards in the tree later depending on query
@@ -313,7 +314,6 @@ class CardDeck:
 
     def initialize_cards(self):
         """initializes cards and links them with a random index"""
-
         array_of_cards = []  # will store the cards in a randomized order
         num_of_inserted_cards = 0  # keeps track of how many cards have been inserted so far
         array_of_cards_indexes = self.fisher_yates_shuffle()
@@ -372,11 +372,10 @@ class CardDeck:
 
     def initialize_trouble_shield_cards(self, num_of_players):
         """adds You're in Trouble cards and The Shield cards into the deck"""
-
         for i in range(num_of_players - 1):
             card = Trouble()
             card.index = random.randint(1, (
-                        61 - num_of_players * 5))  # select a random integer between 1 and the number of cards in the deck
+                    61 - num_of_players * 5))  # select a random integer between 1 and the number of cards in the deck
             card.index *= 100
             card.index += self.counter  # add the counter so that card can be sandwiched between 2 other cards
             self.counter += 1  # increase counter to eliminate possibility of equal indexes
@@ -394,14 +393,12 @@ class CardDeck:
 
     def initialize_deck(self):
         """inserts action and character cards with random indexes into the red-black tree"""
-
         randomized_cards = self.initialize_cards()  # randomized_cards is a list of card objects with randomized indexes
         for i in range(len(randomized_cards)):
             self.red_black_tree.insert_card(randomized_cards[i])
 
     def add_trouble_card_back(self):
         """inserts a trouble card back into the deck"""
-
         card = Trouble()
         card.index = random.randint(1, self.num_of_cards + 1)
         card.index *= 100
@@ -412,7 +409,6 @@ class CardDeck:
 
     def draw_a_card(self):
         """draws a card from the top of the deck"""
-
         node = self.red_black_tree.find_largest_node()  # holds the node with the greatest index
         if node == self.red_black_tree.nil:
             return None
@@ -451,7 +447,6 @@ class GameHandling:
 
     def players_setup(self, num_players, human_name="Player1"):
         """Sets the players with a human player and a chosen number of bots"""
-
         # getting player names
         self.players = [Player(human_name)]
         bot_names = ["CPU1", "CPU2", "CPU3"]
