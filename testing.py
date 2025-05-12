@@ -853,12 +853,12 @@ while game_running:  # start the loop - keep going while the game is on
                             action_pile = all_cards[card_name]
 
                         game.play_selected_card(card_name)
-                        if game.last_played_action_card.card_name == "The Spell"\
-                            or game.last_played_action_card.card_name == "Reveal"\
+                        if card_name == game.last_played_action_card.card_name == "The Spell"\
+                            or card_name == game.last_played_action_card.card_name == "Reveal"\
                             or (len(game.discard_card_pile) > 1
                                 and (game.discard_card_pile[-2].card_name == "The Spell"
                                     or game.discard_card_pile[-2].card_name == "Reveal")
-                                and game.last_played_action_card.card_name == "Mirror"):
+                                and card_name == game.last_played_action_card.card_name == "Mirror"):
                             top_3_cards = game.deck.red_black_tree.the_spell_action()
                             if top_3_cards:
                                 start_time_top_3_cards = current_time
