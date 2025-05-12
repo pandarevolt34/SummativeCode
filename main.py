@@ -787,7 +787,8 @@ class GameHandling:
                                            6: 0}  # reset character counter at the start of turn
         # NOTE: character counter tracker needs modification
 
-    def play_selected_card(self, wanted_card_name):
+    def play_selected_card(self, wanted_card_name: str) -> None: # implemented validation and annotation
+        """checks if card is in a players hand and plays it"""
         current_player = self.players[self.current_player_index]
         card = None
         for i in current_player.player_cards:
@@ -820,6 +821,7 @@ class GameHandling:
                     player.has_shield.append(card)
 
     def check_winner(self):
+        """identifies winner if available"""
         if len(self.losers) == len(self.players) - 1:
             for i in self.players:
                 if i not in self.losers:
@@ -900,7 +902,7 @@ class GameHandling:
                                     else:  # for other card types; like the shield
                                         print("This card cannot be played directly")
                                 else:
-                                    print("Card does not exist!")
+                                    print("Card does not exist!") # validation checks
                             except ValueError:
                                 print("Enter a valid number.")
 
