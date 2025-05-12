@@ -134,7 +134,7 @@ class TheSpell(ActionCard):
         # inheriting attributes from parent class Card
         super().__init__("The Spell", "Action", "Peek at the top 3 cards in the deck", index)
 
-    def perform_action(self, game, current_player):  # NEEDS FIXING TO CONSIDER BOT PLAYERS
+    def perform_action(self, game, current_player):
         print(f"{current_player.player_name} used TheSpell")
         top_cards = game.deck.red_black_tree.the_spell_action()
         if top_cards is None:
@@ -164,9 +164,8 @@ class Reveal(ActionCard):
     def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("Reveal", "Action", "Reveal the top 3 cards to all players", index)
-        ### NOTE: THIS SHOULD APPEAR TO ALL PLAYERS; NOT LIKE THE SPELL
 
-    def perform_action(self, game, current_player):  # FIX THIS LIKE THE SPELL
+    def perform_action(self, game, current_player):
         print(f"{current_player.player_name} used Reveal!")
         top_cards = game.deck.red_black_tree.the_spell_action()
         if top_cards is None:
@@ -188,7 +187,7 @@ class BeatIt(ActionCard):
     def perform_action(self, game, current_player):
         temporary_index = (game.current_player_index + game.turn_direction) % len(game.players)
         target_player = game.players[temporary_index]
-        while target_player in game.losers or target_player is current_player:
+        while target_player in game.losers or target_player == current_player:  # prevent target from being player or loser
             temporary_index = (temporary_index + game.turn_direction) % len(game.players)
             target_player = game.players[temporary_index]
         card = game.deck.draw_a_card()
