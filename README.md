@@ -57,9 +57,9 @@ or navigate to 'package' and search for Pygame through IDE settings and install 
 
 ### Player Selection
 - Chose to play against bots:
-1. 2 Players - You and a Bot
-2. 3 Players - You and 2 Bots
-3. 4 Players - You and 3 Bots
+1.   2 Players - You and a Bot
+2.   3 Players - You and 2 Bots
+3.   4 Players - You and 3 Bots
 
 ### Game Rules
 - In your turn you get a choice of playing as many times as you wish or none at all!
@@ -67,7 +67,6 @@ or navigate to 'package' and search for Pygame through IDE settings and install 
 - To play a card simply click on the card name displayed on your screen or chose a type of combo to activate for character cards (e.g., T2, T3, or Set)
 - To end your turn, click the 'End Turn' button displayed on the lower-right side of your screen
 - There is no limits to the amount of cards in your hand, but if you have no cards, you don't have a choice but to draw a card 
-- 
 
 ### Game Cards
 - Main Cards:

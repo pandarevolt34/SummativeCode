@@ -354,6 +354,31 @@ show_top3_selection = False
 top3_cards_to_select = []
 top3_card_positions = [(300, 200), (450, 200), (600, 200)]  # adjusting the positions for the 3 cards
 
+# char combo full set; all cards to chose from
+show_full_set_selection = False
+full_set_cards_to_select = [
+    "The Shield", "Sick Leave", "U Turn", "Hacker", "The Spell",
+    "Shuffle", "Reveal", "Beat It", "Beg You", "Mirror",
+    "Ice King", "BMO", "Finn", "Jake", "Bubblegum", "Lumpy"
+]
+full_set_card_positions = {
+    "The Shield": (300, 200),
+    "Sick Leave": (350, 200),
+    "U Turn": (400, 200),
+    "Hacker": (450, 200),
+    "The Spell": (500, 200),
+    "Shuffle": (550, 200),
+    "Reveal": (600, 200),
+    "Beat It": (650, 200),
+    "Beg You": (700, 200),
+    "Mirror": (750, 200),
+    "Ice King": (300, 300),
+    "BMO": (350, 300),
+    "Finn": (400, 300),
+    "Jake": (450, 300),
+    "Bubblegum": (500, 300),
+    "Lumpy": (550, 300)
+}
 
 def create_card_text_objects(player):
     # Get card counts from the player
@@ -458,7 +483,7 @@ def update_combo_button(player):
 
 
 def handle_combo_button_click():
-    global show_top3_selection, top3_cards_to_select, show_combo_selection, combo_top_cards
+    global show_top3_selection, top3_cards_to_select, show_combo_selection, combo_top_cards, show_full_set_selection
     current_player = game.players[game.current_player_index]
 
     for button_id, button in combo_buttons.items():
@@ -508,7 +533,7 @@ def handle_combo_button_click():
                 top3_cards_to_select = game.deck.red_black_tree.the_spell_action()
                 if top3_cards_to_select:
                     show_top3_selection = True
-                    show_combo_selection = False  # Ensure we're not showing both at once
+                    show_combo_selection = False  # ensure we're not showing both at once
 
             elif button_id == "full_set":
                 # removing 1 of each character from player's hand; effect of full set combo
@@ -518,7 +543,10 @@ def handle_combo_button_click():
                             current_player.player_cards.remove(card)
                             current_player.character_counts[char_num] -= 1
                             break
-                game.activate_full_set_combo(current_player)
+                #game.activate_full_set_combo(current_player)
+                # show full set selection on screen
+                show_full_set_selection = True
+                show_top3_selection = False
 
 
 def handle_top3_card_click():
@@ -546,6 +574,31 @@ def handle_top3_card_click():
             show_top3_selection = False
             top3_cards_to_select = []
             return True
+    return False
+
+def handle_full_set_card_click():
+    global show_full_set_selection
+
+    if not show_full_set_selection:
+        return False
+
+    mouse_position = pygame.mouse.get_pos()
+    all_cards = {**main_cards, **action_cards, **character_cards}
+
+    for card_name, pos in full_set_card_positions.items():
+        card_rect = pygame.Rect(pos, (150, 240))
+        if card_rect.collidepoint(mouse_position) and pygame.mouse.get_pressed()[0]:
+            # Create the selected card and add to player's hand
+            if card_name in card_text_to_class:
+                new_card = card_text_to_class[card_name]()
+                game.players[game.current_player_index].player_cards.append(new_card)
+
+                if card_name == "The Shield":
+                    game.players[game.current_player_index].has_shield.append(new_card)
+
+                # Reset selection
+                show_full_set_selection = False
+                return True
     return False
 
 
@@ -635,6 +688,21 @@ def display_top_3_cards(top_3_cards):
         if card_name in all_cards:
             window.blit(all_cards[card_name], positions[i])
 
+def display_full_set_selection():
+    # Dark overlay
+    overlay = pygame.Surface((1000, 800), pygame.SRCALPHA)
+    overlay.fill((0, 0, 0, 180))
+    window.blit(overlay, (0, 0))
+
+    # Instruction
+    text = font_2.render("Select a card to add to your hand:", True, White)
+    window.blit(text, (300, 150))
+
+    # Draw all available cards
+    all_cards = {**main_cards, **action_cards, **character_cards}
+    for card_name, pos in full_set_card_positions.items():
+        if card_name in all_cards:
+            window.blit(all_cards[card_name], pos)
 
 # ======================================================= DRAWINGS ON SCREEN ============================================================
 
@@ -783,8 +851,10 @@ def draw_window():
 
         global previous_shield_value, start_time_trouble_with_shield, start_time_trouble_no_shield, youre_in_trouble_trig
         if previous_shield_value == num_of_shields + 1:  # user received a Trouble card and lost a Shield
+            previous_shield_value = num_of_shields
             start_time_trouble_with_shield = current_time  # preparation to display message
-        previous_shield_value = num_of_shields
+        else:
+            previous_shield_value = num_of_shields
 
         if game.players[human_player_index] in game.losers and youre_in_trouble_trig == 0:  # user lost this moment
             start_time_trouble_no_shield = current_time  # preparation to display message
@@ -815,6 +885,10 @@ def draw_window():
                 if card.card_name in all_cards:
                     window.blit(all_cards[card.card_name], top3_card_positions[i])
 
+        # drawing full set selection screen if active
+        if show_full_set_selection:
+            display_full_set_selection()
+
     # ============================== PAUSING INTERFACE ==========================
     elif game_status == "paused":
         window.blit(paused_img, (0, 0))  # add background image when pausing
@@ -841,6 +915,11 @@ while game_running:  # start the loop - keep going while the game is on
     # handle top 3 card for char 3 combo
     if show_top3_selection:
         if handle_top3_card_click():
+            continue
+
+    # handle full set card selection
+    if show_full_set_selection:
+        if handle_full_set_card_click():
             continue
 
     for event in pygame.event.get():  # event handler
