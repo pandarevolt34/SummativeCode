@@ -554,25 +554,25 @@ text_2 = font_2.render("Select players:", True, Black)
 
 # ====================================================== INITIALISE GAME MODE ==========================================================
 
-# current game mode
 game = main.GameHandling()
-game_status = "menu"
+game_status = "menu"  # current game mode
+
 instruction_page = 1
 current_player_id = 0  # Player1 = 0 ; Player2 = 1, Player3 = 2
-action_pile = None
+action_pile = None  # used to display action cards
 num_players = 0
-youre_in_trouble_trig = 0
-previous_shield_value = 0
+youre_in_trouble_trig = 0  # used as a trigger for when user loses
+previous_shield_value = 0  # is compared to current number of shields to identify moment of losing a shield
 start_time_trouble_with_shield = 0
 start_time_trouble_no_shield = 0
-top_3_cards = []
+top_3_cards = []  # stores top 3 cards resulting from The Spell and Reveal
 start_time_top_3_cards = 0
 start_time_cards = 0
-current_time = 0
-human_player_index = 0
-global user_won
+current_time = 0  # stores the current time since running the game
+human_player_index = 0  # stores the index of the user
+global user_won  # trigger to differentiate between the user winning and the player
 user_won = False
-interactivity_enabled = True
+interactivity_enabled = True  # used to disable and enable the ability of the user to interact with their cards
 
 # variables for char combo 3
 show_combo_selection = False
@@ -581,11 +581,13 @@ combo_card_positions = [(300, 200), (450, 200), (600, 200)]
 
 
 def enable_interactivity():
+    """enables ability to interact"""
     global interactivity_enabled
     interactivity_enabled = True
 
 
 def disable_interactivity():
+    """disables ability to interact"""
     global interactivity_enabled
     interactivity_enabled = False
 
@@ -632,15 +634,6 @@ def display_top_3_cards(top_3_cards):
 
         if card_name in all_cards:
             window.blit(all_cards[card_name], positions[i])
-
-
-show_top3_cards = False
-top3_cards_to_display = []
-
-
-# In main loop
-# if card_name in ["The Spell", "Reveal"]:
-
 
 # ======================================================= DRAWINGS ON SCREEN ============================================================
 
@@ -714,9 +707,9 @@ def draw_window():
             window.blit(human_player_text, (470, 400))
 
         if num_players == 3:
-            if game.players[1] not in game.losers:
+            if game.players[1] not in game.losers: # if a bot loses, don't display it
                 window.blit(BOT1_img, (-50, 260))
-            if game.players[2] not in game.losers:
+            if game.players[2] not in game.losers: # if a bot loses, don't display it
                 window.blit(BOT3_img, (800, 260))
 
             human_player_text = font_2.render("You", True, player_colour[0])
@@ -724,17 +717,17 @@ def draw_window():
             bot2_text = font_2.render("BOT 2", True, player_colour[2])
 
             window.blit(human_player_text, (470, 400))
-            if game.players[1] not in game.losers:
+            if game.players[1] not in game.losers:  # if a bot loses, don't display it
                 window.blit(bot1_text, (40, 350))
-            if game.players[2] not in game.losers:
+            if game.players[2] not in game.losers: # if a bot loses, don't display it
                 window.blit(bot2_text, (855, 355))
 
         if num_players == 4:
-            if game.players[1] not in game.losers:
+            if game.players[1] not in game.losers: # if a bot loses, don't display it
                 window.blit(BOT1_img, (-50, 260))
-            if game.players[2] not in game.losers:
+            if game.players[2] not in game.losers: # if a bot loses, don't display it
                 window.blit(BOT2_img, (400, -40))
-            if game.players[3] not in game.losers:
+            if game.players[3] not in game.losers: # if a bot loses, don't display it
                 window.blit(BOT3_img, (800, 260))
 
             human_player_text = font_2.render("You", True, player_colour[0])
@@ -743,22 +736,22 @@ def draw_window():
             bot3_text = font_2.render("BOT 3", True, player_colour[3])
 
             window.blit(human_player_text, (490, 550))
-            if game.players[1] not in game.losers:
+            if game.players[1] not in game.losers: # if a bot loses, don't display it
                 window.blit(bot1_text, (40, 350))
-            if game.players[2] not in game.losers:
+            if game.players[2] not in game.losers: # if a bot loses, don't display it
                 window.blit(bot2_text, (470, 55))
-            if game.players[3] not in game.losers:
+            if game.players[3] not in game.losers: # if a bot loses, don't display it
                 window.blit(bot3_text, (855, 355))
 
         # shield image
-        num_of_shields = len(game.players[human_player_index].has_shield)
+        num_of_shields = len(game.players[human_player_index].has_shield) # current number of shields with user
         if num_of_shields != 0:
             window.blit(extra_shield_img, (470, 575))
             shield_message = f"x {num_of_shields}"
             rendered_shield_message = font_2.render(shield_message, True, Orange)
             window.blit(rendered_shield_message, (500, 745))
 
-        # Drawing "End Turn" button
+        # Drawing "End Turn" button as long as interactivity is possible
         if interactivity_enabled is True:
             end_turn_button.draw()
 
@@ -774,7 +767,7 @@ def draw_window():
         if action_pile is not None:  # and current_player_id == human_player_index:
             window.blit(action_pile, (560, 250))
 
-        # Display each card text on screen
+        # Display each card text on screen if interactivity is enabled
         if interactivity_enabled is True:
             for text in create_card_text_objects(game.players[current_player_id]):
                 text.position()
@@ -788,11 +781,9 @@ def draw_window():
                 button.draw()
 
         global previous_shield_value, start_time_trouble_with_shield, start_time_trouble_no_shield, youre_in_trouble_trig
-        if previous_shield_value == num_of_shields + 1:
-            previous_shield_value = num_of_shields
-            start_time_trouble_with_shield = current_time
-        else:
-            previous_shield_value = num_of_shields
+        if previous_shield_value == num_of_shields + 1: # user received a Trouble card and lost a Shield
+            start_time_trouble_with_shield = current_time # preparation to display message
+        previous_shield_value = num_of_shields
 
         if game.players[human_player_index] in game.losers and youre_in_trouble_trig == 0:
             start_time_trouble_no_shield = current_time
