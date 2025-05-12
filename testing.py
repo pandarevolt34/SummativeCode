@@ -110,7 +110,10 @@ shield_sf = pygame.mixer.Sound("shield.mp3")
 
 
 # 2. Fade transition effect between screens
-def fade_transition(width, height, colour, next_screen):
+def fade_transition(width, height, colour, next_screen, **timing): # Function arbitrary requirements
+    fade_in_speed = timing.get("fade_in_speed", 1)
+    fade_out_speed = timing.get("fade_out_speed", 1)
+
     fade = pygame.Surface((width, height))
     fade.fill(colour)
     # alpha means opacity of the window
@@ -121,7 +124,7 @@ def fade_transition(width, height, colour, next_screen):
         draw_window()
         window.blit(fade, (0, 0))
         pygame.display.update()
-        pygame.time.delay(3)
+        pygame.time.delay(fade_in_speed)
 
     # transitioning to next screen [mid-fade] (from chatgpt)
     global game_status
@@ -133,7 +136,7 @@ def fade_transition(width, height, colour, next_screen):
         draw_window()
         window.blit(fade, (0, 0))
         pygame.display.update()
-        pygame.time.delay(3)
+        pygame.time.delay(fade_out_speed)
 
 
 # ======================================================== CARD CLASS ===========================================================
