@@ -26,10 +26,12 @@ humanwins_img = pygame.transform.scale(pygame.image.load("human wins.png"), (100
 botwins_img = pygame.transform.scale(pygame.image.load("bot wins.png"), (1000, 800))
 
 # Main Gameplay image
-BOT1_img = pygame.transform.scale(pygame.image.load("vertical left.png").convert_alpha(), (250,200)) #width and height both 200
-BOT2_img = pygame.transform.scale(pygame.image.load("horizontal.png").convert_alpha(), (250,200)) #width and height both 200
-BOT3_img = pygame.transform.scale(pygame.image.load("vertical right.png").convert_alpha(), (250,200)) #width and height both 200
-
+BOT1_img = pygame.transform.scale(pygame.image.load("vertical left.png").convert_alpha(),
+                                  (250, 200))  # width and height both 200
+BOT2_img = pygame.transform.scale(pygame.image.load("horizontal.png").convert_alpha(),
+                                  (250, 200))  # width and height both 200
+BOT3_img = pygame.transform.scale(pygame.image.load("vertical right.png").convert_alpha(),
+                                  (250, 200))  # width and height both 200
 
 # Define colours for drawing purpose
 Dark_Green = (0, 100, 0)
@@ -99,7 +101,6 @@ character_cards = {
 
 card_list = []
 
-
 # ======================================================== GAME EFFECTS =============================================================
 
 # 1. Sound effects
@@ -163,7 +164,6 @@ class Clickable_text:
         self.hovering = False
         self.rect = None
         self.update_rect()
-
 
     def update_rect(self):
         display_text = self.get_display_text()
@@ -232,7 +232,8 @@ class TheButton:
         self.x = x  # position x
         self.y = y  # position y
         self.activated = activated  # to see whether button is enabled
-        self.rect = pygame.Rect((self.x, self.y), (80, 37))  # pygame.Rect object that shows the clicklable area of the button
+        self.rect = pygame.Rect((self.x, self.y),
+                                (80, 37))  # pygame.Rect object that shows the clicklable area of the button
         self.hover_rect = pygame.Rect((self.x, self.y), (80, 37))
 
     # draw button
@@ -256,6 +257,7 @@ class TheButton:
             if pygame.mouse.get_pressed()[0]:  # check if left mouse button is pressed
                 print("Click")
                 return True
+
 
 # ===================================================== COMBO BUTTON CLASS ==================================================================
 class ComboButton:
@@ -288,6 +290,7 @@ class ComboButton:
         if not self.visible or not self.activated:
             return False
         return self.rect.collidepoint(pygame.mouse.get_pos()) and pygame.mouse.get_pressed()[0]
+
 
 # ============================================= GAME VARIABLES II =================================================
 # Game Buttons
@@ -351,6 +354,7 @@ show_top3_selection = False
 top3_cards_to_select = []
 top3_card_positions = [(300, 200), (450, 200), (600, 200)]  # adjusting the positions for the 3 cards
 
+
 def create_card_text_objects(player):
     # Get card counts from the player
     card_counts = {}
@@ -389,6 +393,7 @@ def create_card_text_objects(player):
         text.update_rect()
 
     return actions_text + character_text
+
 
 def update_combo_button(player):
     # counting how many of each character the player has
@@ -450,6 +455,7 @@ def update_combo_button(player):
             if all(count >= 1 for count in char_count.values()):
                 combo_buttons["full_set"].activated = True
                 combo_buttons["full_set"].visible = True
+
 
 def handle_combo_button_click():
     global show_top3_selection, top3_cards_to_select, show_combo_selection, combo_top_cards
@@ -514,6 +520,7 @@ def handle_combo_button_click():
                             break
                 game.activate_full_set_combo(current_player)
 
+
 def handle_top3_card_click():
     global show_top3_selection, top3_cards_to_select
 
@@ -540,6 +547,7 @@ def handle_top3_card_click():
             top3_cards_to_select = []
             return True
     return False
+
 
 text_1 = font_1.render("Press SPACE key to pause", True, Dark_Green)
 text_2 = font_2.render("Select players:", True, Black)
@@ -571,17 +579,20 @@ show_combo_selection = False
 combo_top_cards = []
 combo_card_positions = [(300, 200), (450, 200), (600, 200)]
 
+
 def enable_interactivity():
     global interactivity_enabled
     interactivity_enabled = True
+
 
 def disable_interactivity():
     global interactivity_enabled
     interactivity_enabled = False
 
+
 def print_trouble_card_with_shield():
-    #create an overlay message
-    overlay = pygame.Surface ((725, 100))
+    # create an overlay message
+    overlay = pygame.Surface((725, 100))
     overlay.set_alpha(300)
     overlay.fill(Black)
     message = "YOU'RE IN TROUBLE, but you are safe with a shield!"
@@ -590,9 +601,10 @@ def print_trouble_card_with_shield():
     window.blit(overlay, (140, 320))
     window.blit(msg_surface, (150, 350))
 
+
 def print_trouble_card_no_shield():
-    #create an overlay message
-    overlay = pygame.Surface ((800, 100))
+    # create an overlay message
+    overlay = pygame.Surface((800, 100))
     overlay.set_alpha(300)
     overlay.fill(Black)
     message = "YOU'RE IN TROUBLE AND HAVE NO SHIELD. YOU LOSE!"
@@ -601,11 +613,12 @@ def print_trouble_card_no_shield():
     window.blit(overlay, (140, 320))
     window.blit(msg_surface, (150, 350))
 
+
 def display_top_3_cards(top_3_cards):
     all_cards = {**main_cards, **action_cards, **character_cards}
 
-    positions = [(250, 100), (420, 100), (590, 100)] #position of top 3 cards
-    overlay = pygame.Surface ((510, 320))
+    positions = [(250, 100), (420, 100), (590, 100)]  # position of top 3 cards
+    overlay = pygame.Surface((510, 320))
     overlay.set_alpha(200)
     overlay.fill(Black)
     message = "TOP 3 CARDS:"
@@ -620,11 +633,13 @@ def display_top_3_cards(top_3_cards):
         if card_name in all_cards:
             window.blit(all_cards[card_name], positions[i])
 
+
 show_top3_cards = False
 top3_cards_to_display = []
 
-#In main loop
-#if card_name in ["The Spell", "Reveal"]:
+
+# In main loop
+# if card_name in ["The Spell", "Reveal"]:
 
 
 # ======================================================= DRAWINGS ON SCREEN ============================================================
@@ -675,8 +690,8 @@ def draw_window():
 
     # ================ GAMEPLAY SCREEN ===============
     elif game_status == "playing":
-        window.blit(background_img, (0, 0)) # background image
-        window.blit(text_1, (780, 20)) # text_image ---> Press Space Key to Pause
+        window.blit(background_img, (0, 0))  # background image
+        window.blit(text_1, (780, 20))  # text_image ---> Press Space Key to Pause
 
         # player's text
         player_colour = [Orange if i == current_player_id else Black for i in range(num_players)]
@@ -753,9 +768,10 @@ def draw_window():
 
         for name, image in all_cards.items():  # items(), lopping dict
             window.blit(image, current_position)
-            current_position = [current_position[0] + 2, current_position[1]]  # position of the deck of cards, +2 means the gap between cards
+            current_position = [current_position[0] + 2,
+                                current_position[1]]  # position of the deck of cards, +2 means the gap between cards
 
-        if action_pile is not None: #and current_player_id == human_player_index:
+        if action_pile is not None:  # and current_player_id == human_player_index:
             window.blit(action_pile, (560, 250))
 
         # Display each card text on screen
@@ -781,7 +797,6 @@ def draw_window():
         if game.players[human_player_index] in game.losers and youre_in_trouble_trig == 0:
             start_time_trouble_no_shield = current_time
             youre_in_trouble_trig = 1
-
 
         if current_time - start_time_trouble_with_shield < 2:
             print_trouble_card_with_shield()
@@ -819,7 +834,8 @@ def draw_window():
         if user_won is True:
             window.blit(humanwins_img, (0, 0))
         elif user_won is False:
-            window.blit(botwins_img, (0,0))
+            window.blit(botwins_img, (0, 0))
+
 
 # =================================================== MAIN GAME LOOP ====================================================================================================
 import time
@@ -955,12 +971,12 @@ while game_running:  # start the loop - keep going while the game is on
                             action_pile = all_cards[card_name]
 
                         game.play_selected_card(card_name)
-                        if card_name == game.last_played_action_card.card_name == "The Spell"\
-                            or card_name == game.last_played_action_card.card_name == "Reveal"\
-                            or (len(game.discard_card_pile) > 1
-                                and (game.discard_card_pile[-2].card_name == "The Spell"
-                                    or game.discard_card_pile[-2].card_name == "Reveal")
-                                and card_name == game.last_played_action_card.card_name == "Mirror"):
+                        if card_name == game.last_played_action_card.card_name == "The Spell" \
+                                or card_name == game.last_played_action_card.card_name == "Reveal" \
+                                or (len(game.discard_card_pile) > 1
+                                    and (game.discard_card_pile[-2].card_name == "The Spell"
+                                         or game.discard_card_pile[-2].card_name == "Reveal")
+                                    and card_name == game.last_played_action_card.card_name == "Mirror"):
                             top_3_cards = game.deck.red_black_tree.the_spell_action()
                             if top_3_cards:
                                 start_time_top_3_cards = current_time
@@ -988,8 +1004,9 @@ while game_running:  # start the loop - keep going while the game is on
                 else:
                     if played_bots_cards:
                         if action_pile != all_cards[played_bots_cards[0].card_name]:
-                            if played_bots_cards[0].card_name == "Reveal"\
-                                    or (played_bots_cards[0].card_name == "Mirror" and action_pile == all_cards["Reveal"]):
+                            if played_bots_cards[0].card_name == "Reveal" \
+                                    or (
+                                    played_bots_cards[0].card_name == "Mirror" and action_pile == all_cards["Reveal"]):
                                 top_3_cards = game.deck.red_black_tree.the_spell_action()
                                 if top_3_cards:
                                     start_time_top_3_cards = current_time
