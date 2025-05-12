@@ -63,6 +63,7 @@ class CharacterCard(Card):
         )
         self.character_number = character_number
 
+
 # ID: 5676233, 5674312
 ''' Class for ActionCard
 initializing class by inheriting from class Card, then creating subclasses for each action card
@@ -84,6 +85,7 @@ class ActionCard(Card):
 
 class SickLeave(ActionCard):
     """Class representing "Sick Leave" card which ends a player's turn without drawing a card"""
+
     def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("Sick Leave", "Action", "End your turn without drawing a card", index)
@@ -95,6 +97,7 @@ class SickLeave(ActionCard):
 
 class UTurn(ActionCard):
     """Class representing "U Turn" card which reverses the direction of the game"""
+
     def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("U Turn", "Action", "Reverse the direction of the game", index)
@@ -107,6 +110,7 @@ class UTurn(ActionCard):
 
 class Hacker(ActionCard):
     """Class representing "Hacker" card which draws a card from a random position in the deck"""
+
     def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("Hacker", "Action", "Take a card from a random position in the deck", index)
@@ -123,6 +127,7 @@ class Hacker(ActionCard):
 
 class TheSpell(ActionCard):
     """Class representing "The Spell" card which allows a player to peek at the top 3 cards in the deck"""
+
     def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("The Spell", "Action", "Peek at the top 3 cards in the deck", index)
@@ -140,6 +145,7 @@ class TheSpell(ActionCard):
 
 class Shuffle(ActionCard):
     """Class representing "Shuffle" card which shuffles the deck"""
+
     def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("Shuffle", "Action", "Shuffle the deck", index)
@@ -152,6 +158,7 @@ class Shuffle(ActionCard):
 
 class Reveal(ActionCard):
     """Class representing "Reveal" card which allows all players to see the top 3 cards of the deck"""
+
     def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("Reveal", "Action", "Reveal the top 3 cards to all players", index)
@@ -170,6 +177,7 @@ class Reveal(ActionCard):
 
 class BeatIt(ActionCard):
     """Class representing "Beat It" card which skips the player's turn and makes the next player play twice"""
+
     def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("Beat It", "Action",
@@ -195,6 +203,7 @@ class BeatIt(ActionCard):
 
 class BegYou(ActionCard):
     """Class representing "Beg You" card which gives the player a random card in the hand of another player"""
+
     def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("Beg You", "Action", "A random player will give you a random card of theirs", index)
@@ -220,6 +229,7 @@ class BegYou(ActionCard):
 
 class Mirror(ActionCard):
     """Class representing "The Shield" card which mirrors the last action card if possible"""
+
     def __init__(self, index=-1):
         # inheriting attributes from parent class Card
         super().__init__("Mirror", "Action", "Copy the last played action card", index)
@@ -288,7 +298,8 @@ class CardDeck:
         self.num_of_cards = 0
 
     def fisher_yates_shuffle(self):
-        # loop from starting from len(arr)-1 down to 0
+        """shuffles an array with numbers from 1 to 61 using fisher_yates_algorithm"""
+
         arr = []
         for i in range(61):  # originally 66 but now 61
             # multiply by 100 so that we can insert more cards in the tree later depending on query
@@ -301,10 +312,11 @@ class CardDeck:
         return arr
 
     def initialize_cards(self):
-        # will store the cards in a randomized order
-        array_of_cards = []
-        num_of_inserted_cards = 0
-        array_of_cards_indexes = self.fisher_yates_shuffle()  # store an array of random indexes
+        """initializes cards and links them with a random index"""
+
+        array_of_cards = []  # will store the cards in a randomized order
+        num_of_inserted_cards = 0  # keeps track of how many cards have been inserted so far
+        array_of_cards_indexes = self.fisher_yates_shuffle()
         for i in range(1, 7):
             for j in range(4):
                 card = CharacterCard(i, array_of_cards_indexes[num_of_inserted_cards])
@@ -312,71 +324,66 @@ class CardDeck:
                 array_of_cards.append(card)
         for i in range(4):
             card = SickLeave()
-            # link card with a random index
-            card.index = array_of_cards_indexes[num_of_inserted_cards]
+            card.index = array_of_cards_indexes[num_of_inserted_cards]  # link card with a random index
             num_of_inserted_cards += 1
             array_of_cards.append(card)
         for i in range(4):
             card = UTurn()
-            card.index = array_of_cards_indexes[num_of_inserted_cards]
+            card.index = array_of_cards_indexes[num_of_inserted_cards]  # link card with a random index
             num_of_inserted_cards += 1
             array_of_cards.append(card)
         for i in range(4):
             card = Hacker()
-            card.index = array_of_cards_indexes[num_of_inserted_cards]
+            card.index = array_of_cards_indexes[num_of_inserted_cards]  # link card with a random index
             num_of_inserted_cards += 1
             array_of_cards.append(card)
         for i in range(5):
             card = TheSpell()
-            card.index = array_of_cards_indexes[num_of_inserted_cards]
+            card.index = array_of_cards_indexes[num_of_inserted_cards]  # link card with a random index
             num_of_inserted_cards += 1
             array_of_cards.append(card)
         for i in range(4):
             card = Shuffle()
-            card.index = array_of_cards_indexes[num_of_inserted_cards]
+            card.index = array_of_cards_indexes[num_of_inserted_cards]  # link card with a random index
             num_of_inserted_cards += 1
             array_of_cards.append(card)
         for i in range(4):
             card = Reveal()
-            card.index = array_of_cards_indexes[num_of_inserted_cards]
+            card.index = array_of_cards_indexes[num_of_inserted_cards]  # link card with a random index
             num_of_inserted_cards += 1
             array_of_cards.append(card)
         for i in range(4):
             card = BeatIt()
-            card.index = array_of_cards_indexes[num_of_inserted_cards]
+            card.index = array_of_cards_indexes[num_of_inserted_cards]  # link card with a random index
             num_of_inserted_cards += 1
             array_of_cards.append(card)
         for i in range(4):
             card = BegYou()
-            card.index = array_of_cards_indexes[num_of_inserted_cards]
+            card.index = array_of_cards_indexes[num_of_inserted_cards]  # link card with a random index
             num_of_inserted_cards += 1
             array_of_cards.append(card)
-        """"
-        for i in range(5):
-            card = NoChance()
-            card.index = array_of_cards_indexes[num_of_inserted_cards]
-            num_of_inserted_cards += 1
-            array_of_cards.append(card)
-        """
         for i in range(4):
             card = Mirror()
-            card.index = array_of_cards_indexes[num_of_inserted_cards]
+            card.index = array_of_cards_indexes[num_of_inserted_cards]  # link card with a random index
             num_of_inserted_cards += 1
             array_of_cards.append(card)
-        self.num_of_cards = num_of_inserted_cards
+        self.num_of_cards = num_of_inserted_cards  # store number of cards in the deck so far
         return array_of_cards
 
     def initialize_trouble_shield_cards(self, num_of_players):
+        """adds You're in Trouble cards and The Shield cards into the deck"""
+
         for i in range(num_of_players - 1):
             card = Trouble()
-            card.index = random.randint(1, (61 - num_of_players * 5))
+            card.index = random.randint(1, (
+                        61 - num_of_players * 5))  # select a random integer between 1 and the number of cards in the deck
             card.index *= 100
-            card.index += self.counter
-            self.counter += 1
+            card.index += self.counter  # add the counter so that card can be sandwiched between 2 other cards
+            self.counter += 1  # increase counter to eliminate possibility of equal indexes
             self.num_of_cards += 1
-            self.red_black_tree.insert_card(card)
+            self.red_black_tree.insert_card(card)  # insert card into red black tree
         for i in range(7 - num_of_players):
-            card = Shield()
+            card = Shield()  # repeat for shield cards
             card.index = random.randint(1, (60 - num_of_players * 5))
             card.index *= 100
             card.index += self.counter
@@ -386,13 +393,15 @@ class CardDeck:
         pass
 
     def initialize_deck(self):
-        # randomized_cards is a list of card objects in a randomized order
-        randomized_cards = self.initialize_cards()
+        """inserts action and character cards with random indexes into the red-black tree"""
+
+        randomized_cards = self.initialize_cards()  # randomized_cards is a list of card objects with randomized indexes
         for i in range(len(randomized_cards)):
-            # insert
             self.red_black_tree.insert_card(randomized_cards[i])
 
     def add_trouble_card_back(self):
+        """inserts a trouble card back into the deck"""
+
         card = Trouble()
         card.index = random.randint(1, self.num_of_cards + 1)
         card.index *= 100
@@ -402,15 +411,14 @@ class CardDeck:
         self.red_black_tree.insert_card(card)
 
     def draw_a_card(self):
-        # find card at the top of the deck
-        node = self.red_black_tree.find_largest_node()
-        if node is self.red_black_tree.nil:
+        """draws a card from the top of the deck"""
+
+        node = self.red_black_tree.find_largest_node()  # holds the node with the greatest index
+        if node == self.red_black_tree.nil:
             return None
-        # take card data
-        card = node.card
-        # delete node
-        self.red_black_tree.delete(node)
-        self.num_of_cards -= 1
+        card = node.card  # take card data
+        self.red_black_tree.delete(node)  # delete node
+        self.num_of_cards -= 1  # decrease number of cards currently in the deck
         return card
 
 
